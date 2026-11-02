@@ -390,7 +390,7 @@ img[data-photo]:not([src]){visibility:hidden}
 document.documentElement.lang = 'ko';
 
 /* ---------- helpers ---------- */
-const APP_VERSION = '2026.11.02-10';
+const APP_VERSION = '2026.11.02-11';
 const EMBED = (()=>{ try { return window.self !== window.top; } catch(e){ return true; } })();
 const DOW = ['일','월','화','수','목','금','토'];
 const $ = (s, r=document) => r.querySelector(s);
@@ -598,7 +598,7 @@ function parseBookingText(raw, t){
     for (const m of text.matchAll(/\b([A-Z]{2}|[A-Z]\d|\d[A-Z])\s?(\d{2,4})\b/g)){ const f = (m[1] + m[2]).toUpperCase(); if (!/^(AM|PM)$/.test(m[1]) && !f.startsWith('20') && f !== r.code && !fnos.includes(f)) fnos.push(f); }
     if (fnos[0]){ r.flightNo = fnos[0]; r.found.push(`편명 ${fnos.slice(0,2).join(' · ')}`); } if (fnos[1]) r.retFlightNo = fnos[1];
     const codes = [...text.matchAll(/\b([A-Z]{3})\b/g)].map(m => m[1]).filter(c => IATA[c]);
-    if (codes.length >= 2){ const a = codes[0]; const b = codes.find(c => c !== a) || codes[1]; r.from = IATA[a]; r.to = IATA[b]; r.found.push(`${r.from} → ${r.to}`); if (codes.length >= 4 && codes[codes.length-1] === a) r.roundTrip = true; }
+    if (codes.length >= 2){ const a = codes[0]; const b = codes.find(c => c !== a) || codes[1]; r.from = IATA[a]; r.to = IATA[b]; r.found.push(`${r.from} → ${r.to}`); if (codes.length >= 4){ r.roundTrip = true; const c3 = IATA[codes[2]], c4 = IATA[codes[3]]; if (c3 && c3 !== r.to) r.retFrom = c3; if (c4 && c4 !== r.from) r.retTo = c4; if (r.retFrom || r.retTo) r.found.push(`오는 편 ${c3} → ${c4}`); } }
     else {
       const f = lab(/(?:출발지|출발\s*공항|from)\s*[:：]\s*(.*)/i), to = lab(/(?:도착지|도착\s*공항|to)\s*[:：]\s*(.*)/i);
       const arrow = text.match(/([가-힣A-Za-z]{2,12})\s*(?:→|->|⇀|➝|➔|>)\s*([가-힣A-Za-z]{2,12})/);
@@ -903,10 +903,13 @@ function flightRoute(b){
   }
   return { from, to };
 }
+function retRoute(b){ const { from, to } = flightRoute(b); return { rfrom: (b.retFrom || '').trim() || to, rto: (b.retTo || '').trim() || from }; }
 function bookingName(b){
   const k = KIND[b.kind] || KIND.etc;
   if (b.kind === 'flight'){
-    const { from, to } = flightRoute(b); if (from && to) return b.roundTrip ? `${from} ⇄ ${to} 왕복` : `${from} → ${to}`;
+    const { from, to } = flightRoute(b);
+    if (from && to && b.roundTrip){ const { rfrom, rto } = retRoute(b); return rfrom === to && rto === from ? `${from} ⇄ ${to} 왕복` : `${from} → ${to} · ${rfrom} → ${rto}`; }
+    if (from && to) return `${from} → ${to}`;
     const t = (b.title || '').trim(); return t && !['출발','도착','항공','항공권','비행기'].includes(t) ? t : (from || to ? `${from || ''}${to ? to + '행' : ''}` : '항공편');
   }
   return b.title || k.label;
@@ -935,8 +938,9 @@ function bookingEntries(tid, day){
       if (ed === day && b.end) out.push(mk('b', et, k.b, { place: to ? `${to} 도착` : '항공편 도착', sub: from ? `${from}발 ${b.roundTrip ? '가는 편' : '항공편'}` : (b.roundTrip ? '가는 편' : '항공편'), address: airport(to), code: goNo }));
       if (b.roundTrip){
         const rsd = b.retStart ? b.retStart.slice(0,10) : '', red = b.retEnd ? b.retEnd.slice(0,10) : '';
-        if (rsd === day) out.push(mk('c', b.retStart.slice(11,16), k.a, { place: to ? `${to} 출발` : '귀국편 출발', sub: from ? `${from}행 오는 편` : '오는 편', address: airport(to), code: backNo }));
-        if (red === day) out.push(mk('d', b.retEnd.slice(11,16), k.b, { place: from ? `${from} 도착` : '귀국편 도착', sub: to ? `${to}발 오는 편` : '오는 편', address: airport(from), code: backNo }));
+        const { rfrom, rto } = retRoute(b);
+        if (rsd === day) out.push(mk('c', b.retStart.slice(11,16), k.a, { place: rfrom ? `${rfrom} 출발` : '귀국편 출발', sub: rto ? `${rto}행 오는 편` : '오는 편', address: airport(rfrom), code: backNo }));
+        if (red === day) out.push(mk('d', b.retEnd.slice(11,16), k.b, { place: rto ? `${rto} 도착` : '귀국편 도착', sub: rfrom ? `${rfrom}발 오는 편` : '오는 편', address: airport(rto), code: backNo }));
       }
     } else {
       const two = b.kind === 'car' && b.address2 && b.address2 !== b.address;
@@ -1225,7 +1229,7 @@ function renderBooking(){
     const { from, to } = flightRoute(b);
     const leg = (label, st, en, fno, a, z) => `<section class="panel"><p class="cap">${label}${fno ? ` · ${esc(fno)}` : ''}</p><div class="leg"><div><p class="val">${st ? fmtDT(st) : '—'}</p><p class="muted small" style="margin:0">${esc(a || '출발')}</p></div><span class="muted" aria-hidden="true">→</span><div style="text-align:right"><p class="val">${en ? fmtDT(en) : '—'}</p><p class="muted small" style="margin:0">${esc(z || '도착')}</p></div></div></section>`;
     h += leg(b.roundTrip ? '가는 편' : '항공편', b.start, b.end, b.flightNo, from, to);
-    if (b.roundTrip) h += leg('오는 편', b.retStart, b.retEnd, b.retFlightNo, to, from);
+    if (b.roundTrip){ const { rfrom, rto } = retRoute(b); h += leg('오는 편', b.retStart, b.retEnd, b.retFlightNo, rfrom, rto); }
   } else if (b.start || b.end) h += `<div class="grid2">
     <div class="panel"><p class="cap">${k.a}</p><p class="val">${b.start ? fmtDT(b.start) : '—'}</p></div>
     <div class="panel"><p class="cap">${k.b}</p><p class="val">${b.end ? fmtDT(b.end) : '—'}</p></div></div>`;
@@ -1409,8 +1413,12 @@ function openBookingSheet(id){
     ${paxField(b && b.pax ? b.pax : (t.people || 1))}
     <div class="grid2"><div class="field"><label class="flabel" for="f-bstart" id="l-a">${KIND[editing.bk].a}</label><input class="input" type="datetime-local" id="f-bstart" value="${esc(b ? b.start : t.start + 'T09:00')}"></div>
       <div class="field"><label class="flabel" for="f-bend" id="l-b">${KIND[editing.bk].b}</label><input class="input" type="datetime-local" id="f-bend" value="${esc(b ? b.end : '')}"></div></div>
-    <div class="grid2" id="w-ret"${editing.bk === 'flight' && editing.rt === 'round' ? '' : ' hidden'}><div class="field"><label class="flabel" for="f-rstart">오는 편 출발</label><input class="input" type="datetime-local" id="f-rstart" value="${esc(b ? b.retStart || '' : '')}"></div>
-      <div class="field"><label class="flabel" for="f-rend">오는 편 도착</label><input class="input" type="datetime-local" id="f-rend" value="${esc(b ? b.retEnd || '' : '')}"></div></div>
+    <div id="w-ret" style="display:flex;flex-direction:column;gap:14px"${editing.bk === 'flight' && editing.rt === 'round' ? '' : ' hidden'}>
+    <div class="grid2"><div class="field"><label class="flabel" for="f-rfrom">오는 편 출발지</label><input class="input" id="f-rfrom" value="${esc(b ? b.retFrom || '' : '')}" placeholder="${esc(rt.to ? `비워두면 ${rt.to}` : '예: 오사카')}"></div>
+      <div class="field"><label class="flabel" for="f-rto">오는 편 도착지</label><input class="input" id="f-rto" value="${esc(b ? b.retTo || '' : '')}" placeholder="${esc(rt.from ? `비워두면 ${rt.from}` : '예: 인천')}"></div></div>
+    <p class="hint" style="margin-top:-6px">들어간 곳과 다른 도시에서 돌아오거나, 다른 공항에 내릴 때만 적어요.</p>
+    <div class="grid2"><div class="field"><label class="flabel" for="f-rstart">오는 편 출발</label><input class="input" type="datetime-local" id="f-rstart" value="${esc(b ? b.retStart || '' : '')}"></div>
+      <div class="field"><label class="flabel" for="f-rend">오는 편 도착</label><input class="input" type="datetime-local" id="f-rend" value="${esc(b ? b.retEnd || '' : '')}"></div></div></div>
     <div class="field"><label class="flabel" for="f-baddr" id="l-addr">${KIND[editing.bk].addr}</label><input class="input" id="f-baddr" value="${esc(b ? b.address : '')}" placeholder="${KIND[editing.bk].addrPh}"></div>
     <div class="field" id="w-addr2"${editing.bk === 'car' ? '' : ' hidden'}><label class="flabel" for="f-baddr2">반납 장소 (픽업과 다를 때만)</label><input class="input" id="f-baddr2" value="${esc(b ? b.address2 || '' : '')}" placeholder="비워두면 픽업 장소에 반납"></div>
     <div class="field"><label class="flabel" for="f-bmemo">이용 방법 메모</label><textarea class="input" id="f-bmemo" rows="4" placeholder="출구 번호, 픽업 장소, 수하물 규정, 체크인 방법…">${esc(b ? b.memo : '')}</textarea></div>
@@ -1434,6 +1442,7 @@ function applyParsed(r){
   if (r.kind && r.kind !== editing.bk) A['bk-kind']({ dataset:{ val: r.kind } });
   const set = (id, v) => { if (v === undefined || v === null || v === '') return; const el = document.getElementById(id); if (el) el.value = v; };
   if (r.roundTrip){ editing.rt = 'round'; refreshBookingUI(); }
+  set('f-rfrom', r.retFrom); set('f-rto', r.retTo);
   set('f-fno', r.flightNo); set('f-rfno', r.retFlightNo); set('f-rstart', r.retStart); set('f-rend', r.retEnd);
   set('f-from', r.from); set('f-to', r.to); set('f-btitle', r.title); set('f-code', r.code); set('f-bstart', r.start); set('f-bend', r.end);
   set('f-baddr', r.address); set('f-baddr2', r.address2); if (r.price) set('f-bprice', String(r.price)); set('f-bcur', r.currency);
@@ -1445,11 +1454,13 @@ function saveBooking(){
   const isFlight = editing.bk === 'flight';
   const from = isFlight ? val('f-from') : '', to = isFlight ? val('f-to') : '', code = val('f-code');
   const roundTrip = isFlight && editing.rt === 'round';
-  const title = isFlight ? (from && to ? (roundTrip ? `${from} ⇄ ${to} 왕복` : `${from} → ${to}`) : (from || to)) : val('f-btitle');
+  let retFrom = roundTrip ? val('f-rfrom') : '', retTo = roundTrip ? val('f-rto') : '';
+  if (retFrom === to) retFrom = ''; if (retTo === from) retTo = '';
+  const title = isFlight ? (from && to ? (roundTrip ? (retFrom || retTo ? `${from} → ${to} · ${retFrom || to} → ${retTo || from}` : `${from} ⇄ ${to} 왕복`) : `${from} → ${to}`) : (from || to)) : val('f-btitle');
   if (!title && !code) return showErr(isFlight ? '출발지·도착지나 예약번호 중 하나는 적어 주세요.' : '이름이나 예약번호 중 하나는 적어 주세요.');
   const showInPlan = !!($('#f-bshow') && $('#f-bshow').checked);
   const pr = parseFloat(val('f-bprice').replace(/[,\s원엔₩¥$]/g, '')); const price = pr > 0 ? pr : null; const currency = val('f-bcur') || 'KRW';
-  const data = { kind: editing.bk, title, from, to, roundTrip, flightNo: isFlight ? val('f-fno').toUpperCase() : '', retFlightNo: roundTrip ? val('f-rfno').toUpperCase() : '', retStart: roundTrip ? val('f-rstart') : '', retEnd: roundTrip ? val('f-rend') : '', code, start: val('f-bstart'), end: val('f-bend'), address: val('f-baddr'), address2: editing.bk === 'car' ? val('f-baddr2') : '', memo: val('f-bmemo'), showInPlan, price, currency, priceMode: editing.pm === 'each' ? 'each' : 'total', pax: Math.min(50, Math.max(1, parseInt(val('f-pax'), 10) || 1)), photos: commitDraft() };
+  const data = { kind: editing.bk, title, from, to, roundTrip, retFrom, retTo, flightNo: isFlight ? val('f-fno').toUpperCase() : '', retFlightNo: roundTrip ? val('f-rfno').toUpperCase() : '', retStart: roundTrip ? val('f-rstart') : '', retEnd: roundTrip ? val('f-rend') : '', code, start: val('f-bstart'), end: val('f-bend'), address: val('f-baddr'), address2: editing.bk === 'car' ? val('f-baddr2') : '', memo: val('f-bmemo'), showInPlan, price, currency, priceMode: editing.pm === 'each' ? 'each' : 'total', pax: Math.min(50, Math.max(1, parseInt(val('f-pax'), 10) || 1)), photos: commitDraft() };
   if (editing.id) Object.assign(S.bookings.find(b => b.id === editing.id), data);
   else S.bookings.push(Object.assign({ id:uid(), tripId:V.tripId }, data));
   const t = getTrip(V.tripId); const days = t ? tripDays(t) : [];
@@ -1804,6 +1815,7 @@ document.addEventListener('input', e => {
   const t = e.target;
   if (t.dataset && t.dataset.note){ if (t.value.trim()) S.notes[t.dataset.note] = t.value; else delete S.notes[t.dataset.note]; save(); }
   if (['f-amt','f-bprice','f-pax','f-cur','f-bcur'].includes(t.id)) updPmHint();
+  if (t.id === 'f-from' || t.id === 'f-to'){ const rf = $('#f-rfrom'), rt2 = $('#f-rto'); if (rf) rf.placeholder = val('f-to') ? `비워두면 ${val('f-to')}` : '예: 오사카'; if (rt2) rt2.placeholder = val('f-from') ? `비워두면 ${val('f-from')}` : '예: 인천'; }
   if (t.id === 'f-place' || t.id === 'f-address'){ const a = $('#f-maplink'); const q = val('f-address') || val('f-place'); if (a){ a.href = q ? mapUrl(q) : '#'; a.style.opacity = q ? '' : '.5'; a.style.pointerEvents = q ? '' : 'none'; a.toggleAttribute('aria-disabled', !q); } }
 });
 document.addEventListener('change', e => {
