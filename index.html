@@ -283,6 +283,7 @@ img[data-photo]:not([src]){visibility:hidden}
 .legend .n{flex:1;min-width:0}
 .legend .v{font-variant-numeric:tabular-nums;font-weight:600}
 .legend .pct{width:40px;text-align:right;color:var(--muted);font-variant-numeric:tabular-nums}
+.leg{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:4px}
 .per-person{margin:6px 0 0;font-size:15px;color:var(--muted)}
 .per-person b{color:var(--ink);font-size:20px;font-variant-numeric:tabular-nums;margin-left:4px}
 .amt small{display:block;font-size:12px;color:var(--muted)}
@@ -389,7 +390,7 @@ img[data-photo]:not([src]){visibility:hidden}
 document.documentElement.lang = 'ko';
 
 /* ---------- helpers ---------- */
-const APP_VERSION = '2026.11.02-9';
+const APP_VERSION = '2026.11.02-10';
 const EMBED = (()=>{ try { return window.self !== window.top; } catch(e){ return true; } })();
 const DOW = ['일','월','화','수','목','금','토'];
 const $ = (s, r=document) => r.querySelector(s);
@@ -593,9 +594,9 @@ function parseBookingText(raw, t){
   const codeM = text.match(/(?:예약\s*확인\s*번호|예약\s*번호|예약\s*코드|확인\s*번호|booking\s*(?:no\.?|number|reference|ref\.?|id|code)|confirmation\s*(?:no\.?|number|code|#)?|reservation\s*(?:no\.?|number|code|id)|itinerary\s*(?:no\.?|number)|PNR)[ \t]*[:：#.]?[ \t]*((?=[A-Z0-9-]*\d)[A-Z0-9][A-Z0-9-]{3,24})/i);
   if (codeM){ r.code = codeM[1].toUpperCase(); r.found.push('예약번호'); }
   if (kind === 'flight'){
-    let fn = text.match(/(?:편명|항공편|flight\s*(?:no\.?|number)?)\s*[:：]?\s*([A-Z0-9]{2})\s?(\d{1,4})\b/i);
-    if (!fn){ for (const m of text.matchAll(/\b([A-Z]{2}|[A-Z]\d|\d[A-Z])\s?(\d{2,4})\b/g)){ if (!/^(AM|PM)$/.test(m[1]) && !(m[1] + m[2]).startsWith('20')){ fn = m; break; } } }
-    if (fn){ r.flightNo = (fn[1] + fn[2]).toUpperCase(); r.found.push(`편명 ${r.flightNo}`); if (!r.code) r.code = r.flightNo; }
+    const fnos = [];
+    for (const m of text.matchAll(/\b([A-Z]{2}|[A-Z]\d|\d[A-Z])\s?(\d{2,4})\b/g)){ const f = (m[1] + m[2]).toUpperCase(); if (!/^(AM|PM)$/.test(m[1]) && !f.startsWith('20') && f !== r.code && !fnos.includes(f)) fnos.push(f); }
+    if (fnos[0]){ r.flightNo = fnos[0]; r.found.push(`편명 ${fnos.slice(0,2).join(' · ')}`); } if (fnos[1]) r.retFlightNo = fnos[1];
     const codes = [...text.matchAll(/\b([A-Z]{3})\b/g)].map(m => m[1]).filter(c => IATA[c]);
     if (codes.length >= 2){ const a = codes[0]; const b = codes.find(c => c !== a) || codes[1]; r.from = IATA[a]; r.to = IATA[b]; r.found.push(`${r.from} → ${r.to}`); if (codes.length >= 4 && codes[codes.length-1] === a) r.roundTrip = true; }
     else {
@@ -633,6 +634,14 @@ function parseBookingText(raw, t){
   if (!B){ const nxt = pairs.find(p => A && (p.date !== A.date || (p.time && p.time !== A.time))); if (nxt) B = nxt; }
   if (A && !B && times.length >= 2 && new Set(dates.map(d => d.date)).size <= 1){ const ts = times.map(x => x.t).filter(x => x !== A.time); if (!A.time) A.time = times[0].t; if (ts.length) B = { date: A.date, time: ts[0] }; }
   if (kind === 'flight' && A && B && B.date === A.date && B.time && A.time && B.time < A.time) B.date = addDays(A.date, 1);
+  if (kind === 'flight' && (r.roundTrip || /왕복|round\s*-?\s*trip|오는\s*편|귀국\s*편|return\s*flight|inbound/i.test(text))){
+    const evs = []; dates.forEach(d => { const t1 = timeNear(d.end); evs.push({ date:d.date, time:t1 }); const t2 = times.find(tm => tm.i > d.end + 5 && tm.i - d.end <= 40 && tm.t !== t1); if (t2 && !dates.some(x => x.i > d.end && x.i < t2.i)) evs.push({ date:d.date, time:t2.t }); });
+    const uniq = evs.filter((e, i) => !evs.slice(0, i).some(x => x.date === e.date && x.time === e.time));
+    if (uniq.length >= 3){ r.roundTrip = true; A = uniq[0]; B = uniq[1]; const C = uniq[2], D = uniq[3];
+      if (B.date === A.date && B.time && A.time && B.time < A.time) B.date = addDays(A.date, 1);
+      r.retStart = `${C.date}T${C.time || '09:00'}`; if (D) r.retEnd = `${D.date}T${D.time || '18:00'}`; }
+    if (r.roundTrip) r.found.push(r.retStart ? '왕복 오는 편' : '왕복');
+  }
   const defT = { stay:['15:00','11:00'], car:['10:00','10:00'] }[kind] || ['09:00','18:00'];
   if (A){ r.start = `${A.date}T${A.time || defT[0]}`; r.found.push(kind === 'stay' ? '체크인' : kind === 'car' ? '픽업 일시' : kind === 'flight' ? '출발 일시' : '날짜'); }
   if (B){ r.end = `${B.date}T${B.time || defT[1]}`; r.found.push(kind === 'stay' ? '체크아웃' : kind === 'car' ? '반납 일시' : kind === 'flight' ? '도착 일시' : '종료 날짜'); }
@@ -872,10 +881,9 @@ function sampleState(){
       ck('의류','얇은 패딩',false), ck('의류','편한 운동화',true),
     ],
     bookings:[
-      { id:uid(), tripId:tid, kind:'flight', title:'인천 → 간사이', from:'인천', to:'간사이', code:'K7X2QM', price:156000, currency:'KRW', priceMode:'each', pax:2, start:`${d(0)}T09:05`, end:`${d(0)}T10:55`, address:'인천국제공항 제1여객터미널', memo:'위탁 수하물 15kg 포함\n온라인 체크인은 출발 24시간 전부터\n탑승구는 출발 2시간 전에 확인', photos:[] },
+      { id:uid(), tripId:tid, kind:'flight', title:'인천 ⇄ 간사이 왕복', from:'인천', to:'간사이', roundTrip:true, flightNo:'KE723', retFlightNo:'KE724', retStart:`${d(3)}T18:40`, retEnd:`${d(3)}T20:35`, code:'K7X2QM', price:156000, currency:'KRW', priceMode:'each', pax:2, start:`${d(0)}T09:05`, end:`${d(0)}T10:55`, address:'인천국제공항 제1여객터미널', memo:'위탁 수하물 15kg 포함\n온라인 체크인은 출발 24시간 전부터\n탑승구는 출발 2시간 전에 확인', photos:[] },
       { id:uid(), tripId:tid, kind:'stay', title:'난바역 근처 호텔', code:'HTL-48213', price:54000, currency:'JPY', start:`${d(0)}T15:00`, end:`${d(3)}T11:00`, address:'난바역 오사카', memo:'난바역 출구에서 걸어서 5분\n프런트에서 여권 보여주기\n조식 7:00–10:00, 2층', photos:[] },
       { id:uid(), tripId:tid, kind:'car', title:'간사이공항 렌터카', code:'RC-90517', price:9800, currency:'JPY', start:`${d(2)}T10:00`, end:`${d(2)}T18:00`, address:'간사이국제공항', memo:'1층 도착 로비 렌터카 카운터\n국제운전면허증 꼭 챙기기\n반납 전 기름 가득 채우기', photos:[] },
-      { id:uid(), tripId:tid, kind:'flight', title:'간사이 → 인천', from:'간사이', to:'인천', code:'K7X2QM', start:`${d(3)}T18:40`, end:`${d(3)}T20:35`, address:'간사이국제공항', memo:'', photos:[] },
     ],
   };
 }
@@ -889,7 +897,7 @@ function flightRoute(b){
   let from = (b.from || '').trim(), to = (b.to || '').trim();
   if (!from && !to){
     const t = String(b.title || '').trim();
-    let parts = t.split(/\s*(?:→|->|>|~|-)\s*/).filter(Boolean);
+    let parts = t.replace(/\s*왕복$/, '').split(/\s*(?:⇄|↔|→|->|>|~|-)\s*/).filter(Boolean);
     if (parts.length < 2) parts = t.split(/\s+/).filter(Boolean).length === 2 ? t.split(/\s+/) : [];
     if (parts.length > 1){ from = parts[0]; to = parts[parts.length - 1]; }
   }
@@ -898,13 +906,14 @@ function flightRoute(b){
 function bookingName(b){
   const k = KIND[b.kind] || KIND.etc;
   if (b.kind === 'flight'){
-    const { from, to } = flightRoute(b); if (from && to) return `${from} → ${to}`;
+    const { from, to } = flightRoute(b); if (from && to) return b.roundTrip ? `${from} ⇄ ${to} 왕복` : `${from} → ${to}`;
     const t = (b.title || '').trim(); return t && !['출발','도착','항공','항공권','비행기'].includes(t) ? t : (from || to ? `${from || ''}${to ? to + '행' : ''}` : '항공편');
   }
   return b.title || k.label;
 }
 function bookingWhen(b){
   const k = KIND[b.kind] || KIND.etc; if (!b.start) return '';
+  if (b.kind === 'flight' && b.roundTrip && b.retStart) return `가는 편 ${fmtDT(b.start)} · 오는 편 ${fmtDT(b.retStart)}`;
   if (b.kind === 'flight' && b.end) return `${fmtDT(b.start)} → ${b.end.slice(0,10) === b.start.slice(0,10) ? b.end.slice(11,16) : fmtDT(b.end)}`;
   return `${k.a} ${fmtDT(b.start)}`;
 }
@@ -916,13 +925,19 @@ function bookingEntries(tid, day){
     const sd = b.start ? b.start.slice(0,10) : '', ed = b.end ? b.end.slice(0,10) : '';
     const st = b.start ? b.start.slice(11,16) : '', et = b.end ? b.end.slice(11,16) : '';
     const mk = (suffix, time, status, o = {}) => ({ id:`bk-${b.id}-${suffix}`, bk:true, bkId:b.id, kind:b.kind, time, status,
-      place: o.place || name, sub: o.sub || `${k.label} · ${status}`, code:b.code,
+      place: o.place || name, sub: o.sub || `${k.label} · ${status}`, code: o.code || b.code,
       address: o.address === undefined ? b.address : o.address, memo: o.sub || `${k.label} ${status}`, photos:[] });
     if (b.kind === 'flight'){
       // departure row: "인천 출발 / 후쿠오카행", arrival row: "후쿠오카 도착 / 인천에서"
       const { from, to } = flightRoute(b);
-      if (sd === day) out.push(mk('a', st, k.a, { place: from ? `${from} 출발` : '항공편 출발', sub: to ? `${to}행 항공편` : '항공편', address: b.address || airport(from) }));
-      if (ed === day && b.end) out.push(mk('b', et, k.b, { place: to ? `${to} 도착` : '항공편 도착', sub: from ? `${from}에서 오는 항공편` : '항공편', address: airport(to) }));
+      const goNo = b.flightNo || b.code, backNo = b.retFlightNo || b.code;
+      if (sd === day) out.push(mk('a', st, k.a, { place: from ? `${from} 출발` : '항공편 출발', sub: to ? `${to}행 ${b.roundTrip ? '가는 편' : '항공편'}` : (b.roundTrip ? '가는 편' : '항공편'), address: b.address || airport(from), code: goNo }));
+      if (ed === day && b.end) out.push(mk('b', et, k.b, { place: to ? `${to} 도착` : '항공편 도착', sub: from ? `${from}발 ${b.roundTrip ? '가는 편' : '항공편'}` : (b.roundTrip ? '가는 편' : '항공편'), address: airport(to), code: goNo }));
+      if (b.roundTrip){
+        const rsd = b.retStart ? b.retStart.slice(0,10) : '', red = b.retEnd ? b.retEnd.slice(0,10) : '';
+        if (rsd === day) out.push(mk('c', b.retStart.slice(11,16), k.a, { place: to ? `${to} 출발` : '귀국편 출발', sub: from ? `${from}행 오는 편` : '오는 편', address: airport(to), code: backNo }));
+        if (red === day) out.push(mk('d', b.retEnd.slice(11,16), k.b, { place: from ? `${from} 도착` : '귀국편 도착', sub: to ? `${to}발 오는 편` : '오는 편', address: airport(from), code: backNo }));
+      }
     } else {
       const two = b.kind === 'car' && b.address2 && b.address2 !== b.address;
       if (sd === day) out.push(mk('a', st, k.a, two ? { sub: `${k.label} · ${k.a} · ${b.address}` } : {}));
@@ -1206,7 +1221,12 @@ function renderBooking(){
     const split = pax > 1 ? (b.priceMode === 'each' ? `1인 ${money(b.price, b.currency)} × ${pax}명` : `${pax}명 · 1인 ${money(tot / pax, b.currency)}`) : '';
     h += `<section class="panel row"><div class="minw"><p class="cap">결제 금액${pax > 1 ? ' · 합계' : ''}</p><p class="val">${money(tot, b.currency)}</p>${split ? `<p class="muted small" style="margin:0">${split}</p>` : ''}${k2 != null ? `<p class="muted small" style="margin:0">약 ${money(k2, 'KRW')}</p>` : ''}</div><button type="button" class="btn sm" data-act="tab" data-val="money">비용 보기</button></section>`; }
   if (b.code) h += `<section class="panel row"><div class="minw"><p class="cap">예약번호</p><p class="code-big">${esc(b.code)}</p></div><button type="button" class="btn sm soft" data-act="copy" data-text="${esc(b.code)}">${I.copy}복사</button></section>`;
-  if (b.start || b.end) h += `<div class="grid2">
+  if (b.kind === 'flight' && (b.start || b.end)){
+    const { from, to } = flightRoute(b);
+    const leg = (label, st, en, fno, a, z) => `<section class="panel"><p class="cap">${label}${fno ? ` · ${esc(fno)}` : ''}</p><div class="leg"><div><p class="val">${st ? fmtDT(st) : '—'}</p><p class="muted small" style="margin:0">${esc(a || '출발')}</p></div><span class="muted" aria-hidden="true">→</span><div style="text-align:right"><p class="val">${en ? fmtDT(en) : '—'}</p><p class="muted small" style="margin:0">${esc(z || '도착')}</p></div></div></section>`;
+    h += leg(b.roundTrip ? '가는 편' : '항공편', b.start, b.end, b.flightNo, from, to);
+    if (b.roundTrip) h += leg('오는 편', b.retStart, b.retEnd, b.retFlightNo, to, from);
+  } else if (b.start || b.end) h += `<div class="grid2">
     <div class="panel"><p class="cap">${k.a}</p><p class="val">${b.start ? fmtDT(b.start) : '—'}</p></div>
     <div class="panel"><p class="cap">${k.b}</p><p class="val">${b.end ? fmtDT(b.end) : '—'}</p></div></div>`;
   const addrPanel = (label, a) => `<section class="panel row"><div class="minw"><p class="cap">${label}</p><p style="margin:2px 0 0;font-size:15px;overflow-wrap:anywhere;user-select:text">${esc(a)}</p></div>
@@ -1366,7 +1386,7 @@ function deleteTripData(tid){
 function openBookingSheet(id){
   const b = id ? S.bookings.find(x => x.id === id) : null; if (id && !b) return;
   const t = getTrip(b ? b.tripId : V.tripId);
-  editing = { kind:'booking', id: b ? b.id : null, bk: b ? b.kind : 'flight', pm: b ? (b.priceMode === 'each' ? 'each' : 'total') : 'each' }; startDraft(b ? b.photos : []);
+  editing = { kind:'booking', id: b ? b.id : null, bk: b ? b.kind : 'flight', rt: b && b.roundTrip ? 'round' : 'one', pm: b ? (b.priceMode === 'each' ? 'each' : 'total') : 'each' }; startDraft(b ? b.photos : []);
   const rt = b && b.kind === 'flight' ? flightRoute(b) : { from:'', to:'' };
   openSheet(`${sheetHead(b ? '예약 수정' : '예약 추가', 'save-booking')}<form class="form" data-form="booking" autocomplete="off">
     <details class="paste"><summary>${I.copy}예약 내역 붙여넣어 자동 입력</summary>
@@ -1375,15 +1395,22 @@ function openBookingSheet(id){
       <p class="hint" id="paste-result" role="status"></p>
       <p class="hint">붙여넣은 글은 폰 안에서만 읽고 따로 저장하지 않아요.</p></details>
     <div class="seg" style="--n:4" role="group" aria-label="예약 종류" id="bk-kinds">${bkKindBtns()}</div>
-    <div class="grid2" id="w-route"${editing.bk === 'flight' ? '' : ' hidden'}><div class="field"><label class="flabel" for="f-from">출발지</label><input class="input" id="f-from" value="${esc(rt.from)}" placeholder="예: 인천"></div>
-      <div class="field"><label class="flabel" for="f-to">도착지</label><input class="input" id="f-to" value="${esc(rt.to)}" placeholder="예: 후쿠오카"></div></div>
+    <div id="w-route" style="display:flex;flex-direction:column;gap:14px"${editing.bk === 'flight' ? '' : ' hidden'}>
+      <div class="seg" role="group" aria-label="편도 또는 왕복" id="rt-seg">${rtSeg()}</div>
+      <div class="grid2"><div class="field"><label class="flabel" for="f-from">출발지</label><input class="input" id="f-from" value="${esc(rt.from)}" placeholder="예: 인천"></div>
+        <div class="field"><label class="flabel" for="f-to">도착지</label><input class="input" id="f-to" value="${esc(rt.to)}" placeholder="예: 후쿠오카"></div></div>
+      <div class="grid2"><div class="field"><label class="flabel" for="f-fno" id="l-fno">편명 (선택)</label><input class="input" id="f-fno" value="${esc(b ? b.flightNo || '' : '')}" placeholder="예: 7C1401" autocapitalize="characters" style="font-family:var(--mono)"></div>
+        <div class="field" id="w-rfno"${editing.rt === 'round' ? '' : ' hidden'}><label class="flabel" for="f-rfno">오는 편 편명 (선택)</label><input class="input" id="f-rfno" value="${esc(b ? b.retFlightNo || '' : '')}" placeholder="예: 7C1402" autocapitalize="characters" style="font-family:var(--mono)"></div></div>
+    </div>
     <div class="field" id="w-title"${editing.bk === 'flight' ? ' hidden' : ''}><label class="flabel" for="f-btitle">이름</label><input class="input" id="f-btitle" value="${esc(b && b.kind !== 'flight' ? b.title : '')}" placeholder="${KIND[editing.bk].ph}"></div>
-    <div class="field"><label class="flabel" for="f-code" id="l-code">${editing.bk === 'flight' ? '예약번호 또는 편명' : '예약번호'}</label><input class="input" id="f-code" value="${esc(b ? b.code : '')}" placeholder="예: K7X2QM" autocapitalize="characters" style="font-family:var(--mono)"></div>
+    <div class="field"><label class="flabel" for="f-code" id="l-code">예약번호</label><input class="input" id="f-code" value="${esc(b ? b.code : '')}" placeholder="예: K7X2QM" autocapitalize="characters" style="font-family:var(--mono)"></div>
     <div class="field"><label class="flabel" for="f-bprice">결제 금액 (선택)</label><div class="inline"><input class="input" id="f-bprice" inputmode="decimal" value="${b && b.price ? b.price : ''}" placeholder="적으면 비용에 자동으로 들어가요" style="font-variant-numeric:tabular-nums">
       <label class="sr" for="f-bcur">통화</label><select class="input" id="f-bcur" style="flex:0 0 132px">${curOptions((b && b.currency) || 'KRW')}</select></div></div>
     ${paxField(b && b.pax ? b.pax : (t.people || 1))}
     <div class="grid2"><div class="field"><label class="flabel" for="f-bstart" id="l-a">${KIND[editing.bk].a}</label><input class="input" type="datetime-local" id="f-bstart" value="${esc(b ? b.start : t.start + 'T09:00')}"></div>
       <div class="field"><label class="flabel" for="f-bend" id="l-b">${KIND[editing.bk].b}</label><input class="input" type="datetime-local" id="f-bend" value="${esc(b ? b.end : '')}"></div></div>
+    <div class="grid2" id="w-ret"${editing.bk === 'flight' && editing.rt === 'round' ? '' : ' hidden'}><div class="field"><label class="flabel" for="f-rstart">오는 편 출발</label><input class="input" type="datetime-local" id="f-rstart" value="${esc(b ? b.retStart || '' : '')}"></div>
+      <div class="field"><label class="flabel" for="f-rend">오는 편 도착</label><input class="input" type="datetime-local" id="f-rend" value="${esc(b ? b.retEnd || '' : '')}"></div></div>
     <div class="field"><label class="flabel" for="f-baddr" id="l-addr">${KIND[editing.bk].addr}</label><input class="input" id="f-baddr" value="${esc(b ? b.address : '')}" placeholder="${KIND[editing.bk].addrPh}"></div>
     <div class="field" id="w-addr2"${editing.bk === 'car' ? '' : ' hidden'}><label class="flabel" for="f-baddr2">반납 장소 (픽업과 다를 때만)</label><input class="input" id="f-baddr2" value="${esc(b ? b.address2 || '' : '')}" placeholder="비워두면 픽업 장소에 반납"></div>
     <div class="field"><label class="flabel" for="f-bmemo">이용 방법 메모</label><textarea class="input" id="f-bmemo" rows="4" placeholder="출구 번호, 픽업 장소, 수하물 규정, 체크인 방법…">${esc(b ? b.memo : '')}</textarea></div>
@@ -1391,12 +1418,23 @@ function openBookingSheet(id){
       <p class="hint">출발·체크인·픽업 같은 시간이 그날 일정에 함께 보여요. 예약을 고치거나 지우면 일정에도 그대로 반영돼요.</p></div>
     ${photoField('첨부 (예약 확인서, e티켓 캡처)')}
     <p class="err" id="sheet-err" hidden></p></form>`, cancelDraft);
-  updPmHint();
+  updPmHint(); refreshBookingUI();
+}
+const rtSeg = () => segBtn('rt', 'one', '편도', editing.rt !== 'round') + segBtn('rt', 'round', '왕복', editing.rt === 'round');
+function refreshBookingUI(){
+  const k = KIND[editing.bk]; const fl = editing.bk === 'flight'; const round = fl && editing.rt === 'round';
+  $('#bk-kinds').innerHTML = bkKindBtns(); $('#rt-seg').innerHTML = rtSeg();
+  $('#l-a').textContent = round ? '가는 편 출발' : k.a; $('#l-b').textContent = round ? '가는 편 도착' : k.b;
+  $('#f-btitle').placeholder = k.ph; $('#w-route').hidden = !fl; $('#w-title').hidden = fl;
+  $('#l-fno').textContent = round ? '가는 편 편명 (선택)' : '편명 (선택)'; $('#w-rfno').hidden = !round; $('#w-ret').hidden = !round;
+  $('#l-addr').textContent = k.addr; $('#f-baddr').placeholder = k.addrPh; $('#w-addr2').hidden = editing.bk !== 'car';
 }
 const bkKindBtns = () => Object.entries(KIND).map(([k,v]) => segBtn('bk-kind', k, v.label, editing.bk === k)).join('');
 function applyParsed(r){
   if (r.kind && r.kind !== editing.bk) A['bk-kind']({ dataset:{ val: r.kind } });
   const set = (id, v) => { if (v === undefined || v === null || v === '') return; const el = document.getElementById(id); if (el) el.value = v; };
+  if (r.roundTrip){ editing.rt = 'round'; refreshBookingUI(); }
+  set('f-fno', r.flightNo); set('f-rfno', r.retFlightNo); set('f-rstart', r.retStart); set('f-rend', r.retEnd);
   set('f-from', r.from); set('f-to', r.to); set('f-btitle', r.title); set('f-code', r.code); set('f-bstart', r.start); set('f-bend', r.end);
   set('f-baddr', r.address); set('f-baddr2', r.address2); if (r.price) set('f-bprice', String(r.price)); set('f-bcur', r.currency);
   if (r.price){ editing.pm = 'total'; $('#pm-seg').innerHTML = pmSeg(); }
@@ -1406,15 +1444,16 @@ function applyParsed(r){
 function saveBooking(){
   const isFlight = editing.bk === 'flight';
   const from = isFlight ? val('f-from') : '', to = isFlight ? val('f-to') : '', code = val('f-code');
-  const title = isFlight ? (from && to ? `${from} → ${to}` : (from || to)) : val('f-btitle');
+  const roundTrip = isFlight && editing.rt === 'round';
+  const title = isFlight ? (from && to ? (roundTrip ? `${from} ⇄ ${to} 왕복` : `${from} → ${to}`) : (from || to)) : val('f-btitle');
   if (!title && !code) return showErr(isFlight ? '출발지·도착지나 예약번호 중 하나는 적어 주세요.' : '이름이나 예약번호 중 하나는 적어 주세요.');
   const showInPlan = !!($('#f-bshow') && $('#f-bshow').checked);
   const pr = parseFloat(val('f-bprice').replace(/[,\s원엔₩¥$]/g, '')); const price = pr > 0 ? pr : null; const currency = val('f-bcur') || 'KRW';
-  const data = { kind: editing.bk, title, from, to, code, start: val('f-bstart'), end: val('f-bend'), address: val('f-baddr'), address2: editing.bk === 'car' ? val('f-baddr2') : '', memo: val('f-bmemo'), showInPlan, price, currency, priceMode: editing.pm === 'each' ? 'each' : 'total', pax: Math.min(50, Math.max(1, parseInt(val('f-pax'), 10) || 1)), photos: commitDraft() };
+  const data = { kind: editing.bk, title, from, to, roundTrip, flightNo: isFlight ? val('f-fno').toUpperCase() : '', retFlightNo: roundTrip ? val('f-rfno').toUpperCase() : '', retStart: roundTrip ? val('f-rstart') : '', retEnd: roundTrip ? val('f-rend') : '', code, start: val('f-bstart'), end: val('f-bend'), address: val('f-baddr'), address2: editing.bk === 'car' ? val('f-baddr2') : '', memo: val('f-bmemo'), showInPlan, price, currency, priceMode: editing.pm === 'each' ? 'each' : 'total', pax: Math.min(50, Math.max(1, parseInt(val('f-pax'), 10) || 1)), photos: commitDraft() };
   if (editing.id) Object.assign(S.bookings.find(b => b.id === editing.id), data);
   else S.bookings.push(Object.assign({ id:uid(), tripId:V.tripId }, data));
   const t = getTrip(V.tripId); const days = t ? tripDays(t) : [];
-  const inTrip = [data.start, data.end].some(x => x && days.includes(x.slice(0,10)));
+  const inTrip = [data.start, data.end, data.retStart, data.retEnd].some(x => x && days.includes(x.slice(0,10)));
   save(); closeSheet(false); render();
   toast(showInPlan && (data.start || data.end) ? (inTrip ? '저장했어요. 일정에도 표시돼요' : '저장했어요. 날짜가 여행 기간 밖이라 일정에는 안 보여요') : '저장했어요', 3200);
 }
@@ -1707,13 +1746,14 @@ const A = {
     const raw = $('#f-paste').value; const out = $('#paste-result');
     if (!raw.trim()){ out.textContent = '먼저 예약 내역을 붙여넣어 주세요.'; return; }
     const r = parseBookingText(raw, getTrip(V.tripId)); applyParsed(r);
-    out.textContent = r.found.length ? `채운 내용: ${r.found.join(' · ')}. 틀린 곳은 바로 고쳐 주세요.${r.roundTrip ? ' 왕복 예약이면 오는 편은 예약을 하나 더 추가해 주세요.' : ''}` : '읽을 수 있는 내용을 찾지 못했어요. 직접 입력해 주세요.';
+    out.textContent = r.found.length ? `채운 내용: ${r.found.join(' · ')}. 틀린 곳은 바로 고쳐 주세요.${r.roundTrip && !r.retStart ? ' 오는 편 날짜는 직접 넣어 주세요.' : ''}` : '읽을 수 있는 내용을 찾지 못했어요. 직접 입력해 주세요.';
   },
   'open-booking': el => go({ name:'booking', id: el.dataset.id, tripId: V.tripId }),
   'add-booking': () => openBookingSheet(null),
   'edit-booking': el => openBookingSheet(el.dataset.id),
   'save-booking': () => saveBooking(),
-  'bk-kind': el => { editing.bk = el.dataset.val; const k = KIND[editing.bk]; $('#bk-kinds').innerHTML = bkKindBtns(); $('#l-a').textContent = k.a; $('#l-b').textContent = k.b; $('#f-btitle').placeholder = k.ph; const fl = editing.bk === 'flight'; $('#w-route').hidden = !fl; $('#w-title').hidden = fl; $('#l-code').textContent = fl ? '예약번호 또는 편명' : '예약번호'; $('#l-addr').textContent = k.addr; $('#f-baddr').placeholder = k.addrPh; $('#w-addr2').hidden = editing.bk !== 'car'; },
+  'bk-kind': el => { editing.bk = el.dataset.val; refreshBookingUI(); },
+  'rt': el => { editing.rt = el.dataset.val; refreshBookingUI(); },
   'del-booking': el => { const b = S.bookings.find(x => x.id === el.dataset.id); confirmSheet({ title:'이 예약 정보를 삭제할까요?', body:`${b.title || KIND[b.kind].label}${b.photos.length ? `과 첨부 ${b.photos.length}개가` : '이'} 지워져요.`, ok:'삭제', danger:true }, () => { const idx = S.bookings.indexOf(b); S.bookings.splice(idx, 1); save(); back(); undoToast('예약 정보를 지웠어요', () => { S.bookings.splice(Math.min(idx, S.bookings.length), 0, b); save(); render(); }, () => photoDel(b.photos)); }); },
   'copy': el => copyText(el.dataset.text),
   'toggle-check': el => { const c = S.checks.find(x => x.id === el.dataset.id); c.done = !c.done; save(); render(); },
