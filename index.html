@@ -356,6 +356,7 @@ img[data-photo]:not([src]){visibility:hidden}
 document.documentElement.lang = 'ko';
 
 /* ---------- helpers ---------- */
+const APP_VERSION = '2026.11.02-6';
 const EMBED = (()=>{ try { return window.self !== window.top; } catch(e){ return true; } })();
 const DOW = ['일','월','화','수','목','금','토'];
 const $ = (s, r=document) => r.querySelector(s);
@@ -544,7 +545,12 @@ const dayItems = (tid, day) => S.items.filter(i => i.tripId === tid && i.date ==
 const airport = x => x ? (/공항|airport/i.test(x) ? x : `${x} 공항`) : '';
 function flightRoute(b){
   let from = (b.from || '').trim(), to = (b.to || '').trim();
-  if (!from && !to){ const parts = String(b.title || '').split(/\s*(?:→|->|>|~)\s*/).filter(Boolean); if (parts.length > 1){ from = parts[0]; to = parts[parts.length - 1]; } }
+  if (!from && !to){
+    const t = String(b.title || '').trim();
+    let parts = t.split(/\s*(?:→|->|>|~|-)\s*/).filter(Boolean);
+    if (parts.length < 2) parts = t.split(/\s+/).filter(Boolean).length === 2 ? t.split(/\s+/) : [];
+    if (parts.length > 1){ from = parts[0]; to = parts[parts.length - 1]; }
+  }
   return { from, to };
 }
 function bookingName(b){
@@ -1094,6 +1100,7 @@ function openSettings(){
     <input type="file" id="restore-input" accept=".json,application/json" hidden>
     <p class="flabel" style="margin:8px 0 0">홈 화면에 추가하기</p>
     <ol class="guide"><li>아이폰: Safari 아래쪽 공유 버튼 → <b>홈 화면에 추가</b></li><li>안드로이드: Chrome 오른쪽 위 메뉴 → <b>홈 화면에 추가</b></li></ol>
+    <p class="hint" style="text-align:center;margin-top:6px">트립노트 버전 ${APP_VERSION}</p>
   </div>`);
 }
 
@@ -1379,7 +1386,13 @@ try { if (window.matchMedia) window.matchMedia('(prefers-color-scheme: dark)').a
   if (!st) flush();
   if (!EMBED){
     try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch(e){}
-    if ('serviceWorker' in navigator && location.protocol === 'https:'){ navigator.serviceWorker.register('sw.js').catch(() => {}); }
+    if ('serviceWorker' in navigator && location.protocol === 'https:'){
+      const hadController = !!navigator.serviceWorker.controller; let reloaded = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => { if (!hadController || reloaded) return; reloaded = true; flush().then(() => location.reload()); });
+      navigator.serviceWorker.register('sw.js', { updateViaCache:'none' }).then(reg => {
+        document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') reg.update().catch(() => {}); });
+      }).catch(() => {});
+    }
   }
 })();
 window.__tripnote = { parseQuick };
