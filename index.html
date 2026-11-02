@@ -548,10 +548,13 @@ function bookingEntries(tid, day){
     const k = KIND[b.kind] || KIND.etc; const name = b.title || k.label;
     const sd = b.start ? b.start.slice(0,10) : '', ed = b.end ? b.end.slice(0,10) : '';
     const st = b.start ? b.start.slice(11,16) : '', et = b.end ? b.end.slice(11,16) : '';
-    const mk = (suffix, time, status) => ({ id:`bk-${b.id}-${suffix}`, bk:true, bkId:b.id, kind:b.kind, time, place:name, status, code:b.code, address:b.address, memo:`${k.label} ${status}`, photos:[] });
+    const mk = (suffix, time, status, address) => ({ id:`bk-${b.id}-${suffix}`, bk:true, bkId:b.id, kind:b.kind, time, place:name, status, code:b.code, address: address === undefined ? b.address : address, memo:`${k.label} ${status}`, photos:[] });
     if (b.kind === 'flight'){
-      if (sd === day) out.push(mk('a', st, `${k.a}${et && ed === sd ? ` · ${et} ${k.b}` : ''}`));
-      else if (ed === day) out.push(mk('b', et, k.b));
+      // "인천 → 간사이" : departure row maps to the booking address (or 인천 공항), arrival row to 간사이 공항
+      const parts = String(b.title || '').split(/\s*(?:→|->|>|~)\s*/).filter(Boolean);
+      const from = parts.length > 1 ? parts[0] : '', to = parts.length > 1 ? parts[parts.length - 1] : '';
+      if (sd === day) out.push(mk('a', st, k.a, b.address || (from ? `${from} 공항` : '')));
+      if (ed === day && b.end) out.push(mk('b', et, k.b, to ? `${to} 공항` : ''));
     } else {
       if (sd === day) out.push(mk('a', st, k.a));
       if (ed === day && !(b.kind === 'etc' && ed === sd && !et)) out.push(mk('b', et, k.b));
