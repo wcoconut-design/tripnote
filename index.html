@@ -201,6 +201,16 @@ select.input{padding-right:8px}
 .thumb{width:64px;height:64px;border-radius:10px;border:0;padding:0;overflow:hidden;background:var(--p2);position:relative}
 .thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 img[data-photo]:not([src]){visibility:hidden}
+.bk-ev{flex:1;min-width:0;display:flex;align-items:center;gap:4px;background:var(--surface);border:1.5px dashed var(--line);border-radius:16px;padding:4px 6px 4px 4px}
+.bk-ev-main{flex:1;min-width:0;display:flex;align-items:center;gap:10px;border:0;background:transparent;color:var(--ink);text-align:left;padding:8px 6px;border-radius:12px}
+.bk-ev-main h3{margin:0;font-size:16px;font-weight:600;overflow-wrap:anywhere}
+.bk-ev .kind-ic{width:36px;height:36px;border-radius:10px}
+.bk-ev .kind-ic svg{width:18px;height:18px}
+.bigcard .kind-big{flex:none;height:150px;border-radius:16px;background:var(--soft);color:var(--accent);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-weight:700}
+.bigcard .kind-big.stay{background:var(--tag);color:var(--tag-ink)}
+.bigcard .kind-big svg{width:40px;height:40px}
+.toggle{display:flex;align-items:center;gap:12px;min-height:48px;padding:0 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface);font-size:15px;cursor:pointer}
+.toggle input{width:22px;height:22px;accent-color:var(--accent);flex-shrink:0;margin:0}
 .swipe-hint{margin:10px 0 0;font-size:12px;color:var(--muted);text-align:center}
 
 .diary{display:flex;flex-direction:column;gap:14px;margin-top:16px}
@@ -504,16 +514,13 @@ function sampleState(){
     settings:{ theme:null, homeView:'list' }, lastBackup:null,
     trips:[{ id:tid, title:'오사카 3박 4일', start, end, view:'timeline', sample:true }],
     items:[
-      it(0,'09:05','인천공항 출발','탑승구는 출발 2시간 전에 확인'),
       it(0,'14:30','호텔 짐 맡기기','체크인 전에도 짐 보관 가능','난바역 오사카'),
       it(0,'19:00','도톤보리','글리코 간판 앞 야경','도톤보리 오사카'),
       it(1,'09:30','오사카성 공원','천수각 입장권은 현장 구매','오사카성 공원'),
       it(1,'12:00','쿠로몬 시장','참치 · 가리비 꼬치\n현금 챙기기','쿠로몬 시장 오사카'),
       it(1,'15:00','신사이바시 쇼핑','드럭스토어 목록 확인','신사이바시 오사카'),
-      it(2,'10:00','렌터카 픽업','국제운전면허증 꼭 챙기기','간사이국제공항'),
       it(2,'13:00','나라 공원','사슴 센베는 공원 안에서 구입','나라 공원'),
-      it(3,'11:00','호텔 체크아웃','', '난바역 오사카'),
-      it(3,'18:40','간사이공항 출발','', '간사이국제공항'),
+      it(3,'12:00','난바 점심','공항 가기 전 마지막 라멘','난바 오사카'),
     ],
     notes:{},
     checks:[
@@ -522,9 +529,9 @@ function sampleState(){
       ck('의류','얇은 패딩',false), ck('의류','편한 운동화',true),
     ],
     bookings:[
-      { id:uid(), tripId:tid, kind:'flight', title:'인천 → 간사이', code:'K7X2QM', start:`${d(0)}T09:05`, end:`${d(0)}T10:55`, address:'인천국제공항 제1여객터미널', memo:'위탁 수하물 15kg 포함\n온라인 체크인은 출발 24시간 전부터', photos:[] },
+      { id:uid(), tripId:tid, kind:'flight', title:'인천 → 간사이', code:'K7X2QM', start:`${d(0)}T09:05`, end:`${d(0)}T10:55`, address:'인천국제공항 제1여객터미널', memo:'위탁 수하물 15kg 포함\n온라인 체크인은 출발 24시간 전부터\n탑승구는 출발 2시간 전에 확인', photos:[] },
       { id:uid(), tripId:tid, kind:'stay', title:'난바역 근처 호텔', code:'HTL-48213', start:`${d(0)}T15:00`, end:`${d(3)}T11:00`, address:'난바역 오사카', memo:'난바역 출구에서 걸어서 5분\n프런트에서 여권 보여주기\n조식 7:00–10:00, 2층', photos:[] },
-      { id:uid(), tripId:tid, kind:'car', title:'간사이공항 픽업', code:'RC-90517', start:`${d(2)}T10:00`, end:`${d(2)}T18:00`, address:'간사이국제공항', memo:'1층 도착 로비 렌터카 카운터\n반납 전 기름 가득 채우기', photos:[] },
+      { id:uid(), tripId:tid, kind:'car', title:'간사이공항 픽업', code:'RC-90517', start:`${d(2)}T10:00`, end:`${d(2)}T18:00`, address:'간사이국제공항', memo:'1층 도착 로비 렌터카 카운터\n국제운전면허증 꼭 챙기기\n반납 전 기름 가득 채우기', photos:[] },
       { id:uid(), tripId:tid, kind:'flight', title:'간사이 → 인천', code:'K7X2QM', start:`${d(3)}T18:40`, end:`${d(3)}T20:35`, address:'간사이국제공항', memo:'', photos:[] },
     ],
   };
@@ -534,6 +541,25 @@ function sampleState(){
 const getTrip = id => S.trips.find(t => t.id === id);
 const byTime = (a, b) => (a.time || '99:99').localeCompare(b.time || '99:99');
 const dayItems = (tid, day) => S.items.filter(i => i.tripId === tid && i.date === day).sort(byTime);
+/* bookings shown in the plan: computed from the booking itself, so editing or deleting the booking updates the plan */
+function bookingEntries(tid, day){
+  const out = [];
+  S.bookings.filter(b => b.tripId === tid && b.showInPlan !== false && (b.start || b.end)).forEach(b => {
+    const k = KIND[b.kind] || KIND.etc; const name = b.title || k.label;
+    const sd = b.start ? b.start.slice(0,10) : '', ed = b.end ? b.end.slice(0,10) : '';
+    const st = b.start ? b.start.slice(11,16) : '', et = b.end ? b.end.slice(11,16) : '';
+    const mk = (suffix, time, status) => ({ id:`bk-${b.id}-${suffix}`, bk:true, bkId:b.id, kind:b.kind, time, place:name, status, code:b.code, address:b.address, memo:`${k.label} ${status}`, photos:[] });
+    if (b.kind === 'flight'){
+      if (sd === day) out.push(mk('a', st, `${k.a}${et && ed === sd ? ` · ${et} ${k.b}` : ''}`));
+      else if (ed === day) out.push(mk('b', et, k.b));
+    } else {
+      if (sd === day) out.push(mk('a', st, k.a));
+      if (ed === day && !(b.kind === 'etc' && ed === sd && !et)) out.push(mk('b', et, k.b));
+    }
+  });
+  return out;
+}
+const dayEntries = (tid, day) => [...dayItems(tid, day), ...bookingEntries(tid, day)].sort(byTime);
 function tripStats(t){
   const its = S.items.filter(i => i.tripId === t.id).sort((a,b) => (a.date + (a.time||'99')).localeCompare(b.date + (b.time||'99')));
   const photos = its.flatMap(i => i.photos); const ch = S.checks.filter(c => c.tripId === t.id);
@@ -694,14 +720,21 @@ function renderPlan(t, days){
     <form class="quick" data-form="quick" autocomplete="off"><label class="sr" for="quick">빠른 입력</label>
       <input class="input" id="quick" enterkeyhint="done" placeholder="빠른 입력 · 예: 11시 도톤보리 라멘">
       <button class="btn primary" type="submit" aria-label="빠른 입력으로 추가">${I.plus}</button></form>`;
-  const its = dayItems(t.id, V.day); const view = t.view || 'timeline';
+  const its = dayEntries(t.id, V.day); const view = t.view || 'timeline';
   if (view === 'diary') return h + renderDiary(t, its, idx, days.length);
   if (view === 'cards') return h + renderCards(t, its);
   if (!its.length) return h + emptyDay();
-  return h + `<div class="timeline">${its.map(itemRow).join('')}</div><p class="swipe-hint">일정을 누르면 수정, 왼쪽으로 밀면 삭제할 수 있어요</p>`;
+  return h + `<div class="timeline">${its.map(e => e.bk ? bookingRow(e) : itemRow(e)).join('')}</div><p class="swipe-hint">일정을 누르면 수정, 왼쪽으로 밀면 삭제할 수 있어요</p>`;
 }
 const emptyDay = () => `<div class="section"><div class="empty"><h3>이 날의 일정이 없어요</h3><p>위의 빠른 입력에 "10시 카페"처럼 적거나, + 버튼으로 자세히 추가하세요.</p></div></div>`;
 const mapBtn = (o, cls='mapbtn') => mapQ(o) ? `<a class="${cls}" href="${mapUrl(mapQ(o))}" target="_blank" rel="noopener" aria-label="${esc(o.place || o.title || '장소')} 구글맵에서 열기">${I.pin}</a>` : '';
+function bookingRow(e){
+  const k = KIND[e.kind] || KIND.etc;
+  return `<article class="tl-row"><p class="tl-time">${e.time || '—'}</p>
+    <div class="bk-ev"><button type="button" class="bk-ev-main" data-act="open-booking" data-id="${e.bkId}">
+      <span class="kind-ic ${e.kind}">${I[k.icon]}</span>
+      <span class="minw"><h3>${esc(e.place)}</h3><p class="memo">${k.label} · ${esc(e.status)}${e.code ? ` · ${esc(e.code)}` : ''}</p></span></button>${mapBtn(e)}</div></article>`;
+}
 function itemRow(it){
   const ph = it.photos.length ? `<div class="thumbs">${it.photos.slice(0,4).map(p => `<button type="button" class="thumb" data-act="view-photo" data-id="${esc(p)}" aria-label="사진 크게 보기">${photoImg(p)}</button>`).join('')}</div>` : '';
   return `<article class="tl-row"><p class="tl-time">${it.time || '—'}</p>
@@ -726,14 +759,21 @@ function renderDiary(t, its, idx, total){
     ${col}
     <div class="field"><label class="cap" for="note">오늘의 한 줄</label>
       <textarea class="note" id="note" data-note="${esc(key)}" placeholder="오늘 가장 좋았던 순간을 한 줄로 남겨 보세요">${esc(S.notes[key] || '')}</textarea></div>
-    <div><p class="cap">오늘의 길</p>${its.length ? `<ol class="stops">${its.map((it,i) => `<li class="stop"><span class="num">${i+1}</span><span class="t">${it.time || '—'}</span><button type="button" class="name" data-act="edit-item" data-id="${it.id}">${esc(it.place || '이름 없는 일정')}</button>${mapBtn(it,'mapbtn')}</li>`).join('')}</ol>` : `<p class="muted small">아직 일정이 없어요.</p>`}</div>
+    <div><p class="cap">오늘의 길</p>${its.length ? `<ol class="stops">${its.map((it,i) => `<li class="stop"><span class="num">${i+1}</span><span class="t">${it.time || '—'}</span><button type="button" class="name" data-act="${it.bk ? 'open-booking' : 'edit-item'}" data-id="${it.bk ? it.bkId : it.id}">${esc(it.place || '이름 없는 일정')}${it.bk ? ` <small class="muted" style="font-weight:500">· ${esc(it.status)}</small>` : ''}</button>${mapBtn(it,'mapbtn')}</li>`).join('')}</ol>` : `<p class="muted small">아직 일정이 없어요.</p>`}</div>
   </section>`;
+}
+function bookingCard(e){
+  const k = KIND[e.kind] || KIND.etc;
+  return `<article class="bigcard"><div class="kind-big ${e.kind}">${I[k.icon]}<span>${k.label} · ${esc(e.status)}</span></div>
+    <div><p class="cap">${e.time || '시간 미정'}</p><h3>${esc(e.place)}</h3>${e.code ? `<p class="memo">예약번호 <span class="code">${esc(e.code)}</span></p>` : ''}</div>
+    <div class="acts">${mapQ(e) ? `<a class="btn primary" href="${mapUrl(mapQ(e))}" target="_blank" rel="noopener">${I.pin}길찾기</a>` : `<span class="btn primary" style="opacity:.5">주소 없음</span>`}
+      <button type="button" class="btn" data-act="open-booking" data-id="${e.bkId}" aria-label="예약 정보 보기" style="width:auto;padding:0 14px">예약 보기</button></div></article>`;
 }
 function renderCards(t, its){
   if (!its.length) return emptyDay();
   const r = routeUrl(its);
   return `${r ? `<a class="btn block routebtn" href="${r}" target="_blank" rel="noopener">${I.pin}구글맵에서 이 날 동선 보기</a>` : ''}
-    <div class="cardscroll">${its.map(it => `<article class="bigcard">
+    <div class="cardscroll">${its.map(it => it.bk ? bookingCard(it) : `<article class="bigcard">
       <button type="button" class="cl" ${it.photos[0] ? `data-act="view-photo" data-id="${it.photos[0]}" aria-label="사진 크게 보기"` : 'data-act="edit-item" data-id="'+it.id+'" aria-label="사진 추가"'}>${it.photos[0] ? photoImg(it.photos[0]) : ''}</button>
       <div><p class="cap">${it.time || '시간 미정'}</p><h3>${esc(it.place || '이름 없는 일정')}</h3>${it.memo ? `<p class="memo">${esc(it.memo)}</p>` : ''}</div>
       <div class="acts">${mapQ(it) ? `<a class="btn primary" href="${mapUrl(mapQ(it))}" target="_blank" rel="noopener">${I.pin}길찾기</a>` : `<span class="btn primary" style="opacity:.5">주소 없음</span>`}
@@ -954,6 +994,8 @@ function openBookingSheet(id){
       <div class="field"><label class="flabel" for="f-bend" id="l-b">${KIND[editing.bk].b}</label><input class="input" type="datetime-local" id="f-bend" value="${esc(b ? b.end : '')}"></div></div>
     <div class="field"><label class="flabel" for="f-baddr">주소</label><input class="input" id="f-baddr" value="${esc(b ? b.address : '')}" placeholder="공항, 숙소, 픽업 장소 주소"></div>
     <div class="field"><label class="flabel" for="f-bmemo">이용 방법 메모</label><textarea class="input" id="f-bmemo" rows="4" placeholder="출구 번호, 픽업 장소, 수하물 규정, 체크인 방법…">${esc(b ? b.memo : '')}</textarea></div>
+    <div class="field"><label class="toggle" for="f-bshow"><input type="checkbox" id="f-bshow"${b && b.showInPlan === false ? '' : ' checked'}><span>일정에 자동으로 표시</span></label>
+      <p class="hint">출발·체크인·픽업 같은 시간이 그날 일정에 함께 보여요. 예약을 고치거나 지우면 일정에도 그대로 반영돼요.</p></div>
     ${photoField('첨부 (예약 확인서, e티켓 캡처)')}
     <p class="err" id="sheet-err" hidden></p></form>`, cancelDraft);
 }
@@ -961,10 +1003,14 @@ const bkKindBtns = () => Object.entries(KIND).map(([k,v]) => segBtn('bk-kind', k
 function saveBooking(){
   const title = val('f-btitle'), code = val('f-code');
   if (!title && !code) return showErr('이름이나 예약번호 중 하나는 적어 주세요.');
-  const data = { kind: editing.bk, title, code, start: val('f-bstart'), end: val('f-bend'), address: val('f-baddr'), memo: val('f-bmemo'), photos: commitDraft() };
+  const showInPlan = !!($('#f-bshow') && $('#f-bshow').checked);
+  const data = { kind: editing.bk, title, code, start: val('f-bstart'), end: val('f-bend'), address: val('f-baddr'), memo: val('f-bmemo'), showInPlan, photos: commitDraft() };
   if (editing.id) Object.assign(S.bookings.find(b => b.id === editing.id), data);
   else S.bookings.push(Object.assign({ id:uid(), tripId:V.tripId }, data));
-  save(); closeSheet(false); render(); toast('저장했어요');
+  const t = getTrip(V.tripId); const days = t ? tripDays(t) : [];
+  const inTrip = [data.start, data.end].some(x => x && days.includes(x.slice(0,10)));
+  save(); closeSheet(false); render();
+  toast(showInPlan && (data.start || data.end) ? (inTrip ? '저장했어요. 일정에도 표시돼요' : '저장했어요. 날짜가 여행 기간 밖이라 일정에는 안 보여요') : '저장했어요', 3200);
 }
 
 /* checklist sheets */
@@ -1059,7 +1105,7 @@ async function makeCard(t, day, style){
   const cs = getComputedStyle(document.documentElement); const tk = n => cs.getPropertyValue(n).trim();
   const bg = tk('--surface'), ink = tk('--ink'), muted = tk('--muted'), accent = tk('--accent'), soft = tk('--soft'), onA = tk('--on-accent'), base = tk('--bg'), line = tk('--line');
   const F = (w, s, fam) => `${w} ${s}px ${fam || '"IBM Plex Sans KR", "Apple SD Gothic Neo", sans-serif'}`;
-  const days = tripDays(t); const idx = days.indexOf(day) + 1; const its = dayItems(t.id, day); const photos = its.flatMap(i => i.photos);
+  const days = tripDays(t); const idx = days.indexOf(day) + 1; const its = dayEntries(t.id, day); const photos = its.flatMap(i => i.photos);
   const badge = `DAY ${idx} · ${mdDot(day)} ${dowOf(day)}`;
   g.fillStyle = bg; g.fillRect(0, 0, W, H); g.textBaseline = 'alphabetic';
   let y;
@@ -1097,7 +1143,7 @@ async function makeCard(t, day, style){
   return await new Promise((res, rej) => c.toBlob(b => b ? res(b) : rej(new Error('blob')), 'image/png'));
 }
 function dayText(t, day){
-  const idx = tripDays(t).indexOf(day) + 1; const its = dayItems(t.id, day);
+  const idx = tripDays(t).indexOf(day) + 1; const its = dayEntries(t.id, day);
   const lines = [`${t.title} · Day ${idx} (${md(day)})`, ...its.map(i => `${i.time || '--:--'}  ${i.place || '일정'}${i.memo ? ` — ${i.memo.replace(/\n/g, ' / ')}` : ''}`)];
   if (!its.length) lines.push('자유 일정');
   const note = S.notes[noteKey(t.id, day)]; if (note) lines.push('', `오늘의 한 줄: ${note}`);
@@ -1105,7 +1151,7 @@ function dayText(t, day){
 }
 function tripText(t){
   const out = [`${t.title}`, `${rangeLabel(t)}`];
-  tripDays(t).forEach((d, i) => { const its = dayItems(t.id, d); out.push('', `[Day ${i+1} · ${md(d)}]`); if (!its.length) out.push('자유 일정'); its.forEach(it => out.push(`${it.time || '--:--'}  ${it.place || '일정'}${it.memo ? ` — ${it.memo.replace(/\n/g, ' / ')}` : ''}`)); const note = S.notes[noteKey(t.id, d)]; if (note) out.push(`한 줄: ${note}`); });
+  tripDays(t).forEach((d, i) => { const its = dayEntries(t.id, d); out.push('', `[Day ${i+1} · ${md(d)}]`); if (!its.length) out.push('자유 일정'); its.forEach(it => out.push(`${it.time || '--:--'}  ${it.place || '일정'}${it.memo ? ` — ${it.memo.replace(/\n/g, ' / ')}` : ''}`)); const note = S.notes[noteKey(t.id, d)]; if (note) out.push(`한 줄: ${note}`); });
   return out.join('\n');
 }
 const shareTextNow = () => { const t = getTrip(V.tripId); return SH.scope === 'trip' ? tripText(t) : dayText(t, V.day); };
