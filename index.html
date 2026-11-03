@@ -127,6 +127,22 @@ svg{flex-shrink:0}
 .section-title{margin:0 0 0 4px;font-size:14px;font-weight:600;color:var(--muted)}
 .banner{margin-top:14px;background:var(--soft);border-radius:16px;padding:12px 12px 12px 16px;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;font-size:14px}
 .banner p{margin:0;flex:1;min-width:180px}
+.banner.warnb{background:var(--tag);color:var(--tag-ink)}
+#search-q{-webkit-appearance:none;appearance:none}
+.today{margin-top:14px;background:var(--surface);border-radius:20px;padding:14px 14px 14px;display:flex;flex-direction:column;gap:10px;box-shadow:var(--shadow);border:1.5px solid var(--accent)}
+.today-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.today-head .cap{color:var(--accent)}
+.today .wx-mini{font-size:13px}
+.today .wx-mini svg{width:16px;height:16px}
+.next{display:flex;gap:12px;align-items:flex-start}
+.next-time{margin:2px 0 0;font-size:24px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;min-width:68px}
+.next-main{flex:1;min-width:0;border:0;background:transparent;padding:0;text-align:left;color:var(--ink);display:flex;flex-direction:column;gap:2px}
+.next-main b{font-size:19px;overflow-wrap:anywhere}
+.next-main small{font-size:13px;color:var(--muted)}
+.today-empty{margin:0;font-size:14px;color:var(--muted)}
+.today-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;font-size:14px}
+.today-list li{display:flex;gap:12px}
+.today-list span{min-width:68px;color:var(--muted);font-variant-numeric:tabular-nums}
 
 .tripcard{background:var(--surface);border-radius:20px;overflow:hidden;box-shadow:var(--shadow)}
 .tripcard-main{display:block;width:100%;text-align:left;border:0;padding:0;background:transparent;color:var(--ink)}
@@ -135,6 +151,16 @@ svg{flex-shrink:0}
 .ql b{font-size:15px;color:var(--ink);font-variant-numeric:tabular-nums}
 .cover{position:relative;height:132px;background:var(--p1);display:flex;align-items:center;justify-content:center;color:var(--muted)}
 .cover svg{width:34px;height:34px;opacity:.7}
+.gen{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:16px 18px;color:var(--ink);text-align:left}
+.gen b{font-family:var(--serif);font-size:30px;font-weight:700;line-height:1.15;overflow-wrap:anywhere}
+.gen small{font-size:13px;opacity:.75;font-variant-numeric:tabular-nums;margin-top:2px}
+.gen.gen-sq{padding:0;align-items:center;justify-content:center}
+.gen.gen-sq{font-family:var(--serif);font-size:22px;font-weight:700}
+.cover-pick{display:flex;flex-direction:column;gap:8px}
+.cover-prev{position:relative;height:120px;border-radius:14px;overflow:hidden;background:var(--p1)}
+.cover-prev img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cover-btns{display:flex;flex-wrap:wrap;gap:6px}
+.ph-tile[data-act]{border:0;padding:0;cursor:pointer}
 .cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .badge{position:absolute;top:12px;left:12px;background:var(--tag);color:var(--tag-ink);font-size:13px;font-weight:700;padding:4px 10px;border-radius:999px;font-variant-numeric:tabular-nums}
 .badge.now{background:var(--accent);color:var(--on-accent)}
@@ -319,6 +345,15 @@ ol.list{list-style:none;margin:0;padding:4px 0}
 .check-row .mapbtn{margin-right:2px}
 .geo-warn{color:var(--danger);font-weight:600}
 .dist{color:var(--accent);font-weight:600}
+.settle .paylist .v small{font-size:13px}
+.settle .paylist li{align-items:flex-start}
+.moves{display:flex;flex-direction:column;gap:6px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.move{margin:0;display:flex;align-items:center;gap:6px;font-size:15px}
+.move svg{width:16px;height:16px;color:var(--muted)}
+.move .amt{margin-left:auto}
+.member-list{display:flex;flex-direction:column;gap:6px}
+.chipbtn svg{width:14px;height:14px}
+.clip svg{width:13px;height:13px;vertical-align:-1px;color:var(--muted)}
 .warn{margin:10px 0 0;font-size:13px;color:var(--danger);font-weight:600}
 .grp-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin:4px 4px 6px}
 .exp-row{display:flex;align-items:center;gap:12px;width:100%;border:0;background:transparent;padding:10px 14px;text-align:left;color:var(--ink)}
@@ -422,7 +457,7 @@ ol.list{list-style:none;margin:0;padding:4px 0}
 document.documentElement.lang = 'ko';
 
 /* ---------- helpers ---------- */
-const APP_VERSION = '2026.11.03-5';
+const APP_VERSION = '2026.11.03-6';
 const EMBED = (()=>{ try { return window.self !== window.top; } catch(e){ return true; } })();
 const DOW = ['일','월','화','수','목','금','토'];
 const $ = (s, r=document) => r.querySelector(s);
@@ -509,6 +544,7 @@ const I = {
   wx_storm: sv('<path d="M7 14h10a4 4 0 00.5-8 5.5 5.5 0 00-10.4 1.5A3.3 3.3 0 007 14z"/><path d="M12 14l-2 4h3l-2 4"/>'),
   wx_fog: sv('<path d="M7 12h10a4 4 0 00.5-8 5.5 5.5 0 00-10.4 1.5A3.3 3.3 0 007 12z"/><path d="M4 16h16M6 20h12"/>'),
   wx_thermo: sv('<path d="M10 14V5a2 2 0 014 0v9a4 4 0 11-4 0z"/><path d="M12 9v7"/>'),
+  search: sv('<circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/>'),
   up: sv('<path d="M6 15l6-6 6 6"/>'),
   down: sv('<path d="M6 9l6 6 6-6"/>'),
   cal: sv('<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>'),
@@ -612,8 +648,9 @@ const expTotal = e => e.mode === 'each' ? e.amount * (e.pax || 1) : e.amount;
 const toKRW = (amount, cur, rates) => cur === 'KRW' ? amount : (rates && rates[cur] > 0 ? amount * rates[cur] : null);
 function tripExpenses(t){
   const out = [];
-  S.bookings.filter(b => b.tripId === t.id && b.price > 0).forEach(b => out.push({ id:'bk-' + b.id, bk:true, bkId:b.id, kind:b.kind, date:'pre', cat: KIND_CAT[b.kind] || 'etc', title: bookingName(b), amount: b.price, currency: b.currency || 'KRW', pay: normPay(b.pay), mode: b.priceMode || 'total', pax: b.pax || t.people || 1 }));
+  S.bookings.filter(b => b.tripId === t.id && b.price > 0).forEach(b => out.push({ id:'bk-' + b.id, bk:true, bkId:b.id, kind:b.kind, date:'pre', cat: KIND_CAT[b.kind] || 'etc', title: bookingName(b), amount: b.price, currency: b.currency || 'KRW', pay: normPay(b.pay), mode: b.priceMode || 'total', pax: b.pax || t.people || 1, payer: b.payer, share: b.share }));
   S.expenses.filter(e => e.tripId === t.id).forEach(e => out.push(Object.assign({ mode:'total', pax: t.people || 1 }, e, { pay: normPay(e.pay) })));
+  if (groupMode(t)) out.forEach(e => { e.share = effShare(t, e); e.payer = effPayer(t, e); e.pax = e.share.length; });
   return out;
 }
 function expSummary(t, list){
@@ -628,6 +665,32 @@ function expSummary(t, list){
     if (pm === 'cash') cash[e.currency] = (cash[e.currency] || 0) + tot;
   });
   return { krw, share, multi, byCat, unconv, cash, byPay };
+}
+function settle(t, list){
+  const ms = tripMembers(t); const rates = t.rates || {}; const bal = {}, paid = {}, used = {};
+  ms.forEach(m => { bal[m.id] = 0; paid[m.id] = 0; used[m.id] = 0; });
+  list.forEach(e => { const k = toKRW(expTotal(e), e.currency, rates); if (k == null) return;
+    const sh = e.share && e.share.length ? e.share : ms.map(m => m.id); const p = e.payer || (ms[0] && ms[0].id);
+    if (p in paid) paid[p] += k; sh.forEach(id => { if (id in used) used[id] += k / sh.length; }); });
+  ms.forEach(m => { bal[m.id] = paid[m.id] - used[m.id]; });
+  const cred = ms.filter(m => bal[m.id] > 0.5).map(m => ({ id: m.id, v: bal[m.id] })).sort((a, b) => b.v - a.v);
+  const debt = ms.filter(m => bal[m.id] < -0.5).map(m => ({ id: m.id, v: -bal[m.id] })).sort((a, b) => b.v - a.v);
+  const moves = []; let i = 0, j = 0;
+  while (i < debt.length && j < cred.length){ const x = Math.min(debt[i].v, cred[j].v); if (x >= 1) moves.push({ from: debt[i].id, to: cred[j].id, v: x }); debt[i].v -= x; cred[j].v -= x; if (debt[i].v < 0.5) i++; if (cred[j].v < 0.5) j++; }
+  return { paid, used, moves };
+}
+function settleText(t){
+  const st = settle(t, tripExpenses(t)); const r = v => money(Math.round(v / 10) * 10, 'KRW');
+  return [`${t.title} 정산`, ...tripMembers(t).map(m => `${m.name}: 낸 돈 ${r(st.paid[m.id])} · 쓴 몫 ${r(st.used[m.id])}`), '', ...(st.moves.length ? st.moves.map(x => `${memberName(t, x.from)} → ${memberName(t, x.to)} ${r(x.v)}`) : ['보낼 돈 없음'])].join('\n');
+}
+function settleHTML(t, list, sm){
+  if (!groupMode(t)) return `<button type="button" class="btn block" data-act="money-settings" style="justify-content:space-between"><span>같이 간 사람을 넣으면 누가 누구에게 보낼지 계산해 드려요</span>${I.chevR}</button>`;
+  const st = settle(t, list); const r = v => money(Math.round(v / 10) * 10, 'KRW');
+  return `<section class="panel settle"><div class="grp-head" style="margin:0 0 8px"><p class="cap" style="margin:0">정산</p><button type="button" class="btn sm" data-act="copy-settle">${I.copy}복사</button></div>
+    <ul class="paylist">${tripMembers(t).map(m => `<li><span class="n"><b>${esc(m.name)}</b></span><span class="v"><small>낸 돈 ${r(st.paid[m.id])}</small><small>쓴 몫 ${r(st.used[m.id])}</small></span></li>`).join('')}</ul>
+    <div class="moves">${st.moves.length ? st.moves.map(x => `<p class="move"><b>${esc(memberName(t, x.from))}</b>${I.chevR}<b>${esc(memberName(t, x.to))}</b><span class="amt"><b>${r(x.v)}</b></span></p>`).join('') : '<p class="muted small" style="margin:0">보낼 돈이 없어요. 모두 똑같이 냈어요.</p>'}</div>
+    ${Object.keys(sm.unconv).length ? '<p class="warn">환율을 넣지 않은 외화 비용은 정산에서 빠졌어요.</p>' : ''}
+    <p class="hint" style="margin:8px 0 0">10원 단위로 반올림했어요.</p></section>`;
 }
 function defaultExpDate(t){ const td = todayISO(); if (td < t.start) return 'pre'; if (td > t.end) return t.end; return td; }
 
@@ -786,6 +849,7 @@ function renderMoney(t){
     return `<li><span class="pay-ic ${id}">${id === 'cash' ? I.cash : I.card}</span><span class="n">${nm}</span><span class="v">${money(bp.krw, 'KRW')}${foreign.length ? `<small>${foreign.map(([c, a]) => money(a, c)).join(' · ')}</small>` : ''}</span></li>`; }).join('')}</ul>`;
   const rateTxt = foreign.map(c => t.rates && t.rates[c] ? `${rateUnit(c)}${curName(c)} = ${money(t.rates[c] * rateUnit(c), 'KRW')}` : `${c} 환율 미입력`).join(' · ');
   h += `<button type="button" class="btn sm block" style="margin-top:12px;justify-content:space-between" data-act="money-settings"><span>${rateTxt || '환율 설정'}</span><span class="muted small">기본 ${people}명</span></button></section>`;
+  h += settleHTML(t, list, sm);
   h += `<form class="quick" data-form="quick-exp" autocomplete="off" style="margin-top:0"><label class="sr" for="quick-exp">빠른 입력</label>
     <input class="input" id="quick-exp" enterkeyhint="done" placeholder="빠른 입력 · 예: 라멘 1200엔 현금">
     <button class="btn primary" type="submit" aria-label="빠른 입력으로 비용 추가">${I.plus}</button></form>`;
@@ -802,67 +866,173 @@ function renderMoney(t){
       const split = pax > 1 ? (e.mode === 'each' ? `${money(e.amount, e.currency)} × ${pax}명` : `${pax}명 · 1인 ${money(tot / pax, e.currency)}`) : '';
       return `<button type="button" class="exp-row" data-act="${e.bk ? 'open-booking' : 'edit-exp'}" data-id="${e.bk ? e.bkId : e.id}">
         <span class="cat-ic" style="background:${c.color}">${I[c.icon]}</span>
-        <span class="minw"><b>${esc(e.title || c.name)}</b><small>${c.name}${e.bk ? ' · 예약' : ''} · ${payName(e.pay)}</small></span>
+        <span class="minw"><b>${esc(e.title || c.name)}${e.photos && e.photos.length ? ` <span class="clip" aria-label="영수증 있음">${I.camera}</span>` : ''}</b><small>${c.name}${e.bk ? ' · 예약' : ''} · ${payName(e.pay)}${groupMode(t) ? ` · ${esc(memberName(t, e.payer))} 냄` : ''}</small></span>
         <span class="amt"><b>${money(tot, e.currency)}</b>${split ? `<small>${split}</small>` : ''}${e.currency !== 'KRW' && k != null ? `<small>${money(k, 'KRW')}</small>` : ''}</span></button>`; }).join('')}</div></section>`;
   });
   return h + `</div>`;
 }
+const tripMembers = t => (t && Array.isArray(t.members) ? t.members.filter(m => m && m.name) : []);
+const groupMode = t => tripMembers(t).length >= 2;
+function effShare(t, e){ const ms = tripMembers(t); const ids = ms.map(m => m.id); const sh = (e.share || []).filter(x => ids.includes(x)); return sh.length ? sh : ids; }
+const effPayer = (t, e) => { const ms = tripMembers(t); return ms.some(m => m.id === e.payer) ? e.payer : (ms[0] && ms[0].id); };
+const memberName = (t, id) => { const m = tripMembers(t).find(x => x.id === id); return m ? m.name : ''; };
+const payerChips = t => tripMembers(t).map(m => `<button type="button" class="chipbtn${editing.payer === m.id ? ' on' : ''}" data-act="pick-payer" data-val="${m.id}" aria-pressed="${editing.payer === m.id}">${esc(m.name)}</button>`).join('');
+const shareChips = t => tripMembers(t).map(m => { const on = editing.share.includes(m.id); return `<button type="button" class="chipbtn${on ? ' on' : ''}" data-act="pick-share" data-val="${m.id}" aria-pressed="${on}">${on ? I.check : ''}${esc(m.name)}</button>`; }).join('');
 const pmSeg = () => segBtn('pm', 'each', '1인 요금', editing.pm === 'each') + segBtn('pm', 'total', '합계', editing.pm !== 'each');
-const paxField = pax => `<div class="grid2"><div class="field"><span class="flabel">입력한 금액은</span><div class="seg" id="pm-seg">${pmSeg()}</div></div>
+const paxField = (pax, t) => groupMode(t) ? `<div class="field"><span class="flabel">입력한 금액은</span><div class="seg" id="pm-seg">${pmSeg()}</div></div>
+  <div class="field"><span class="flabel">낸 사람</span><div class="chipsel" id="payer-chips">${payerChips(t)}</div></div>
+  <div class="field"><span class="flabel">같이 쓴 사람 <span id="share-n">${editing.share.length}</span>명</span><div class="chipsel" id="share-chips">${shareChips(t)}</div></div>
+  <p class="hint" id="pm-hint" aria-live="polite"></p>` : `<div class="grid2"><div class="field"><span class="flabel">입력한 금액은</span><div class="seg" id="pm-seg">${pmSeg()}</div></div>
   <div class="field"><label class="flabel" for="f-pax">몇 명분</label><div class="inline"><input class="input" id="f-pax" type="number" inputmode="numeric" min="1" max="50" value="${pax}"><span class="unit">명</span></div></div></div>
   <p class="hint" id="pm-hint" aria-live="polite"></p>`;
 function updPmHint(){
   const h = $('#pm-hint'); if (!h || !editing) return;
   const isExp = editing.kind === 'exp'; const amt = parseFloat(val(isExp ? 'f-amt' : 'f-bprice').replace(/[,\s원엔₩¥$]/g, ''));
-  const cur = val(isExp ? 'f-cur' : 'f-bcur') || 'KRW'; const pax = Math.max(1, parseInt(val('f-pax'), 10) || 1);
+  const cur = val(isExp ? 'f-cur' : 'f-bcur') || 'KRW'; const pax = editing.share && $('#share-chips') ? Math.max(1, editing.share.length) : Math.max(1, parseInt(val('f-pax'), 10) || 1);
   if (!(amt > 0)){ h.textContent = pax > 1 ? `${pax}명이 나눠 내는 비용으로 계산해요.` : ''; return; }
   const tot = editing.pm === 'each' ? amt * pax : amt;
   h.textContent = pax > 1 ? `합계 ${money(tot, cur)} · 1인 ${money(tot / pax, cur)}` : `합계 ${money(tot, cur)}`;
+  const sn = $('#share-n'); if (sn) sn.textContent = editing.share.length;
 }
 const catChips = () => CATS.map(c => `<button type="button" class="chipbtn${editing.cat === c.id ? ' on' : ''}" data-act="exp-cat" data-val="${c.id}" aria-pressed="${editing.cat === c.id}"><span class="dot" style="background:${c.color}"></span>${c.name}</button>`).join('');
 const paySeg = () => PAYS.map(([id, nm]) => segBtn('exp-pay', id, nm, normPay(editing.pay) === id)).join('');
+/* ---------- 영수증 읽기 (Tesseract.js, 폰 안에서 처리) ---------- */
+const OCR = { worker:null, langs:'', loading:null };
+function ocrLangs(cur){ return ({ JPY:'jpn+eng', KRW:'kor+eng', CNY:'chi_sim+eng', TWD:'chi_tra+eng', HKD:'chi_tra+eng', THB:'tha+eng', VND:'vie+eng' })[cur] || 'eng'; }
+function loadScript(src){ return new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = () => rej(new Error('script')); document.head.appendChild(s); }); }
+async function ocrWorker(langs, onLog){
+  if (!window.Tesseract){ OCR.loading = OCR.loading || loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js'); await OCR.loading; }
+  if (OCR.worker && OCR.langs === langs) return OCR.worker;
+  if (OCR.worker){ try { await OCR.worker.terminate(); } catch(e){} OCR.worker = null; }
+  OCR.worker = await window.Tesseract.createWorker(langs, 1, { logger: m => onLog && onLog(m) }); OCR.langs = langs;
+  return OCR.worker;
+}
+async function receiptImage(blob){
+  try {
+    const im = await loadImg(blob); const c = document.createElement('canvas'); const s = Math.min(1, 2000 / Math.max(im.naturalWidth, im.naturalHeight));
+    c.width = Math.round(im.naturalWidth * s); c.height = Math.round(im.naturalHeight * s); const g = c.getContext('2d');
+    g.drawImage(im, 0, 0, c.width, c.height);
+    const d = g.getImageData(0, 0, c.width, c.height); const a = d.data;
+    for (let i = 0; i < a.length; i += 4){ let y = 0.299 * a[i] + 0.587 * a[i+1] + 0.114 * a[i+2]; y = Math.max(0, Math.min(255, (y - 128) * 1.5 + 140)); a[i] = a[i+1] = a[i+2] = y; }
+    g.putImageData(d, 0, 0);
+    return await new Promise(r => c.toBlob(b => r(b || blob), 'image/png'));
+  } catch(e){ return blob; }
+}
+function parseReceipt(raw, defCur, t){
+  const text = String(raw || '').replace(/[０-９Ａ-Ｚａ-ｚ：／．，￥＄]/g, c => c === '￥' ? '¥' : c === '＄' ? '$' : String.fromCharCode(c.charCodeAt(0) - 0xFEE0))
+    .replace(/(\d)\s*([,.])\s*(\d{3})(?!\d)/g, '$1$2$3').replace(/[　 ]/g, ' ');
+  const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+  let cur = /[¥円]|JPY/.test(text) ? 'JPY' : /[₩원]|KRW/.test(text) ? 'KRW' : /NT\$|TWD/.test(text) ? 'TWD' : /HK\$|HKD/.test(text) ? 'HKD' : /฿|THB|บาท/.test(text) ? 'THB' : /₫|VND/.test(text) ? 'VND' : /€|EUR/.test(text) ? 'EUR' : /£|GBP/.test(text) ? 'GBP' : /(?:^|\s)\$\s?\d|USD/.test(text) ? (defCur && defCur !== 'KRW' && defCur !== 'JPY' ? defCur : 'USD') : (defCur || 'KRW');
+  const thousandsDot = ['JPY','KRW','VND','TWD'].includes(cur);
+  const amounts = l => { const out = []; for (const m of l.matchAll(/([¥$€£₩฿₫])?\s*(\d{1,3}(?:[,.]\d{3})+|\d+)(?:\.(\d{1,2}))?(?!\d)/g)){
+      let s = m[2]; if (thousandsDot || /,/.test(s)) s = s.replace(/[,.]/g, ''); let v = parseFloat(s + (m[3] && !thousandsDot ? '.' + m[3] : ''));
+      if (!(v > 0) || v > 5e7) continue; if (!m[1] && !/[,.]\d{3}/.test(m[2]) && /^(19|20)\d{2}$/.test(m[2])) continue;
+      out.push({ v, sign: !!m[1], sep: /[,.]\d{3}/.test(m[2]) }); } return out; };
+  const TOTAL = /(合\s*計|総\s*合\s*計|お?会\s*計|ご?請\s*求|お買上|お支払|합\s*계|총\s*액|총\s*합\s*계|결\s*제\s*금\s*액|받을\s*금액|청구\s*금액|판매\s*금액|TOTAL|AMOUNT|BALANCE|GRAND|SUMME|รวม)/i;
+  const SUB = /(小\s*計|소\s*계|SUB\s*-?\s*TOTAL)/i;
+  const EXCL = /(預\s*り|お預|釣|つり|CHANGE|TENDER|CASH\s*PAID|받은\s*금액|받은\s*돈|거스름|잔돈|対象|内\s*税|消費\s*税|税\s*率|TAX|VAT|부가세|과세|면세|ポイント|POINT|포인트|点|数量|件数|個数|QTY)/i;
+  const lineAmt = (i, needSign) => { let a = amounts(lines[i]); if (!a.length && lines[i + 1] && !TOTAL.test(lines[i + 1]) && !EXCL.test(lines[i + 1])) a = amounts(lines[i + 1]); if (needSign) a = a.filter(x => x.sign || x.sep); return a.length ? Math.max(...a.map(x => x.v)) : null; };
+  let amount = null; const tot = [], sub = [];
+  lines.forEach((l, i) => { if (EXCL.test(l)) return; if (SUB.test(l)){ const v = lineAmt(i); if (v) sub.push(v); return; } if (TOTAL.test(l)){ const v = lineAmt(i); if (v) tot.push(v); } });
+  if (tot.length) amount = Math.max(...tot); else if (sub.length) amount = Math.max(...sub);
+  else { const all = lines.filter(l => !EXCL.test(l)).flatMap(l => amounts(l).filter(x => x.sign || x.sep)); if (all.length) amount = Math.max(...all.map(x => x.v)); }
+  let date = null;
+  const dm = text.match(/(20\d{2})\s*[年.\/\-]\s*(\d{1,2})\s*[月.\/\-]\s*(\d{1,2})/) || null;
+  const rm = text.match(/(?:令和|R)\s*(\d{1,2})\s*[年.\/]\s*(\d{1,2})\s*[月.\/]\s*(\d{1,2})/);
+  const km = text.match(/(\d{1,2})\s*월\s*(\d{1,2})\s*일/) || text.match(/(\d{1,2})\s*月\s*(\d{1,2})\s*日/);
+  const ok = (y, m, d) => m >= 1 && m <= 12 && d >= 1 && d <= 31 ? `${y}-${pad(m)}-${pad(d)}` : null;
+  if (dm) date = ok(+dm[1], +dm[2], +dm[3]); else if (rm) date = ok(2018 + +rm[1], +rm[2], +rm[3]);
+  else if (km && t) date = ok(parseISO(t.start).getFullYear(), +km[1], +km[2]);
+  else { const sm = text.match(/(?<!\d)(\d{1,2})\/(\d{1,2})\/(\d{2,4})(?!\d)/); if (sm){
+      const a = +sm[1], b = +sm[2], c = +sm[3]; const yy = v => v < 100 ? 2000 + v : v;
+      const cands = [ok(yy(c), a, b), ok(yy(c), b, a), sm[3].length === 2 ? ok(2000 + a, b, c) : null].filter(Boolean);
+      const near = t ? cands.find(x => Math.abs(diffDays(t.start, x)) <= 45) : null;
+      const asia = ['JPY','KRW','CNY','TWD','HKD'].includes(cur);
+      date = near || (asia && sm[3].length === 2 ? ok(2000 + a, b, c) : cur === 'USD' ? ok(yy(c), a, b) : ok(yy(c), b, a)); } }
+  const SKIP = /(領\s*収|レシート|RECEIPT|영수증|WELCOME|いらっしゃ|ありがと|TEL|電話|〒|登録番号|伝票|レジ|担当|No\.|^\d|\d{2,}-\d)/i;
+  const store = (lines.slice(0, 6).find(l => !SKIP.test(l) && !TOTAL.test(l) && l.length >= 2 && l.length <= 26 && (l.match(/[\p{L}]/gu) || []).length >= 2 && (l.match(/\d/g) || []).length <= 3) || '').replace(/[*＊#]+/g, '').trim();
+  return { amount, currency: cur, date, store };
+}
+async function readReceipt(file){
+  const st = $('#ocr-status'); const say = m => { if (st) st.textContent = m; };
+  if (!draft) return;
+  let blob;
+  try { blob = await resizeImage(file, 1800, 0.85); } catch(e){ return say('이 사진은 열 수 없어요. 다른 사진을 골라 주세요.'); }
+  const id = uid(); await photoPut(id, blob); if (!draft) return photoDel([id]);
+  if (draft.photos.length < 10){ draft.photos.push(id); draft.added.push(id); refreshDraftPhotos(); }
+  const cur = val('f-cur') || 'KRW'; const langs = ocrLangs(cur);
+  say(OCR.langs === langs ? '영수증 읽는 중…' : '글자 인식 준비 중… 처음 한 번은 인식 데이터를 받아서 조금 걸려요.');
+  let text = '';
+  try {
+    const w = await ocrWorker(langs, m => { if (m.status === 'recognizing text') say(`영수증 읽는 중… ${Math.round(m.progress * 100)}%`); else if (/loading|initializ/i.test(m.status)) say(`글자 인식 준비 중… ${Math.round((m.progress || 0) * 100)}%`); });
+    const r = await w.recognize(await receiptImage(blob)); text = r.data.text || '';
+  } catch(e){ return say(navigator.onLine ? '글자 인식을 시작하지 못했어요. 사진은 첨부됐으니 금액을 직접 적어 주세요.' : '처음 한 번은 인터넷이 있어야 글자 인식 데이터를 받을 수 있어요. 사진은 첨부됐어요.'); }
+  if (!$('#ocr-status')) return;
+  const t = getTrip(V.tripId); const r = parseReceipt(text, cur, t); const got = [];
+  if (r.amount){ $('#f-amt').value = r.amount; got.push(money(r.amount, r.currency)); }
+  if (r.currency && $('#f-cur').value !== r.currency && [...$('#f-cur').options].some(o => o.value === r.currency)){ $('#f-cur').value = r.currency; }
+  if (r.date){ const days = tripDays(t); const sel = $('#f-edate'); const v = days.includes(r.date) ? r.date : r.date < t.start ? 'pre' : null; if (v){ sel.value = v; got.push(v === 'pre' ? '여행 전' : md(v)); } }
+  if (r.store){ const ti = $('#f-etitle'); if (!ti.value.trim()) ti.value = r.store; got.push(r.store); const c = guessCat(r.store); if (c){ editing.cat = c; $('#cat-chips').innerHTML = catChips(); } }
+  updPmHint();
+  say(r.amount ? `읽은 내용: ${got.join(' · ')}. 맞는지 확인하고 저장하세요.` : `금액을 찾지 못했어요. 직접 적어 주세요.${got.length ? ` (찾은 것: ${got.join(' · ')})` : ''} 사진은 첨부됐어요.`);
+}
 function openExpSheet(id){
   const t = getTrip(V.tripId); const e = id ? S.expenses.find(x => x.id === id) : null; if (id && !e) return;
-  editing = { kind:'exp', id: e ? e.id : null, cat: e ? e.cat : (V.lastCat || 'food'), pay: normPay(e ? e.pay : (V.lastPay || t.lastPay)), pm: e && e.mode === 'each' ? 'each' : 'total' };
+  editing = { kind:'exp', id: e ? e.id : null, cat: e ? e.cat : (V.lastCat || 'food'), pay: normPay(e ? e.pay : (V.lastPay || t.lastPay)), pm: e && e.mode === 'each' ? 'each' : 'total',
+    payer: effPayer(t, e || { payer: t.lastPayer }), share: e ? effShare(t, e) : tripMembers(t).map(m => m.id) };
   const pax = e && e.pax ? e.pax : (t.people || 1);
   const days = tripDays(t); const date = e ? e.date : defaultExpDate(t); const cur = e ? e.currency : (t.lastCurrency || 'KRW');
+  startDraft(e && e.photos ? e.photos : []);
   openSheet(`${sheetHead(e ? '비용 수정' : '비용 추가', 'save-exp')}<form class="form" data-form="exp" autocomplete="off">
+    <div class="field"><label class="btn soft block" for="f-receipt">${I.camera}영수증 찍어서 채우기</label><input type="file" id="f-receipt" accept="image/*" capture="environment" hidden>
+      <p class="hint" id="ocr-status" role="status">폰 안에서 글자를 읽어 금액·날짜·가게 이름을 채워요. 사진은 밖으로 나가지 않아요.</p></div>
     <div class="field"><label class="flabel" for="f-amt">금액</label><div class="inline"><input class="input" id="f-amt" inputmode="decimal" value="${e ? e.amount : ''}" placeholder="0" ${e ? '' : 'autofocus'} style="font-size:20px;font-weight:700;font-variant-numeric:tabular-nums">
       <label class="sr" for="f-cur">통화</label><select class="input" id="f-cur" style="flex:0 0 132px">${curOptions(cur)}</select></div></div>
-    ${paxField(pax)}
+    ${paxField(pax, t)}
     <div class="field"><label class="flabel" for="f-etitle">항목</label><input class="input" id="f-etitle" value="${esc(e ? e.title : '')}" placeholder="예: 이치란 라멘"></div>
     <div class="field"><span class="flabel">분류</span><div class="chipsel" id="cat-chips">${catChips()}</div></div>
     <div class="field"><label class="flabel" for="f-edate">날짜</label><select class="input" id="f-edate"><option value="pre"${date === 'pre' ? ' selected' : ''}>여행 전 · 미리 결제</option>${days.map((d, i) => `<option value="${d}"${d === date ? ' selected' : ''}>Day ${i+1} · ${md(d)}</option>`).join('')}</select></div>
 
     <div class="field"><span class="flabel">결제 수단</span><div class="seg" style="--n:3" id="pay-seg" role="group" aria-label="결제 수단">${paySeg()}</div></div>
+    ${photoField('영수증·사진')}
     <p class="err" id="sheet-err" hidden></p>
     ${e ? `<button type="button" class="btn danger block" data-act="del-exp" data-id="${e.id}">${I.trash}이 비용 지우기</button>` : ''}
-  </form>`);
+  </form>`, cancelDraft);
   updPmHint();
 }
 function saveExp(){
   const t = getTrip(V.tripId); const amount = parseFloat(val('f-amt').replace(/[,\s]/g, ''));
   if (!(amount > 0)) return showErr('금액을 숫자로 적어 주세요.');
   const currency = val('f-cur') || 'KRW'; const title = val('f-etitle');
-  const pax = Math.min(50, Math.max(1, parseInt(val('f-pax'), 10) || 1));
-  const data = { amount, currency, title, cat: editing.cat, date: val('f-edate') || 'pre', pay: editing.pay, mode: editing.pm === 'each' ? 'each' : 'total', pax };
+  const gm = groupMode(t); if (gm && !editing.share.length) return showErr('같이 쓴 사람을 한 명 이상 골라 주세요.');
+  const pax = gm ? editing.share.length : Math.min(50, Math.max(1, parseInt(val('f-pax'), 10) || 1));
+  const data = { amount, currency, title, cat: editing.cat, date: val('f-edate') || 'pre', pay: editing.pay, mode: editing.pm === 'each' ? 'each' : 'total', pax, payer: gm ? editing.payer : undefined, share: gm ? [...editing.share] : undefined, photos: commitDraft() };
   if (editing.id) Object.assign(S.expenses.find(x => x.id === editing.id), data);
   else S.expenses.push(Object.assign({ id: uid(), tripId: V.tripId }, data));
-  t.lastCurrency = currency; V.lastCat = editing.cat; V.lastPay = editing.pay; t.lastPay = editing.pay;
+  t.lastCurrency = currency; V.lastCat = editing.cat; V.lastPay = editing.pay; t.lastPay = editing.pay; if (gm) t.lastPayer = editing.payer;
   save(); closeSheet(false); render(); toast(currency !== 'KRW' && !(t.rates && t.rates[currency]) ? '저장했어요. 원화 합계에 넣으려면 환율을 적어 주세요' : '저장했어요', 3000);
 }
 function deleteExp(id){
   const e = S.expenses.find(x => x.id === id); if (!e) return; const idx = S.expenses.indexOf(e);
+  if (draft) cancelDraft();
   S.expenses.splice(idx, 1); save(); closeSheet(false); render();
-  undoToast('비용을 지웠어요', () => { S.expenses.splice(Math.min(idx, S.expenses.length), 0, e); save(); render(); });
+  undoToast('비용을 지웠어요', () => { S.expenses.splice(Math.min(idx, S.expenses.length), 0, e); save(); render(); }, () => photoDel(e.photos || []));
 }
+function memberRows(t){
+  const ms = editing && editing.members ? editing.members : tripMembers(t);
+  return ms.map((m, i) => `<div class="inline"><label class="sr" for="f-mem-${i}">이름 ${i + 1}</label><input class="input" id="f-mem-${i}" data-mem="${m.id}" value="${esc(m.name)}" placeholder="${i === 0 ? '나' : '이름'}"><button type="button" class="iconbtn sm" data-act="del-member" data-val="${m.id}" aria-label="${esc(m.name || '이 사람')} 빼기">${I.x}</button></div>`).join('');
+}
+function readMembers(){ return [...document.querySelectorAll('[data-mem]')].map(inp => ({ id: inp.dataset.mem, name: inp.value.trim() })); }
 function openMoneySettings(){
   const t = getTrip(V.tripId);
   const used = [...new Set(tripExpenses(t).map(e => e.currency))].filter(c => c !== 'KRW');
   const curs = [...used, ...(t.lastCurrency && t.lastCurrency !== 'KRW' && !used.includes(t.lastCurrency) ? [t.lastCurrency] : [])];
-  openSheet(`${sheetHead('인원·환율', 'save-money')}<form class="form" data-form="money" autocomplete="off">
-    <div class="field"><label class="flabel" for="f-people">함께 가는 인원 (새 비용의 기본 인원)</label><input class="input" id="f-people" type="number" inputmode="numeric" min="1" max="50" value="${t.people || 1}"></div>
-    <p class="hint">항공권처럼 인원마다 다른 비용은 각 비용을 넣을 때 따로 정할 수 있어요.</p>
+  editing = { kind:'money', members: tripMembers(t).map(m => Object.assign({}, m)) };
+  openSheet(`${sheetHead('사람·환율', 'save-money')}<form class="form" data-form="money" autocomplete="off">
+    <div class="field"><span class="flabel">같이 가는 사람</span><div id="member-list" class="member-list">${memberRows(t)}</div>
+      <button type="button" class="btn sm" data-act="add-member">${I.plus}사람 추가</button>
+      <p class="hint">2명 이상 넣으면 비용마다 낸 사람을 고르고, 비용 탭에서 누가 누구에게 얼마 보내면 되는지 계산해요. 혼자 가면 비워 두세요.</p></div>
+    <div class="field" id="w-people"${tripMembers(t).length >= 2 ? ' hidden' : ''}><label class="flabel" for="f-people">함께 가는 인원 (새 비용의 기본 인원)</label><input class="input" id="f-people" type="number" inputmode="numeric" min="1" max="50" value="${t.people || 1}"></div>
     <p class="flabel" style="margin:4px 0 0">환율</p>
     ${curs.length ? curs.map(c => { const u = rateUnit(c); return `<div class="field"><label class="flabel" for="f-rate-${c}">${u} ${curName(c)} (${c}) = 몇 원?</label><div class="inline"><input class="input" id="f-rate-${c}" data-rate="${c}" inputmode="decimal" value="${t.rates && t.rates[c] ? +(t.rates[c] * u).toFixed(4) : ''}" placeholder="카드사·환전소 환율"><span class="unit">원</span></div></div>`; }).join('')
       : `<p class="hint">외화로 쓴 비용이 생기면 여기서 환율을 넣을 수 있어요.</p>`}
@@ -871,6 +1041,7 @@ function openMoneySettings(){
 }
 function saveMoneySettings(){
   const t = getTrip(V.tripId); const p = parseInt(val('f-people'), 10); t.people = p > 0 ? Math.min(p, 50) : 1; t.rates = t.rates || {};
+  const ms = readMembers().filter(m => m.name); t.members = ms; if (ms.length >= 2) t.people = ms.length;
   document.querySelectorAll('[data-rate]').forEach(inp => { const c = inp.dataset.rate; const v = parseFloat(inp.value.replace(/[,\s]/g, '')); if (v > 0) t.rates[c] = v / rateUnit(c); else delete t.rates[c]; });
   save(); closeSheet(false); render(); toast('저장했어요');
 }
@@ -936,7 +1107,7 @@ function sampleState(){
   const ck = (group, label, done) => ({ id:uid(), tripId:tid, group, label, done });
   return {
     settings:{ theme:null, homeView:'list' }, lastBackup:null,
-    trips:[{ id:tid, title:'오사카 3박 4일', start, end, view:'timeline', sample:true, wx:{ loc:{ name:'오사카', lat:34.6937, lng:135.5023 } }, rates:{ JPY:9 }, people:2, lastCurrency:'JPY' }],
+    trips:[{ id:tid, title:'오사카 3박 4일', start, end, view:'timeline', sample:true, wx:{ loc:{ name:'오사카', lat:34.6937, lng:135.5023 } }, rates:{ JPY:9 }, people:2, lastCurrency:'JPY', members:[{ id:'me', name:'나' }, { id:'m2', name:'민지' }] }],
     items:[
       it(0,'14:30','호텔 짐 맡기기','체크인 전에도 짐 보관 가능','난바역 오사카'),
       it(0,'19:00','도톤보리','글리코 간판 앞 야경','도톤보리 오사카'),
@@ -951,8 +1122,8 @@ function sampleState(){
       { id:uid(), tripId:tid, date:d(0), cat:'transport', title:'난카이 특급 라피트', amount:2900, currency:'JPY', pay:'debit' },
       { id:uid(), tripId:tid, date:d(0), cat:'food', title:'도톤보리 타코야키', amount:1200, currency:'JPY', pay:'cash' },
       { id:uid(), tripId:tid, date:d(1), cat:'tour', title:'오사카성 천수각 입장', amount:1200, currency:'JPY', pay:'cash' },
-      { id:uid(), tripId:tid, date:d(1), cat:'food', title:'쿠로몬 시장 참치', amount:3500, currency:'JPY', pay:'cash' },
-      { id:uid(), tripId:tid, date:d(1), cat:'shop', title:'드럭스토어', amount:8640, currency:'JPY', pay:'credit' },
+      { id:uid(), tripId:tid, date:d(1), cat:'food', title:'쿠로몬 시장 참치', amount:3500, currency:'JPY', pay:'cash', payer:'m2' },
+      { id:uid(), tripId:tid, date:d(1), cat:'shop', title:'드럭스토어', amount:8640, currency:'JPY', pay:'credit', payer:'m2', share:['m2'] },
     ],
     checks:[
       ck('서류','여권',true), ck('서류','항공권 e티켓',true), ck('서류','엔화 현금',false), ck('서류','국제운전면허증',false),
@@ -1053,8 +1224,51 @@ const dayEntries = (tid, day) => [...dayItems(tid, day), ...bookingEntries(tid, 
 function tripStats(t){
   const its = S.items.filter(i => i.tripId === t.id).sort((a,b) => (a.date + (a.time||'99')).localeCompare(b.date + (b.time||'99')));
   const photos = its.flatMap(i => i.photos); const ch = S.checks.filter(c => c.tripId === t.id);
-  return { items: its.length, photos: photos.length, cover: photos[0] || null, done: ch.filter(c => c.done).length, total: ch.length };
+  return { items: its.length, photos: photos.length, cover: tripCover(t), done: ch.filter(c => c.done).length, total: ch.length };
 }
+/* ---------- 표지 ---------- */
+const GEN_BG = ['--p1','--p2','--p3','--soft','--tag'];
+function hashStr(s){ let h = 0; for (const c of String(s)) h = (h * 31 + c.charCodeAt(0)) | 0; return Math.abs(h); }
+function tripCity(t){ const g = titleCityGuess(t.title); return (t.wx && t.wx.loc && !t.wx.loc.auto ? t.wx.loc.name : '') || g[0] || t.title; }
+function tripCover(t){
+  if (t.cover === 'gen') return null;
+  if (t.cover) return t.cover;
+  const ph = S.items.filter(i => i.tripId === t.id).sort((a, b) => (a.date + (a.time || '99')).localeCompare(b.date + (b.time || '99'))).flatMap(i => i.photos);
+  return ph[0] || null;
+}
+function coverHTML(t, small){
+  const c = tripCover(t); if (c) return photoImg(c);
+  const bg = GEN_BG[hashStr(t.id) % GEN_BG.length]; const city = tripCity(t);
+  if (small) return `<span class="gen gen-sq" style="background:var(${bg})" aria-hidden="true">${esc([...city][0] || '')}</span>`;
+  return `<span class="gen" style="background:var(${bg})" aria-hidden="true"><b>${esc(city)}</b><small>${mdDot(t.start)} – ${mdDot(t.end)}</small></span>`;
+}
+function tripPhotos(tid){ return [...new Set(S.items.filter(i => i.tripId === tid).flatMap(i => i.photos))]; }
+function coverPickHTML(){
+  const t = editing.id ? getTrip(editing.id) : null; const c = editing.cover;
+  const fake = { id: editing.id || 'new', title: val('f-title') || (t ? t.title : '새 여행'), start: val('f-start') || (t ? t.start : todayISO()), end: val('f-end') || (t ? t.end : todayISO()), wx: t ? t.wx : null, cover: c };
+  const prev = c && c !== 'gen' ? photoImg(c) : (c === 'gen' || !t) ? coverHTML(Object.assign({}, fake, { cover:'gen' })) : coverHTML(fake);
+  const label = c === 'gen' ? '기본 표지' : c ? '고른 사진' : '자동 (일정의 첫 사진, 없으면 기본 표지)';
+  return `<div class="cover-prev">${prev}</div><p class="hint" style="margin:0">${label}</p>
+    <div class="cover-btns"><label class="btn sm" for="f-cover-input">${I.image}사진 올리기</label>
+      ${t && tripPhotos(t.id).length ? `<button type="button" class="btn sm" data-act="cover-from">여행 사진에서</button>` : ''}
+      ${c !== 'gen' ? `<button type="button" class="btn sm" data-act="cover-set" data-val="gen">기본 표지</button>` : ''}
+      ${c ? `<button type="button" class="btn sm" data-act="cover-set" data-val="">자동</button>` : ''}</div>
+    <div id="cover-grid"></div>`;
+}
+function refreshCoverPick(){ const box = $('#cover-pick'); if (!box) return; box.innerHTML = coverPickHTML(); hydrate(box); }
+async function coverUpload(file){
+  try { const blob = await resizeImage(file, 1600); const id = uid(); await photoPut(id, blob); editing.coverNew.push(id); editing.cover = id; refreshCoverPick(); }
+  catch(e){ toast('이 사진은 열 수 없어요. 다른 사진을 골라 주세요.'); }
+}
+function coverCommit(t){
+  const keep = editing.cover; const own = editing.coverNew.filter(x => x !== keep);
+  const old = t.cover; const oldOwn = t.coverOwn;
+  if (keep && keep !== 'gen'){ t.cover = keep; t.coverOwn = editing.coverNew.includes(keep) || (keep === old && oldOwn); }
+  else { t.cover = keep || undefined; t.coverOwn = false; if (!keep) delete t.cover; }
+  const drop = [...own]; if (oldOwn && old && old !== t.cover) drop.push(old);
+  photoDel(drop);
+}
+
 const noteKey = (tid, day) => tid + '|' + day;
 
 /* ---------- theme ---------- */
@@ -1088,6 +1302,7 @@ function render(){
 }
 function renderView(){
   if (V.name === 'trip'){ if (!getTrip(V.tripId)) { V = { name:'home' }; stack = []; } else return renderTrip(); }
+  if (V.name === 'search') return renderSearch();
   if (V.name === 'booking'){ if (!S.bookings.find(b => b.id === V.id)) { V = stack.pop() || { name:'home' }; return renderView(); } return renderBooking(); }
   return renderHome();
 }
@@ -1120,16 +1335,65 @@ function renderHome(){
   let html = `<div class="wrap">
     <header class="home-head">
       <div><p class="eyebrow">${now.getMonth()+1}월 ${now.getDate()}일 ${DOW[now.getDay()]}요일</p><h1 class="h1">내 여행</h1></div>
-      <button type="button" class="iconbtn filled" data-act="settings" aria-label="설정, 테마, 백업">${I.gear}</button>
+      <div class="btns" style="gap:6px"><button type="button" class="iconbtn filled" data-act="search-open" aria-label="검색">${I.search}</button><button type="button" class="iconbtn filled" data-act="settings" aria-label="설정, 테마, 백업">${I.gear}</button></div>
     </header>
     <div class="seg" role="group" aria-label="홈 보기 방식">${segBtn('home-view','list','목록',!cal)}${segBtn('home-view','calendar','달력',cal)}</div>`;
   if (!DB.ok) html += `<div class="banner"><p>이 브라우저에서는 저장이 되지 않아요. 창을 닫으면 내용이 사라지니 백업 파일을 만들어 두세요.</p></div>`;
   if (S.trips.some(t => t.sample)) html += `<div class="banner"><p>예시로 넣어둔 여행이에요. 둘러본 뒤 지우고 내 여행을 만들어 보세요.</p><button type="button" class="btn sm" data-act="clear-sample">예시 지우기</button></div>`;
+  html += backupNudge() + todayCard();
   html += cal ? renderCalendar() : renderHomeList(td);
   const lb = S.lastBackup ? `마지막 백업 · ${mdDot(S.lastBackup)} ${dowOf(S.lastBackup)}` : '아직 백업한 적이 없어요';
   html += `<div class="backupbar"><p>${lb}</p><button type="button" class="btn sm" data-act="backup">${I.upload}백업하기</button></div></div>
     <button type="button" class="fab above" data-act="new-trip">${I.plus}<span>새 여행</span></button>${tabbar('home')}`;
   return html;
+}
+function nowHM(){ const d = new Date(); return `${pad(d.getHours())}:${pad(d.getMinutes())}`; }
+function todayCard(){
+  const td = todayISO();
+  const t = S.trips.filter(x => x.start <= td && x.end >= td).sort((a, b) => a.start.localeCompare(b.start))[0];
+  if (t){
+    setTimeout(() => refreshWeather(t), 0);
+    const days = tripDays(t); const idx = days.indexOf(td) + 1; const ents = dayEntries(t.id, td); const hm = nowHM();
+    const ni = ents.findIndex(e => e.time && e.time >= hm); const next = ni >= 0 ? ents[ni] : null;
+    const later = ni >= 0 ? ents.slice(ni + 1, ni + 4) : [];
+    const untimed = ents.filter(e => !e.time);
+    const w = wxDay(t, td);
+    let h = `<section class="today" aria-label="오늘">
+      <div class="today-head"><p class="cap">오늘 · ${esc(t.title)} · Day ${idx}</p>${w && w.max != null ? `<span class="wx-mini">${I['wx_' + wxInfo(w.code).icon]}${tdeg(w.max)}/${tdeg(w.min)}</span>` : ''}</div>`;
+    if (next){
+      const open = next.bk ? `data-act="open-booking" data-id="${next.bkId}" data-trip="${t.id}"` : `data-act="open-trip-day" data-id="${t.id}" data-day="${td}"`;
+      h += `<div class="next"><p class="next-time">${next.time}</p><button type="button" class="next-main" ${open}><span class="cap">다음 일정</span><b>${esc(next.place || '일정')}</b>${next.bk ? `<small>${esc(next.sub)}${next.code ? ` · ${esc(next.code)}` : ''}</small>` : next.memo ? `<small class="clamp2">${esc(next.memo)}</small>` : ''}</button></div>
+        ${mapQ(next) ? `<a class="btn primary block" href="${mapUrl(mapQ(next))}" target="_blank" rel="noopener">${I.pin}길찾기</a>` : ''}`;
+    } else h += `<p class="today-empty">${ents.length ? '오늘 남은 시간 일정은 없어요.' : '오늘은 정해 둔 일정이 없어요.'}</p>`;
+    const rest = [...later, ...(next ? [] : untimed)].slice(0, 3);
+    if (rest.length) h += `<ul class="today-list">${rest.map(e => `<li><span>${e.time || '—'}</span>${esc(e.place || '일정')}</li>`).join('')}</ul>`;
+    h += `<button type="button" class="btn block" data-act="open-trip-day" data-id="${t.id}" data-day="${td}">오늘 일정 전체 보기</button></section>`;
+    return h;
+  }
+  const soon = S.trips.filter(x => { const d = diffDays(td, x.start); return d >= 1 && d <= 2; }).sort((a, b) => a.start.localeCompare(b.start))[0];
+  if (soon){
+    setTimeout(() => refreshWeather(soon), 0);
+    const ch = S.checks.filter(c => c.tripId === soon.id); const dn = ch.filter(c => c.done).length; const d = diffDays(td, soon.start);
+    const w = wxDay(soon, soon.start);
+    return `<section class="today"><div class="today-head"><p class="cap">${d === 1 ? '내일 출발' : '모레 출발'} · ${esc(soon.title)}</p>${w && w.max != null ? `<span class="wx-mini">${I['wx_' + wxInfo(w.code).icon]}${tdeg(w.max)}/${tdeg(w.min)}</span>` : ''}</div>
+      <p class="today-empty">${ch.length ? `준비물 ${dn}/${ch.length} 챙겼어요${dn < ch.length ? ` · ${ch.length - dn}개 남음` : ''}` : '준비물 목록을 만들어 두면 빠뜨리지 않아요.'}</p>
+      <button type="button" class="btn block" data-act="open-trip" data-id="${soon.id}" data-tab="checks">준비물 확인하기</button></section>`;
+  }
+  return '';
+}
+function backupNudge(){
+  const td = todayISO(); const real = S.trips.filter(t => !t.sample);
+  if (!real.length || !DB.ok) return '';
+  if (S.settings.backupSnooze && S.settings.backupSnooze >= td) return '';
+  const lb = S.lastBackup; const ids = new Set(real.map(t => t.id));
+  const amount = S.items.filter(i => ids.has(i.tripId)).length + S.bookings.filter(b => ids.has(b.tripId)).length + S.expenses.filter(e => ids.has(e.tripId)).length;
+  const ended = real.filter(t => t.end < td && (!lb || lb <= t.end)).sort((a, b) => b.end.localeCompare(a.end))[0];
+  let msg = '';
+  if (ended) msg = `${esc(ended.title)}을(를) 다녀왔어요. 기록이 이 폰에만 있으니 백업해 두세요.`;
+  else if (!lb && amount >= 3) msg = '아직 백업한 적이 없어요. 폰을 바꾸거나 잃어버리면 기록을 되살릴 수 없어요.';
+  else if (lb && diffDays(lb, td) >= 14 && amount >= 1) msg = `마지막 백업이 ${diffDays(lb, td)}일 전이에요. 새로 적은 내용을 백업해 두세요.`;
+  if (!msg) return '';
+  return `<div class="banner warnb" role="status"><p>${msg}</p><div class="btns" style="gap:6px;flex-wrap:wrap"><button type="button" class="btn sm" data-act="backup-later">3일 뒤에</button>${ended ? `<button type="button" class="btn sm" data-act="recap" data-id="${ended.id}">요약 카드</button>` : ''}<button type="button" class="btn sm primary" data-act="backup">지금 백업</button></div></div>`;
 }
 function renderHomeList(td){
   if (!S.trips.length) return `<div class="section"><div class="empty"><h3>첫 여행을 만들어 보세요</h3><p>여행 이름과 날짜만 정하면 날짜별 노트가 생겨요.</p><button type="button" class="btn primary" data-act="new-trip">${I.plus}새 여행 만들기</button></div></div>`;
@@ -1144,7 +1408,7 @@ function tripCard(t){
   const st = tripStats(t); const dd = dday(t);
   const bk = S.bookings.filter(b => b.tripId === t.id).length;
   return `<article class="tripcard"><button type="button" class="tripcard-main" data-act="open-trip" data-id="${t.id}">
-    <div class="cover">${st.cover ? photoImg(st.cover) : I.image}<span class="badge ${dd.kind}">${dd.label}</span></div>
+    <div class="cover">${coverHTML(t)}<span class="badge ${dd.kind}">${dd.label}</span></div>
     <div class="tripcard-body">
       <h3>${esc(t.title)}${t.sample ? '<span class="chip-sample">예시</span>' : ''}</h3>
       <p class="muted small" style="margin:0">${rangeLabel(t)}${st.photos ? ` · 사진 ${st.photos}` : ''}</p>
@@ -1159,7 +1423,7 @@ function tripCard(t){
 function pastRow(t){
   const st = tripStats(t); const notes = Object.keys(S.notes).filter(k => k.startsWith(t.id + '|') && S.notes[k]).length;
   return `<button type="button" class="list-row" data-act="open-trip" data-id="${t.id}">
-    <span class="sq">${st.cover ? photoImg(st.cover) : ''}</span>
+    <span class="sq">${coverHTML(t, true)}</span>
     <span class="minw"><h3>${esc(t.title)}</h3><p>${t.start.slice(0,7).replace('-','.')} · 일정 ${st.items}${notes ? ` · 한 줄 기록 ${notes}` : ''}</p></span>${I.chevR}</button>`;
 }
 function renderCalendar(){
@@ -1185,7 +1449,7 @@ function renderCalendar(){
     <div class="cal-grid">${cells}</div></div>
     <section class="section"><h2 class="section-title">이번 달 여행</h2>${inMonth.length ? `<div class="list">${inMonth.map(t => {
       const st = tripStats(t); const dd = dday(t);
-      return `<button type="button" class="list-row" data-act="open-trip" data-id="${t.id}"><span class="sq">${st.cover ? photoImg(st.cover) : ''}</span><span class="minw"><h3>${esc(t.title)}</h3><p>${mdDot(t.start)} – ${mdDot(t.end)} · ${dd.label}</p></span>${I.chevR}</button>`; }).join('')}</div>`
+      return `<button type="button" class="list-row" data-act="open-trip" data-id="${t.id}"><span class="sq">${coverHTML(t, true)}</span><span class="minw"><h3>${esc(t.title)}</h3><p>${mdDot(t.start)} – ${mdDot(t.end)} · ${dd.label}</p></span>${I.chevR}</button>`; }).join('')}</div>`
       : `<div class="empty"><p>이 달에는 여행이 없어요.</p></div>`}</section>`;
 }
 
@@ -1416,7 +1680,7 @@ async function refreshWeather(t, force){
     t.wx.days = out; t.wx.fetchedAt = Date.now(); t.wx.sig = wxSig(t); save();
   } catch(e){ WX.err = true; WX.failAt = Date.now(); }
   WX.busy = false;
-  if (V.name === 'trip' && V.tripId === t.id && (V.tab || 'plan') === 'plan' && $('#sheet-root').hidden) render();
+  if (((V.name === 'trip' && V.tripId === t.id && (V.tab || 'plan') === 'plan') || V.name === 'home') && $('#sheet-root').hidden) render();
 }
 const wxSig = t => JSON.stringify([t.start, t.end, t.wx && t.wx.loc, t.wx && t.wx.dayLoc]);
 function openWxSheet(){
@@ -1789,16 +2053,18 @@ function askDeleteItem(id){
 
 /* trip sheet */
 function openTripSheet(id){
-  const t = id ? getTrip(id) : null; editing = { kind:'trip', id };
+  const t = id ? getTrip(id) : null; editing = { kind:'trip', id, cover: t ? (t.cover || null) : null, coverNew: [] };
   const s = t ? t.start : addDays(todayISO(), 7), e = t ? t.end : addDays(s, 2);
   openSheet(`${sheetHead(t ? '여행 정보' : '새 여행', 'save-trip', t ? '저장' : '만들기')}
     <form class="form" data-form="trip" autocomplete="off">
       <div class="field"><label class="flabel" for="f-title">여행 이름</label><input class="input" id="f-title" value="${esc(t ? t.title : '')}" placeholder="예: 오사카 3박 4일" ${t ? '' : 'autofocus'}></div>
       <div class="grid2"><div class="field"><label class="flabel" for="f-start">출발일</label><input class="input" type="date" id="f-start" value="${s}"></div>
         <div class="field"><label class="flabel" for="f-end">돌아오는 날</label><input class="input" type="date" id="f-end" value="${e}"></div></div>
+      <div class="field"><span class="flabel">표지</span><div id="cover-pick" class="cover-pick">${coverPickHTML()}</div><input type="file" id="f-cover-input" accept="image/*" hidden></div>
       <p class="err" id="sheet-err" hidden></p>
+      ${t ? `<button type="button" class="btn block" data-act="copy-trip" data-id="${t.id}">${I.copy}이 여행 복사해서 새로 만들기</button>` : ''}
       ${t ? `<button type="button" class="btn danger block" data-act="del-trip" data-id="${t.id}">${I.trash}이 여행 삭제</button>` : ''}
-    </form>`);
+    </form>`, () => { if (editing && editing.coverNew) photoDel(editing.coverNew); });
 }
 function saveTrip(){
   const title = val('f-title'), start = val('f-start'), end = val('f-end');
@@ -1807,17 +2073,18 @@ function saveTrip(){
   if (end < start) return showErr('돌아오는 날이 출발일보다 빨라요.');
   if (diffDays(start, end) > 59) return showErr('여행 기간은 60일까지 만들 수 있어요.');
   if (editing.id){
-    const t = getTrip(editing.id); Object.assign(t, { title, start, end }); delete t.sample;
+    const t = getTrip(editing.id); Object.assign(t, { title, start, end }); delete t.sample; coverCommit(t);
     const clamp = d => d < start ? start : d > end ? end : d;
     S.items.forEach(i => { if (i.tripId === t.id) i.date = clamp(i.date); });
     save(); closeSheet(false); render(); toast('여행 정보를 바꿨어요');
   } else {
-    const t = { id:uid(), title, start, end, view:'timeline' }; S.trips.push(t); save(); closeSheet(false);
+    const t = { id:uid(), title, start, end, view:'timeline' }; coverCommit(t); S.trips.push(t); save(); closeSheet(false);
     go({ name:'trip', tripId:t.id, tab:'plan' }); toast('새 여행을 만들었어요');
   }
 }
 function deleteTripData(tid){
-  const photos = [...S.items.filter(i => i.tripId === tid).flatMap(i => i.photos), ...S.bookings.filter(b => b.tripId === tid).flatMap(b => b.photos)];
+  const tt = getTrip(tid);
+  const photos = [...S.items.filter(i => i.tripId === tid).flatMap(i => i.photos), ...S.bookings.filter(b => b.tripId === tid).flatMap(b => b.photos), ...S.expenses.filter(e => e.tripId === tid).flatMap(e => e.photos || []), ...(tt && tt.coverOwn && tt.cover ? [tt.cover] : [])];
   S.trips = S.trips.filter(t => t.id !== tid); S.items = S.items.filter(i => i.tripId !== tid);
   S.checks = S.checks.filter(c => c.tripId !== tid); S.bookings = S.bookings.filter(b => b.tripId !== tid); S.expenses = S.expenses.filter(e => e.tripId !== tid); S.wishes = S.wishes.filter(w => w.tripId !== tid);
   Object.keys(S.notes).forEach(k => { if (k.startsWith(tid + '|')) delete S.notes[k]; });
@@ -1828,7 +2095,7 @@ function deleteTripData(tid){
 function openBookingSheet(id){
   const b = id ? S.bookings.find(x => x.id === id) : null; if (id && !b) return;
   const t = getTrip(b ? b.tripId : V.tripId);
-  editing = { kind:'booking', pay: normPay(b ? b.pay : t.lastPay), id: b ? b.id : null, bk: b ? b.kind : 'flight', rt: b && b.roundTrip ? 'round' : 'one', pm: b ? (b.priceMode === 'each' ? 'each' : 'total') : 'each' }; startDraft(b ? b.photos : []);
+  editing = { kind:'booking', pay: normPay(b ? b.pay : t.lastPay), payer: effPayer(t, b || { payer: t.lastPayer }), share: b ? effShare(t, b) : tripMembers(t).map(m => m.id), id: b ? b.id : null, bk: b ? b.kind : 'flight', rt: b && b.roundTrip ? 'round' : 'one', pm: b ? (b.priceMode === 'each' ? 'each' : 'total') : 'each' }; startDraft(b ? b.photos : []);
   const rt = b && ['flight','transit'].includes(b.kind) ? flightRoute(b) : { from:'', to:'' };
   editing.mode = b && b.mode ? b.mode : 'ktx';
   openSheet(`${sheetHead(b ? '예약 수정' : '예약 추가', 'save-booking')}<form class="form" data-form="booking" autocomplete="off">
@@ -1851,7 +2118,7 @@ function openBookingSheet(id){
     <div class="field"><label class="flabel" for="f-code" id="l-code">예약번호</label><input class="input" id="f-code" value="${esc(b ? b.code : '')}" placeholder="예: K7X2QM" autocapitalize="characters" style="font-family:var(--mono)"></div>
     <div class="field"><label class="flabel" for="f-bprice">결제 금액 (선택)</label><div class="inline"><input class="input" id="f-bprice" inputmode="decimal" value="${b && b.price ? b.price : ''}" placeholder="적으면 비용에 자동으로 들어가요" style="font-variant-numeric:tabular-nums">
       <label class="sr" for="f-bcur">통화</label><select class="input" id="f-bcur" style="flex:0 0 132px">${curOptions((b && b.currency) || 'KRW')}</select></div></div>
-    ${paxField(b && b.pax ? b.pax : (t.people || 1))}
+    ${paxField(b && b.pax ? b.pax : (t.people || 1), t)}
     <div class="field"><span class="flabel">결제 수단</span><div class="seg" style="--n:3" id="pay-seg" role="group" aria-label="결제 수단">${paySeg()}</div></div>
     <div class="grid2"><div class="field"><label class="flabel" for="f-bstart" id="l-a">${KIND[editing.bk].a}</label><input class="input" type="datetime-local" id="f-bstart" value="${esc(b ? b.start : t.start + 'T09:00')}"></div>
       <div class="field"><label class="flabel" for="f-bend" id="l-b">${KIND[editing.bk].b}</label><input class="input" type="datetime-local" id="f-bend" value="${esc(b ? b.end : '')}"></div></div>
@@ -1908,7 +2175,7 @@ function saveBooking(){
   if (!title && !code) return showErr(isFlight ? '출발지·도착지나 예약번호 중 하나는 적어 주세요.' : '이름이나 예약번호 중 하나는 적어 주세요.');
   const showInPlan = !!($('#f-bshow') && $('#f-bshow').checked);
   const pr = parseFloat(val('f-bprice').replace(/[,\s원엔₩¥$]/g, '')); const price = pr > 0 ? pr : null; const currency = val('f-bcur') || 'KRW';
-  const data = { kind: editing.bk, title, from, to, roundTrip, retFrom, retTo, flightNo: isFlight ? val('f-fno').toUpperCase() : isTransit ? val('f-fno') : '', mode: isTransit ? editing.mode : '', seat: isTransit ? val('f-seat') : '', retFlightNo: roundTrip ? val('f-rfno').toUpperCase() : '', retStart: roundTrip ? val('f-rstart') : '', retEnd: roundTrip ? val('f-rend') : '', code, start: val('f-bstart'), end: val('f-bend'), address: val('f-baddr'), address2: editing.bk === 'car' ? val('f-baddr2') : '', memo: val('f-bmemo'), showInPlan, price, currency, pay: normPay(editing.pay), priceMode: editing.pm === 'each' ? 'each' : 'total', pax: Math.min(50, Math.max(1, parseInt(val('f-pax'), 10) || 1)), photos: commitDraft() };
+  const data = { kind: editing.bk, title, from, to, roundTrip, retFrom, retTo, flightNo: isFlight ? val('f-fno').toUpperCase() : isTransit ? val('f-fno') : '', mode: isTransit ? editing.mode : '', seat: isTransit ? val('f-seat') : '', retFlightNo: roundTrip ? val('f-rfno').toUpperCase() : '', retStart: roundTrip ? val('f-rstart') : '', retEnd: roundTrip ? val('f-rend') : '', code, start: val('f-bstart'), end: val('f-bend'), address: val('f-baddr'), address2: editing.bk === 'car' ? val('f-baddr2') : '', memo: val('f-bmemo'), showInPlan, price, currency, pay: normPay(editing.pay), priceMode: editing.pm === 'each' ? 'each' : 'total', pax: groupMode(getTrip(V.tripId)) ? Math.max(1, editing.share.length) : Math.min(50, Math.max(1, parseInt(val('f-pax'), 10) || 1)), payer: groupMode(getTrip(V.tripId)) ? editing.payer : undefined, share: groupMode(getTrip(V.tripId)) ? [...editing.share] : undefined, photos: commitDraft() };
   if (editing.id) Object.assign(S.bookings.find(b => b.id === editing.id), data);
   else S.bookings.push(Object.assign({ id:uid(), tripId:V.tripId }, data));
   const t = getTrip(V.tripId); const days = t ? tripDays(t) : [];
@@ -1982,8 +2249,8 @@ function openShare(){
   buildShareImage();
 }
 function shareHTML(idx){
-  return `${sheetHeadClose(`Day ${idx} 공유하기`)}<div class="form">
-    <div class="seg" role="group" aria-label="카드 모양">${segBtn('share-style','photo','사진 카드',SH.style==='photo')}${segBtn('share-style','list','일정표 카드',SH.style==='list')}</div>
+  return `${sheetHeadClose(`공유하기 · Day ${idx}`)}<div class="form">
+    <div class="seg" style="--n:3" role="group" aria-label="카드 모양">${segBtn('share-style','photo','사진 카드',SH.style==='photo')}${segBtn('share-style','list','일정표',SH.style==='list')}${segBtn('share-style','recap','여행 요약',SH.style==='recap')}</div>
     <div class="share-preview" id="share-preview">카드를 만드는 중…</div>
     <div class="grid2"><button type="button" class="bigbtn primary" data-act="share-image"><b>이미지로 공유</b><small>인스타 · 카톡 · 스토리</small></button>
       <button type="button" class="bigbtn" data-act="save-image"><b>사진첩에 저장</b><small>이미지 파일로 받기</small></button></div>
@@ -2003,7 +2270,114 @@ async function buildShareImage(){
 }
 function rr(g, x, y, w, h, r){ g.beginPath(); g.moveTo(x+r, y); g.arcTo(x+w, y, x+w, y+h, r); g.arcTo(x+w, y+h, x, y+h, r); g.arcTo(x, y+h, x, y, r); g.arcTo(x, y, x+w, y, r); g.closePath(); }
 function fit(g, text, maxW){ text = String(text); if (g.measureText(text).width <= maxW) return text; while (text.length > 1 && g.measureText(text + '…').width > maxW) text = text.slice(0, -1); return text + '…'; }
+/* ---------- 여행 요약 카드 ---------- */
+async function makeRecap(t){
+  try { if (document.fonts && document.fonts.load) await Promise.all([document.fonts.load('700 40px "IBM Plex Sans KR"', t.title + '가나다 0123'), document.fonts.load('700 72px "Gowun Batang"', t.title + '가나다')]); } catch(e){}
+  const W = 1080, H = 1350; const c = document.createElement('canvas'); c.width = W; c.height = H; const g = c.getContext('2d');
+  const cs = getComputedStyle(document.documentElement); const tk = n => cs.getPropertyValue(n).trim();
+  const bg = tk('--surface'), ink = tk('--ink'), muted = tk('--muted'), accent = tk('--accent'), line = tk('--line');
+  const F = (w, s, fam) => `${w} ${s}px ${fam || '"IBM Plex Sans KR", "Apple SD Gothic Neo", sans-serif'}`;
+  const serif = '"Gowun Batang", serif';
+  g.fillStyle = bg; g.fillRect(0, 0, W, H);
+  const ph = 560; const cov = tripCover(t);
+  g.fillStyle = tk(GEN_BG[hashStr(t.id) % GEN_BG.length]) || tk('--p1'); g.fillRect(0, 0, W, ph);
+  if (cov){ const b = await photoGet(cov); if (b){ try { const im = await loadImg(b); const sc = Math.max(W / im.naturalWidth, ph / im.naturalHeight); const dw = im.naturalWidth * sc, dh = im.naturalHeight * sc; g.drawImage(im, (W - dw) / 2, (ph - dh) / 2, dw, dh); } catch(e){} } }
+  else { g.fillStyle = ink; g.font = F(700, 96, serif); g.fillText(fit(g, tripCity(t), W - 128), 64, ph - 72); }
+  const days = tripDays(t); const nights = days.length - 1;
+  g.fillStyle = ink; g.font = F(700, 64, serif); g.fillText(fit(g, t.title, W - 128), 64, ph + 100);
+  g.fillStyle = muted; g.font = F(500, 30); g.fillText(`${rangeLabel(t)} · ${nights ? `${nights}박 ` : ''}${days.length}일`, 64, ph + 150);
+  const list = tripExpenses(t); const sm = expSummary(t, list);
+  const places = new Set([...S.items.filter(i => i.tripId === t.id).map(i => i.place).filter(Boolean), ...S.wishes.filter(w => w.tripId === t.id && w.type === 'place' && w.done).map(w => w.label)]).size;
+  const photos = tripPhotos(t.id).length;
+  const stats = [[`${places}곳`, '다녀온 곳'], [`${photos}장`, '사진'], [sm.krw ? money(sm.krw, 'KRW') : '–', '총 비용'], [sm.multi ? money(sm.share, 'KRW') : `${list.length}건`, sm.multi ? '1인당' : '결제']];
+  const top = ph + 200, cw = (W - 128 - 24) / 2, ch = 128;
+  stats.forEach(([v, l], i) => { const x = 64 + (i % 2) * (cw + 24), y = top + Math.floor(i / 2) * (ch + 20);
+    rr(g, x, y, cw, ch, 24); g.fillStyle = tk('--bg'); g.fill();
+    g.fillStyle = muted; g.font = F(500, 26); g.fillText(l, x + 28, y + 46);
+    g.fillStyle = ink; g.font = F(700, 44); g.fillText(fit(g, v, cw - 56), x + 28, y + 100); });
+  const cats = CATS.filter(cc => sm.byCat[cc.id] > 0).sort((a, b) => sm.byCat[b.id] - sm.byCat[a.id]);
+  if (sm.krw > 0){
+    const by = top + 2 * (ch + 20) + 18; let x = 64; const bw = W - 128;
+    g.save(); rr(g, 64, by, bw, 22, 11); g.clip();
+    cats.forEach(cc => { const w = bw * sm.byCat[cc.id] / sm.krw; g.fillStyle = cc.color; g.fillRect(x, by, w, 22); x += w; }); g.restore();
+    g.font = F(500, 24); let lx = 64; const ly = by + 64;
+    cats.slice(0, 4).forEach(cc => { const label = `${cc.name} ${Math.round(sm.byCat[cc.id] / sm.krw * 100)}%`; g.fillStyle = cc.color; g.beginPath(); g.arc(lx + 8, ly - 8, 8, 0, Math.PI * 2); g.fill(); g.fillStyle = muted; g.fillText(label, lx + 24, ly); lx += g.measureText(label).width + 56; });
+  }
+  g.strokeStyle = line; g.lineWidth = 2; g.beginPath(); g.moveTo(64, H - 96); g.lineTo(W - 64, H - 96); g.stroke();
+  g.font = F(600, 26); g.fillStyle = accent; g.textAlign = 'right'; g.fillText('트립노트', W - 64, H - 50); g.textAlign = 'left';
+  return await new Promise((res, rej) => c.toBlob(b => b ? res(b) : rej(new Error('blob')), 'image/png'));
+}
+
+/* ---------- 여행 복사 ---------- */
+function openCopySheet(tid){
+  const t = getTrip(tid); const len = diffDays(t.start, t.end); const ns = addDays(todayISO(), 14);
+  editing = { kind:'copy', id: tid };
+  const n = k => k === 'checks' ? S.checks.filter(c => c.tripId === tid).length : k === 'buy' ? S.wishes.filter(w => w.tripId === tid && w.type === 'buy').length : k === 'place' ? S.wishes.filter(w => w.tripId === tid && w.type === 'place').length : S.items.filter(i => i.tripId === tid).length;
+  const box = (id, label, on, cnt) => `<label class="toggle" for="${id}"><input type="checkbox" id="${id}"${on ? ' checked' : ''}${cnt ? '' : ' disabled'}><span>${label} <span class="muted small">${cnt}개</span></span></label>`;
+  openSheet(`${sheetHead('여행 복사', 'save-copy', '만들기')}<form class="form" data-form="copy" autocomplete="off">
+    <div class="field"><label class="flabel" for="f-ctitle">새 여행 이름</label><input class="input" id="f-ctitle" value="${esc(t.title)}"></div>
+    <div class="field"><label class="flabel" for="f-cstart">출발일</label><input class="input" type="date" id="f-cstart" value="${ns}"><p class="hint">기간은 원래 여행과 같은 ${len + 1}일로 만들어요. 나중에 바꿀 수 있어요.</p></div>
+    <div class="field"><span class="flabel">가져올 것</span>
+      ${box('c-checks', '준비물 (모두 안 챙김으로)', true, n('checks'))}
+      ${box('c-buy', '살 것 (모두 안 산 것으로)', true, n('buy'))}
+      ${box('c-place', '가볼 곳', true, n('place'))}
+      ${box('c-items', '일정 (날짜만 옮기고 사진은 빼요)', false, n('items'))}
+      <label class="toggle" for="c-people"><input type="checkbox" id="c-people" checked><span>같이 가는 사람·환율·날씨 지역</span></label></div>
+    <p class="hint">예약 정보와 비용은 가져오지 않아요.</p>
+    <p class="err" id="sheet-err" hidden></p></form>`);
+}
+function saveCopy(){
+  const t = getTrip(editing.id); const title = val('f-ctitle') || t.title; const start = val('f-cstart');
+  if (!start) return showErr('출발일을 골라 주세요.');
+  const len = diffDays(t.start, t.end); const end = addDays(start, len); const off = diffDays(t.start, start);
+  const on = id => { const el = document.getElementById(id); return el && el.checked && !el.disabled; };
+  const nt = { id: uid(), title, start, end, view: t.view || 'timeline' };
+  if (on('c-people')){ if (t.members) nt.members = t.members.map(m => Object.assign({}, m)); if (t.rates) nt.rates = Object.assign({}, t.rates); nt.people = t.people; nt.lastCurrency = t.lastCurrency; if (t.wx && t.wx.loc && !t.wx.loc.auto) nt.wx = { loc: Object.assign({}, t.wx.loc) }; }
+  S.trips.push(nt);
+  if (on('c-checks')) S.checks.filter(c => c.tripId === t.id).forEach(c => S.checks.push({ id: uid(), tripId: nt.id, group: c.group, label: c.label, done: false }));
+  if (on('c-buy')) S.wishes.filter(w => w.tripId === t.id && w.type === 'buy').forEach(w => S.wishes.push(Object.assign({}, w, { id: uid(), tripId: nt.id, done: false })));
+  if (on('c-place')) S.wishes.filter(w => w.tripId === t.id && w.type === 'place').forEach(w => S.wishes.push(Object.assign({}, w, { id: uid(), tripId: nt.id, done: false, itemId: null })));
+  if (on('c-items')) S.items.filter(i => i.tripId === t.id).forEach(i => { const d = addDays(i.date, off); S.items.push({ id: uid(), tripId: nt.id, date: d < start ? start : d > end ? end : d, time: i.time, place: i.place, address: i.address, memo: i.memo, photos: [] }); });
+  save(); closeSheet(false); stack = [{ name:'home' }]; V = { name:'trip', tripId: nt.id, tab:'plan' }; render(); window.scrollTo(0, 0); toast('여행을 복사했어요');
+}
+
+/* ---------- 검색 ---------- */
+function searchResults(q){
+  q = q.trim().toLowerCase(); if (q.length < 1) return [];
+  const has = (...xs) => xs.some(x => x && String(x).toLowerCase().includes(q));
+  const out = [];
+  S.trips.forEach(t => { if (has(t.title)) out.push({ tid: t.id, kind:'trip', id: t.id, title: t.title, sub: rangeLabel(t), icon:'cal' }); });
+  S.items.forEach(i => { if (has(i.place, i.memo, i.address)) out.push({ tid: i.tripId, kind:'item', id: i.id, title: i.place || '일정', sub: `${md(i.date)}${i.time ? ' ' + i.time : ''}${i.memo ? ' · ' + i.memo.replace(/\n/g, ' ') : ''}`, icon:'list' }); });
+  S.bookings.forEach(b => { if (has(b.title, b.code, b.memo, b.address, b.address2, b.from, b.to, b.flightNo)) out.push({ tid: b.tripId, kind:'booking', id: b.id, title: bookingName(b), sub: `${(KIND[b.kind] || KIND.etc).label}${b.code ? ' · ' + b.code : ''}`, icon: (KIND[b.kind] || KIND.etc).icon }); });
+  S.expenses.forEach(e => { if (has(e.title)) out.push({ tid: e.tripId, kind:'exp', id: e.id, title: e.title || catOf(e.cat).name, sub: `${money(expTotal(e), e.currency)} · ${e.date === 'pre' ? '여행 전' : md(e.date)}`, icon:'wallet' }); });
+  S.wishes.forEach(w => { if (has(w.label, w.store, w.memo, w.address)) out.push({ tid: w.tripId, kind:'wish', id: w.id, title: w.label, sub: w.type === 'buy' ? `살 것${w.store ? ' · ' + w.store : ''}` : `가볼 곳${w.address ? ' · ' + w.address : ''}`, icon: w.type === 'buy' ? 'bag' : 'pin' }); });
+  S.checks.forEach(c => { if (has(c.label)) out.push({ tid: c.tripId, kind:'check', id: c.id, title: c.label, sub: `준비물 · ${c.group}`, icon:'checklist' }); });
+  Object.entries(S.notes).forEach(([k, v]) => { if (has(v)) { const [tid, day] = k.split('|'); out.push({ tid, kind:'note', id: k, day, title: v.length > 40 ? v.slice(0, 40) + '…' : v, sub: `한 줄 기록 · ${md(day)}`, icon:'book' }); } });
+  return out.filter(r => getTrip(r.tid)).slice(0, 80);
+}
+function searchListHTML(q){
+  if (!q.trim()) return `<p class="muted small" style="margin:16px 4px">장소, 메모, 예약번호, 살 것, 비용을 모든 여행에서 찾아요.</p>`;
+  const rs = searchResults(q); if (!rs.length) return `<div class="empty" style="margin-top:14px"><p>"${esc(q)}"(으)로 찾은 게 없어요.</p></div>`;
+  const tids = [...new Set(rs.map(r => r.tid))];
+  return tids.map(tid => { const t = getTrip(tid); return `<section class="section"><h2 class="section-title">${esc(t.title)}</h2><div class="list">${rs.filter(r => r.tid === tid).map(r => `<button type="button" class="list-row" data-act="search-go" data-kind="${r.kind}" data-id="${esc(r.id)}" data-trip="${tid}"${r.day ? ` data-day="${r.day}"` : ''}><span class="kind-ic">${I[r.icon] || I.list}</span><span class="minw"><h3>${esc(r.title)}</h3><p class="clamp2">${esc(r.sub)}</p></span>${I.chevR}</button>`).join('')}</div></section>`; }).join('');
+}
+function renderSearch(){
+  return `<div class="wrap"><header class="topbar"><button type="button" class="iconbtn" data-act="back" aria-label="뒤로">${I.back}</button>
+    <form class="minw" data-form="search" role="search" autocomplete="off" style="display:flex"><label class="sr" for="search-q">검색</label><input class="input" id="search-q" type="search" enterkeyhint="search" placeholder="모든 여행에서 찾기" value="${esc(V.q || '')}"></form></header>
+    <div id="search-results">${searchListHTML(V.q || '')}</div></div>${tabbar('home')}`;
+}
+function searchGo(el){
+  const k = el.dataset.kind, id = el.dataset.id, tid = el.dataset.trip;
+  if (k === 'trip') return go({ name:'trip', tripId: tid, tab:'plan' });
+  if (k === 'booking') return go({ name:'booking', id, tripId: tid });
+  if (k === 'item'){ const it = S.items.find(i => i.id === id); go({ name:'trip', tripId: tid, tab:'plan', day: it && it.date }); return openItemSheet(id); }
+  if (k === 'note') return go({ name:'trip', tripId: tid, tab:'plan', day: el.dataset.day });
+  if (k === 'exp'){ go({ name:'trip', tripId: tid, tab:'money' }); return openExpSheet(id); }
+  if (k === 'wish'){ const w = S.wishes.find(x => x.id === id); go({ name:'trip', tripId: tid, tab:'checks', list: w && w.type === 'buy' ? 'buy' : 'place' }); return openWishSheet(id); }
+  if (k === 'check') return go({ name:'trip', tripId: tid, tab:'checks', list:'pack' });
+}
 async function makeCard(t, day, style){
+  if (style === 'recap') return makeRecap(t);
   try { if (document.fonts && document.fonts.load) await Promise.all([document.fonts.load('700 40px "IBM Plex Sans KR"', t.title + '가나다 0123'), document.fonts.load('700 72px "Gowun Batang"', t.title + '가나다')]); } catch(e){}
   try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch(e){}
   const W = 1080, H = 1350; const c = document.createElement('canvas'); c.width = W; c.height = H; const g = c.getContext('2d');
@@ -2071,7 +2445,7 @@ async function copyText(text){
   catch(e){ openSheet(`${sheetHeadClose('텍스트 복사')}<div class="form"><p class="hint" style="font-size:14px">아래 글을 길게 눌러 전체 선택한 뒤 복사하세요.</p><label class="sr" for="copy-area">공유할 글</label><textarea class="input textview" id="copy-area" readonly>${esc(text)}</textarea></div>`); setTimeout(() => { const a = $('#copy-area'); if (a){ a.focus(); a.select(); } }, 80); }
 }
 function downloadBlob(blob, name){ const u = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000); }
-function cardFile(){ const t = getTrip(V.tripId); const idx = tripDays(t).indexOf(V.day) + 1; return new File([SH.blob], `tripnote-day${idx}.png`, { type:'image/png' }); }
+function cardFile(){ const t = getTrip(V.tripId); const idx = tripDays(t).indexOf(V.day) + 1; return new File([SH.blob], SH.style === 'recap' ? 'tripnote-summary.png' : `tripnote-day${idx}.png`, { type:'image/png' }); }
 async function shareImage(){
   if (!SH.blob) return toast('카드를 만드는 중이에요. 잠시 후 다시 눌러 주세요.');
   const r = await tryShare({ files:[cardFile()], title: getTrip(V.tripId).title });
@@ -2092,7 +2466,7 @@ const blobToDataURL = b => new Promise((res, rej) => { const r = new FileReader(
 function dataURLToBlob(u){ const [h, d] = u.split(','); const mime = (h.match(/data:([^;]+)/) || [])[1] || 'image/jpeg'; const bin = atob(d); const arr = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i); return new Blob([arr], { type: mime }); }
 async function exportBackup(){
   toast('백업 파일을 만드는 중…');
-  const ids = [...new Set([...S.items.flatMap(i => i.photos), ...S.bookings.flatMap(b => b.photos)])]; const photos = {};
+  const ids = [...new Set([...S.items.flatMap(i => i.photos), ...S.bookings.flatMap(b => b.photos), ...S.expenses.flatMap(e => e.photos || []), ...S.trips.map(t => t.cover).filter(c => c && c !== 'gen')])]; const photos = {};
   for (const id of ids){ const b = await photoGet(id); if (b) photos[id] = await blobToDataURL(b); }
   const blob = new Blob([JSON.stringify({ app:'tripnote', version:1, exportedAt: new Date().toISOString(), state:S, photos })], { type:'application/json' });
   const name = `tripnote-backup-${todayISO()}.json`;
@@ -2200,6 +2574,11 @@ const A = {
   'exp-cat': el => { editing.cat = el.dataset.val; $('#cat-chips').innerHTML = catChips(); },
   'exp-pay': el => { editing.pay = el.dataset.val; $('#pay-seg').innerHTML = paySeg(); },
   'money-settings': () => openMoneySettings(),
+  'add-member': () => { const t = getTrip(V.tripId); editing.members = readMembers(); if (!editing.members.length) editing.members.push({ id:'me', name:'나' }); editing.members.push({ id: uid(), name:'' }); $('#member-list').innerHTML = memberRows(t); const ins = document.querySelectorAll('[data-mem]'); ins[ins.length - 1].focus(); $('#w-people').hidden = editing.members.length >= 2; },
+  'del-member': el => { const t = getTrip(V.tripId); editing.members = readMembers().filter(m => m.id !== el.dataset.val); $('#member-list').innerHTML = memberRows(t); $('#w-people').hidden = editing.members.length >= 2; },
+  'pick-payer': el => { editing.payer = el.dataset.val; $('#payer-chips').innerHTML = payerChips(getTrip(V.tripId)); },
+  'pick-share': el => { const id = el.dataset.val; editing.share = editing.share.includes(id) ? editing.share.filter(x => x !== id) : [...editing.share, id]; $('#share-chips').innerHTML = shareChips(getTrip(V.tripId)); updPmHint(); },
+  'copy-settle': () => copyText(settleText(getTrip(V.tripId))),
   'pm': el => { editing.pm = el.dataset.val; $('#pm-seg').innerHTML = pmSeg(); updPmHint(); },
   'save-money': () => saveMoneySettings(),
   'parse-paste': () => {
@@ -2208,7 +2587,8 @@ const A = {
     const r = parseBookingText(raw, getTrip(V.tripId)); applyParsed(r);
     out.textContent = r.found.length ? `채운 내용: ${r.found.join(' · ')}. 틀린 곳은 바로 고쳐 주세요.${r.roundTrip && !r.retStart ? ' 오는 편 날짜는 직접 넣어 주세요.' : ''}` : '읽을 수 있는 내용을 찾지 못했어요. 직접 입력해 주세요.';
   },
-  'open-booking': el => go({ name:'booking', id: el.dataset.id, tripId: V.tripId }),
+  'open-booking': el => go({ name:'booking', id: el.dataset.id, tripId: el.dataset.trip || V.tripId }),
+  'backup-later': () => { S.settings.backupSnooze = addDays(todayISO(), 3); save(); render(); },
   'add-booking': () => openBookingSheet(null),
   'edit-booking': el => openBookingSheet(el.dataset.id),
   'save-booking': () => saveBooking(),
@@ -2217,6 +2597,13 @@ const A = {
   'rt': el => { editing.rt = el.dataset.val; refreshBookingUI(); },
   'del-booking': el => { const b = S.bookings.find(x => x.id === el.dataset.id); confirmSheet({ title:'이 예약 정보를 삭제할까요?', body:`${b.title || KIND[b.kind].label}${b.photos.length ? `과 첨부 ${b.photos.length}개가` : '이'} 지워져요.`, ok:'삭제', danger:true }, () => { const idx = S.bookings.indexOf(b); S.bookings.splice(idx, 1); save(); back(); undoToast('예약 정보를 지웠어요', () => { S.bookings.splice(Math.min(idx, S.bookings.length), 0, b); save(); render(); }, () => photoDel(b.photos)); }); },
   'copy': el => copyText(el.dataset.text),
+  'cover-set': el => { editing.cover = el.dataset.val || null; refreshCoverPick(); },
+  'cover-from': () => { const g = $('#cover-grid'); const ph = tripPhotos(editing.id); g.innerHTML = `<div class="photo-grid" style="margin-top:8px">${ph.map(p => `<button type="button" class="ph-tile" data-act="cover-set" data-val="${esc(p)}" aria-label="이 사진을 표지로">${photoImg(p)}</button>`).join('')}</div>`; hydrate(g); },
+  'search-open': () => { focusAfter = 'search-q'; go({ name:'search', q:'' }); },
+  'search-go': el => searchGo(el),
+  'copy-trip': el => openCopySheet(el.dataset.id),
+  'save-copy': () => saveCopy(),
+  'recap': el => { go({ name:'trip', tripId: el.dataset.id, tab:'plan' }); SH.style = 'recap'; openShare(); },
   'wx-loc': () => openWxSheet(),
   'wx-scope': el => { editing.scope = el.dataset.val; $('#wx-scope').innerHTML = wxScopeSeg(tripDays(getTrip(V.tripId)).indexOf(V.day) + 1); },
   'wx-pick': el => wxPick(Number(el.dataset.val)),
@@ -2272,6 +2659,8 @@ document.addEventListener('submit', e => {
   }
   else if (f === 'exp') saveExp(); else if (f === 'money') saveMoneySettings();
   else if (f === 'wx-search'){ wxSearch(); }
+  else if (f === 'copy') saveCopy();
+  else if (f === 'search'){ const q = $('#search-q'); if (q) q.blur(); }
   else if (f === 'add-wish'){
     const v = val('wish-new'); if (!v) return; const type = e.target.dataset.type;
     if (type === 'buy'){ const p = parseBuyQuick(v); S.wishes.push({ id:uid(), tripId:V.tripId, type, label:p.label || v, store:p.store, qty:p.qty, memo:'', done:false }); }
@@ -2285,6 +2674,7 @@ document.addEventListener('submit', e => {
 document.addEventListener('input', e => {
   const t = e.target;
   if (t.dataset && t.dataset.note){ if (t.value.trim()) S.notes[t.dataset.note] = t.value; else delete S.notes[t.dataset.note]; save(); }
+  if (t.id === 'search-q'){ V.q = t.value; const box = $('#search-results'); if (box) box.innerHTML = searchListHTML(V.q); }
   if (['f-amt','f-bprice','f-pax','f-cur','f-bcur'].includes(t.id)) updPmHint();
   if (t.id === 'f-waddr' || t.id === 'f-wlabel'){ const a = $('#f-wmap'); if (a) a.href = mapUrl(val('f-waddr') || val('f-wlabel')); }
   if (t.id === 'f-from' || t.id === 'f-to'){ const rf = $('#f-rfrom'), rt2 = $('#f-rto'); if (rf) rf.placeholder = val('f-to') ? `비워두면 ${val('f-to')}` : '예: 오사카'; if (rt2) rt2.placeholder = val('f-from') ? `비워두면 ${val('f-from')}` : '예: 인천'; }
@@ -2293,6 +2683,8 @@ document.addEventListener('input', e => {
 document.addEventListener('change', e => {
   const t = e.target;
   if (t.id === 'f-photo-input'){ addPhotos(t.files); t.value = ''; }
+  if (t.id === 'f-receipt' && t.files[0]){ const f = t.files[0]; t.value = ''; readReceipt(f); }
+  if (t.id === 'f-cover-input' && t.files[0]){ const f = t.files[0]; t.value = ''; coverUpload(f); }
   if (t.id === 'f-frombase'){ V.fromBase = t.checked; render(); }
   if (t.id === 'f-cur' || t.id === 'f-bcur') updPmHint();
   if (t.id === 'restore-input' && t.files[0]){ const f = t.files[0]; t.value = ''; importBackup(f); }
