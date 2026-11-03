@@ -79,6 +79,7 @@
 }
 
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html{-webkit-text-size-adjust:100%}
 body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.45;-webkit-tap-highlight-color:transparent}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
@@ -208,6 +209,7 @@ img[data-photo]:not([src]){visibility:hidden}
 .bk-ev .kind-ic svg{width:18px;height:18px}
 .bigcard .kind-big{flex:none;height:150px;border-radius:16px;background:var(--soft);color:var(--accent);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-weight:700}
 .bigcard .kind-big.stay{background:var(--tag);color:var(--tag-ink)}
+.bigcard .kind-big.transit{background:var(--p3);color:var(--ink)}
 .bigcard .kind-big svg{width:40px;height:40px}
 .toggle{display:flex;align-items:center;gap:12px;min-height:48px;padding:0 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface);font-size:15px;cursor:pointer}
 .toggle input{width:22px;height:22px;accent-color:var(--accent);flex-shrink:0;margin:0}
@@ -263,6 +265,7 @@ img[data-photo]:not([src]){visibility:hidden}
 .kind-ic{width:40px;height:40px;border-radius:12px;background:var(--soft);color:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .kind-ic svg{width:20px;height:20px}
 .kind-ic.stay{background:var(--tag);color:var(--tag-ink)}
+.kind-ic.transit{background:var(--p3);color:var(--ink)}
 .bk h3{margin:1px 0 0;font-size:16px;font-weight:700;overflow-wrap:anywhere}
 .bk-bottom{display:flex;justify-content:space-between;align-items:center;gap:8px;padding-top:10px;border-top:1px solid var(--line);flex-wrap:wrap}
 .code{font-family:var(--mono);font-weight:600;font-size:13px;background:var(--bg);padding:4px 8px;border-radius:6px;letter-spacing:.04em}
@@ -303,6 +306,8 @@ ol.list{list-style:none;margin:0;padding:4px 0}
 .ord{display:flex;flex-shrink:0}
 .ord button[disabled]{opacity:.3}
 .check-row .mapbtn{margin-right:2px}
+.geo-warn{color:var(--danger);font-weight:600}
+.dist{color:var(--accent);font-weight:600}
 .warn{margin:10px 0 0;font-size:13px;color:var(--danger);font-weight:600}
 .grp-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin:4px 4px 6px}
 .exp-row{display:flex;align-items:center;gap:12px;width:100%;border:0;background:transparent;padding:10px 14px;text-align:left;color:var(--ink)}
@@ -406,7 +411,7 @@ ol.list{list-style:none;margin:0;padding:4px 0}
 document.documentElement.lang = 'ko';
 
 /* ---------- helpers ---------- */
-const APP_VERSION = '2026.11.03-2';
+const APP_VERSION = '2026.11.03-4';
 const EMBED = (()=>{ try { return window.self !== window.top; } catch(e){ return true; } })();
 const DOW = ['일','월','화','수','목','금','토'];
 const $ = (s, r=document) => r.querySelector(s);
@@ -472,6 +477,7 @@ const I = {
   camera: sv('<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>'),
   image: sv('<rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 9"/>', 1.6),
   gear: sv('<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/>', 1.7),
+  train: sv('<rect x="5" y="3" width="14" height="14" rx="3"/><path d="M5 11h14M9 21l-2 0 2-4M15 21h2l-2-4"/><circle cx="9" cy="14" r=".8" fill="currentColor"/><circle cx="15" cy="14" r=".8" fill="currentColor"/>', 1.7),
   plane: sv('<path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 00-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/>', 1.7),
   bed: sv('<path d="M3 18V6M3 14h18v4M21 14a3 3 0 00-3-3h-7v3"/><circle cx="7" cy="11" r="1.6"/>', 1.8),
   car: sv('<path d="M4 15l1.5-5A2 2 0 017.4 8.5h9.2a2 2 0 011.9 1.5L20 15v4h-3v-2H7v2H4z"/><circle cx="7.5" cy="14" r="1"/><circle cx="16.5" cy="14" r="1"/>', 1.8),
@@ -483,6 +489,7 @@ const I = {
   wallet: sv('<path d="M4 7a2 2 0 012-2h11v4"/><rect x="4" y="7" width="16" height="12" rx="2"/><path d="M16 13h2"/>'),
   card: sv('<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h3"/>'),
   cash: sv('<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 9v.01M18 15v.01"/>'),
+  route: sv('<circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><path d="M8 18h7a3 3 0 000-6H9a3 3 0 010-6h7"/>'),
   up: sv('<path d="M6 15l6-6 6 6"/>'),
   down: sv('<path d="M6 9l6 6 6-6"/>'),
   cal: sv('<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>'),
@@ -497,6 +504,7 @@ const KIND = {
   flight: { label:'항공권', icon:'plane', a:'출발', b:'도착', ph:'예: 인천 → 간사이', addr:'출발 공항 주소 (선택)', addrPh:'비워두면 출발지 공항을 찾아요' },
   stay:   { label:'숙소', icon:'bed', a:'체크인', b:'체크아웃', ph:'예: 난바역 근처 호텔', addr:'주소', addrPh:'숙소 주소나 이름' },
   car:    { label:'렌터카', icon:'car', a:'픽업', b:'반납', ph:'예: 토요타렌터카', addr:'픽업 장소', addrPh:'예: 후쿠오카공항 국제선 렌터카 카운터' },
+  transit:{ label:'교통', icon:'train', a:'출발', b:'도착', ph:'', addr:'타는 곳 (선택)', addrPh:'비워두면 출발지로 찾아요' },
   etc:    { label:'기타', icon:'ticket', a:'시작', b:'종료', ph:'예: 유니버설 입장권', addr:'주소', addrPh:'장소 주소나 이름' },
 };
 const THEMES = [
@@ -535,7 +543,11 @@ const CATS = [
   { id:'etc', name:'기타', color:'#8C857D', icon:'more' },
 ];
 const catOf = id => CATS.find(c => c.id === id) || CATS[CATS.length - 1];
-const KIND_CAT = { flight:'air', stay:'stay', car:'transport', etc:'tour' };
+const KIND_CAT = { flight:'air', stay:'stay', car:'transport', transit:'transport', etc:'tour' };
+const MODES = [['ktx','KTX·SRT'],['train','기차'],['subway','지하철·전철'],['bus','버스'],['taxi','택시'],['ferry','배'],['other','기타']];
+const modeName = m => (MODES.find(x => x[0] === m) || ['', '교통'])[1];
+const vehicleLabel = b => { const no = (b.flightNo || '').trim(); const mn = b.mode ? modeName(b.mode) : '교통'; return no ? (/[가-힣A-Za-z]/.test(no) ? no : `${mn} ${no}`) : mn; };
+const stationOf = (x, mode) => !x ? '' : (['ktx','train','subway'].includes(mode) && !/역$|station/i.test(x) ? `${x}역` : mode === 'bus' && !/터미널|정류장|terminal|stop/i.test(x) ? `${x} 터미널` : mode === 'ferry' && !/항|터미널|port/i.test(x) ? `${x}항` : x);
 const CUR_ALIAS = { '₩':'KRW','￦':'KRW','원':'KRW','krw':'KRW', '¥':'JPY','￥':'JPY','円':'JPY','엔':'JPY','jpy':'JPY', '$':'USD','us$':'USD','달러':'USD','불':'USD','usd':'USD',
   '€':'EUR','유로':'EUR','eur':'EUR', '위안':'CNY','cny':'CNY','rmb':'CNY', '대만달러':'TWD','twd':'TWD','nt$':'TWD', '홍콩달러':'HKD','hkd':'HKD', '바트':'THB','฿':'THB','thb':'THB',
   '동':'VND','₫':'VND','vnd':'VND', '싱가포르달러':'SGD','sgd':'SGD', '페소':'PHP','₱':'PHP','php':'PHP', '파운드':'GBP','£':'GBP','gbp':'GBP', '호주달러':'AUD','aud':'AUD' };
@@ -617,6 +629,7 @@ function parseBookingText(raw, t){
   const sc = [
     ['flight', count(/항공|탑승|편명|flight|airline|e-?ticket|좌석|수하물|운임|PNR/gi) + ([...text.matchAll(/\b([A-Z]{3})\b/g)].filter(m => IATA[m[1]]).length >= 2 ? 3 : 0)],
     ['stay', count(/호텔|숙소|숙박|체크\s*인|체크\s*아웃|check-?\s*in|check-?\s*out|객실|room|료칸|게스트하우스|리조트|resort|hotel/gi)],
+    ['transit', count(/KTX|SRT|ITX|무궁화|새마을|열차|승차권|호차|기차|신칸센|코레일|korail|고속버스|시외버스|버스|터미널|택시|페리|여객선|train|shinkansen|bus|taxi|ferry/gi)],
     ['car', count(/렌터카|렌트카|대여|인수|반납|차종|차량|rent\s*a?\s*car|rental|보험/gi)],
   ].sort((a, b) => b[1] - a[1]);
   if (sc[0][1] > 0) r.kind = sc[0][0];
@@ -625,6 +638,17 @@ function parseBookingText(raw, t){
 
   const codeM = text.match(/(?:예약\s*확인\s*번호|예약\s*번호|예약\s*코드|확인\s*번호|booking\s*(?:no\.?|number|reference|ref\.?|id|code)|confirmation\s*(?:no\.?|number|code|#)?|reservation\s*(?:no\.?|number|code|id)|itinerary\s*(?:no\.?|number)|PNR)[ \t]*[:：#.]?[ \t]*((?=[A-Z0-9-]*\d)[A-Z0-9][A-Z0-9-]{3,24})/i);
   if (codeM){ r.code = codeM[1].toUpperCase(); r.found.push('예약번호'); }
+  if (kind === 'transit'){
+    r.mode = /KTX|SRT|ITX|신칸센|shinkansen/i.test(text) ? 'ktx' : /무궁화|새마을|열차|기차|코레일|korail|train/i.test(text) ? 'train' : /지하철|전철|subway|metro/i.test(text) ? 'subway' : /버스|bus/i.test(text) ? 'bus' : /택시|taxi/i.test(text) ? 'taxi' : /페리|여객선|ferry/i.test(text) ? 'ferry' : 'other';
+    r.found.push(modeName(r.mode));
+    const tn = text.match(/(KTX(?:-산천|-이음)?|SRT|ITX(?:-새마을|-청춘)?|무궁화호?|새마을호?)\s*[-\s]?\s*(\d{2,5})/i) || text.match(/(?:열차\s*번호|편명|차량\s*번호|버스\s*번호)\s*[:：]?\s*([A-Z가-힣]*\s*\d{2,5})/i);
+    if (tn){ r.flightNo = (tn[2] ? `${tn[1]} ${tn[2]}` : tn[1]).trim(); r.found.push(r.flightNo); }
+    const seat = text.match(/(\d{1,2})\s*호차\s*[,\s]?\s*(\d{1,3}\s*[A-D]?)\s*(?:번)?/i); if (seat){ r.seat = `${seat[1]}호차 ${seat[2].replace(/\s/g, '')}`; r.found.push('좌석'); }
+    const f = lab(/(?:출발역|출발지|승차역|승차|출발\s*터미널|from)\s*[:：]\s*(.*)/i), to = lab(/(?:도착역|도착지|하차역|하차|도착\s*터미널|to)\s*[:：]\s*(.*)/i);
+    const arrow = text.match(/([가-힣A-Za-z]{2,12})\s*(?:→|->|⇀|➝|➔|>|~)\s*([가-힣A-Za-z]{2,12})/);
+    if (f || to){ r.from = f.split(/[\s(]/)[0]; r.to = to.split(/[\s(]/)[0]; r.found.push('출발·도착'); }
+    else if (arrow){ r.from = arrow[1]; r.to = arrow[2]; r.found.push(`${r.from} → ${r.to}`); }
+  }
   if (kind === 'flight'){
     const fnos = [];
     for (const m of text.matchAll(/\b([A-Z]{2}|[A-Z]\d|\d[A-Z])\s?(\d{2,4})\b/g)){ const f = (m[1] + m[2]).toUpperCase(); if (!/^(AM|PM)$/.test(m[1]) && !f.startsWith('20') && f !== r.code && !fnos.includes(f)) fnos.push(f); }
@@ -658,14 +682,14 @@ function parseBookingText(raw, t){
   }
   const timeNear = (from, limit=40) => { const x = times.find(tm => tm.i >= from && tm.i - from <= limit); return x ? x.t : ''; };
   const labeled = re => { const g = new RegExp(re.source, 'gi'); for (const m of text.matchAll(g)){ const d = dates.find(x => x.i >= m.index && x.i - m.index <= 70); if (d){ return { date:d.date, time: timeNear(d.end) || timeNear(m.index, 30) }; } } return null; };
-  const L = { stay:[/체크\s*인|check-?\s*in|입실/, /체크\s*아웃|check-?\s*out|퇴실/], car:[/픽업|인수|대여\s*(?:일시|시작|시간)?|pick-?\s*up/, /반납|return|drop-?\s*off/], flight:[/출발|depart/, /도착|arriv/] }[kind];
+  const L = { stay:[/체크\s*인|check-?\s*in|입실/, /체크\s*아웃|check-?\s*out|퇴실/], car:[/픽업|인수|대여\s*(?:일시|시작|시간)?|pick-?\s*up/, /반납|return|drop-?\s*off/], flight:[/출발|depart/, /도착|arriv/], transit:[/출발|승차|depart/, /도착|하차|arriv/] }[kind];
   let A = null, B = null;
   if (L){ A = labeled(L[0]); B = labeled(L[1]); }
   const pairs = dates.map(d => ({ date:d.date, time: timeNear(d.end) }));
   if (!A && pairs[0]) A = pairs[0];
   if (!B){ const nxt = pairs.find(p => A && (p.date !== A.date || (p.time && p.time !== A.time))); if (nxt) B = nxt; }
   if (A && !B && times.length >= 2 && new Set(dates.map(d => d.date)).size <= 1){ const ts = times.map(x => x.t).filter(x => x !== A.time); if (!A.time) A.time = times[0].t; if (ts.length) B = { date: A.date, time: ts[0] }; }
-  if (kind === 'flight' && A && B && B.date === A.date && B.time && A.time && B.time < A.time) B.date = addDays(A.date, 1);
+  if ((kind === 'flight' || kind === 'transit') && A && B && B.date === A.date && B.time && A.time && B.time < A.time) B.date = addDays(A.date, 1);
   if (kind === 'flight' && (r.roundTrip || /왕복|round\s*-?\s*trip|오는\s*편|귀국\s*편|return\s*flight|inbound/i.test(text))){
     const evs = []; dates.forEach(d => { const t1 = timeNear(d.end); evs.push({ date:d.date, time:t1 }); const t2 = times.find(tm => tm.i > d.end + 5 && tm.i - d.end <= 40 && tm.t !== t1); if (t2 && !dates.some(x => x.i > d.end && x.i < t2.i)) evs.push({ date:d.date, time:t2.t }); });
     const uniq = evs.filter((e, i) => !evs.slice(0, i).some(x => x.date === e.date && x.time === e.time));
@@ -675,8 +699,9 @@ function parseBookingText(raw, t){
     if (r.roundTrip) r.found.push(r.retStart ? '왕복 오는 편' : '왕복');
   }
   const defT = { stay:['15:00','11:00'], car:['10:00','10:00'] }[kind] || ['09:00','18:00'];
-  if (A){ r.start = `${A.date}T${A.time || defT[0]}`; r.found.push(kind === 'stay' ? '체크인' : kind === 'car' ? '픽업 일시' : kind === 'flight' ? '출발 일시' : '날짜'); }
-  if (B){ r.end = `${B.date}T${B.time || defT[1]}`; r.found.push(kind === 'stay' ? '체크아웃' : kind === 'car' ? '반납 일시' : kind === 'flight' ? '도착 일시' : '종료 날짜'); }
+  const air = kind === 'flight' || kind === 'transit';
+  if (A){ r.start = `${A.date}T${A.time || defT[0]}`; r.found.push(kind === 'stay' ? '체크인' : kind === 'car' ? '픽업 일시' : air ? '출발 일시' : '날짜'); }
+  if (B){ r.end = `${B.date}T${B.time || defT[1]}`; r.found.push(kind === 'stay' ? '체크아웃' : kind === 'car' ? '반납 일시' : air ? '도착 일시' : '종료 날짜'); }
 
   // amounts: total paid, discounts, list price
   const TOTAL = /(총\s*(?:결제|금액|요금|합계|액)|결제\s*(?:금액|하신|완료)|최종|합계|실\s*결제|총액|청구|total|amount\s*(?:paid|due|charged)|grand\s*total|you\s*paid|charged)/i;
@@ -713,7 +738,7 @@ function parseBookingText(raw, t){
     r.address = lab(/(?:픽업|인수|대여|출고)\s*(?:장소|지점|영업소|위치|location)\s*[:：]\s*(.*)/i) || lab(/pick-?\s*up\s*(?:location|place)?\s*[:：]\s*(.*)/i) || addr;
     r.address2 = lab(/(?:반납|입고)\s*(?:장소|지점|영업소|위치|location)\s*[:：]\s*(.*)/i) || lab(/(?:return|drop-?\s*off)\s*(?:location|place)?\s*[:：]\s*(.*)/i);
     if (r.address2 && r.address2 === r.address) r.address2 = '';
-  } else if (kind !== 'flight'){
+  } else if (kind !== 'flight' && kind !== 'transit'){
     r.title = lab(/(?:상품명|상품|티켓명|이름|name)\s*[:：]\s*(.*)/i) || (lines[0] && lines[0].length <= 30 ? lines[0] : '');
     if (addr) r.address = addr;
   }
@@ -956,11 +981,17 @@ function bookingName(b){
     if (from && to) return `${from} → ${to}`;
     const t = (b.title || '').trim(); return t && !['출발','도착','항공','항공권','비행기'].includes(t) ? t : (from || to ? `${from || ''}${to ? to + '행' : ''}` : '항공편');
   }
+  if (b.kind === 'transit'){
+    const { from, to } = flightRoute(b); const vl = vehicleLabel(b);
+    if (from && to) return `${vl} · ${from} → ${to}`;
+    return b.title && b.title !== modeName(b.mode) ? b.title : vl;
+  }
   return b.title || k.label;
 }
 function bookingWhen(b){
   const k = KIND[b.kind] || KIND.etc; if (!b.start) return '';
   if (b.kind === 'flight' && b.roundTrip && b.retStart) return `가는 편 ${fmtDT(b.start)} · 오는 편 ${fmtDT(b.retStart)}`;
+  if (b.kind === 'transit' && b.end) return `${fmtDT(b.start)} → ${b.end.slice(0,10) === b.start.slice(0,10) ? b.end.slice(11,16) : fmtDT(b.end)}`;
   if (b.kind === 'flight' && b.end) return `${fmtDT(b.start)} → ${b.end.slice(0,10) === b.start.slice(0,10) ? b.end.slice(11,16) : fmtDT(b.end)}`;
   return `${k.a} ${fmtDT(b.start)}`;
 }
@@ -986,6 +1017,11 @@ function bookingEntries(tid, day){
         if (rsd === day) out.push(mk('c', b.retStart.slice(11,16), k.a, { place: rfrom ? `${rfrom} 출발` : '귀국편 출발', sub: rto ? `${rto}행 오는 편` : '오는 편', address: airport(rfrom), code: backNo }));
         if (red === day) out.push(mk('d', b.retEnd.slice(11,16), k.b, { place: rto ? `${rto} 도착` : '귀국편 도착', sub: rfrom ? `${rfrom}발 오는 편` : '오는 편', address: airport(rto), code: backNo }));
       }
+    } else if (b.kind === 'transit'){
+      const { from, to } = flightRoute(b); const vl = vehicleLabel(b);
+      const seat = b.seat ? ` · ${b.seat}` : '';
+      if (sd === day) out.push(mk('a', st, k.a, { place: from ? `${from} 출발` : `${vl} 출발`, sub: `${to ? `${to}행 ` : ''}${vl}${seat}`, address: b.address || stationOf(from, b.mode), code: b.code }));
+      if (ed === day && b.end) out.push(mk('b', et, k.b, { place: to ? `${to} 도착` : `${vl} 도착`, sub: `${from ? `${from}발 ` : ''}${vl}`, address: stationOf(to, b.mode), code: b.code }));
     } else {
       const two = b.kind === 'car' && b.address2 && b.address2 !== b.address;
       if (sd === day) out.push(mk('a', st, k.a, two ? { sub: `${k.label} · ${k.a} · ${b.address}` } : {}));
@@ -1236,7 +1272,87 @@ function renderBookings(t){
 /* ---------- 살 것 · 가볼 곳 ---------- */
 function stayBase(t){
   const st = S.bookings.filter(b => b.tripId === t.id && b.kind === 'stay' && (b.address || b.title));
-  return st.length ? { place: st[0].title || '숙소', address: st[0].address || st[0].title } : null;
+  return st.length ? { place: st[0].title || '숙소', address: st[0].address || st[0].title, ref: st[0] } : null;
+}
+/* ---------- 가까운 순서 정렬 (OpenStreetMap Nominatim, 장소 이름·주소만 보냄) ---------- */
+const COORD_RE = /^\s*(-?\d{1,2}(?:\.\d+)?)\s*[,，\s]\s*(-?\d{1,3}(?:\.\d+)?)\s*$/;
+function haversine(a, b){
+  const R = 6371, rad = x => x * Math.PI / 180;
+  const dLat = rad(b.lat - a.lat), dLng = rad(b.lng - a.lng);
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+const fmtKm = d => d < 1 ? `${Math.round(d * 1000 / 10) * 10}m` : `${d < 10 ? d.toFixed(1) : Math.round(d)}km`;
+const geoKey = o => `${(o.address || '').trim()}|${(o.label || o.title || o.place || '').trim()}`;
+const hasGeo = o => o && typeof o.lat === 'number' && typeof o.lng === 'number' && o.geoQ === geoKey(o);
+/* nearest neighbour from the start, then 2-opt for an open path */
+function orderByDistance(start, pts){
+  if (pts.length < 2) return pts.slice();
+  if (!start){ let best = null, bk = Infinity; pts.forEach(p0 => { const rest = orderByDistance(p0, pts.filter(x => x !== p0)); const path = [p0, ...rest]; const k = pathKm(null, path); if (k < bk){ bk = k; best = path; } }); return best; }
+  const left = pts.slice(); const path = [];
+  let cur = start || left.shift(); if (!start) path.push(cur);
+  while (left.length){ let bi = 0, bd = Infinity; left.forEach((p, i) => { const d = haversine(cur, p); if (d < bd){ bd = d; bi = i; } }); cur = left.splice(bi, 1)[0]; path.push(cur); }
+  const full = start ? [start, ...path] : path; const n = full.length; let improved = true, guard = 0;
+  const dist = (i, j) => haversine(full[i], full[j]);
+  while (improved && guard++ < 50){
+    improved = false;
+    for (let i = 1; i < n - 1; i++) for (let k = i + 1; k < n; k++){
+      const before = dist(i - 1, i) + (k + 1 < n ? dist(k, k + 1) : 0);
+      const after = dist(i - 1, k) + (k + 1 < n ? dist(i, k + 1) : 0);
+      if (after + 1e-9 < before){ full.splice(i, k - i + 1, ...full.slice(i, k + 1).reverse()); improved = true; }
+    }
+  }
+  return start ? full.slice(1) : full;
+}
+const pathKm = (start, pts) => { let s = 0, prev = start; pts.forEach(p => { if (prev) s += haversine(prev, p); prev = p; }); return s; };
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+let lastGeoAt = 0;
+async function geocodeOne(q){
+  const c = q.match(COORD_RE); if (c){ const lat = +c[1], lng = +c[2]; if (Math.abs(lat) <= 90 && Math.abs(lng) <= 180) return { lat, lng }; }
+  const wait = 1100 - (Date.now() - lastGeoAt); if (wait > 0) await sleep(wait); lastGeoAt = Date.now();
+  const res = await fetch('https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&accept-language=ko&q=' + enc(q), { headers: { 'Accept': 'application/json' } });
+  if (!res.ok) throw new Error('http ' + res.status);
+  const j = await res.json(); return j && j[0] ? { lat: +j[0].lat, lng: +j[0].lon } : null;
+}
+async function locate(o, labelField){
+  if (hasGeo(o)) return true;
+  const qs = [...new Set([(o.address || '').trim(), (o[labelField] || '').trim()].filter(Boolean))];
+  for (const q of qs){ const g = await geocodeOne(q); if (g){ o.lat = g.lat; o.lng = g.lng; o.geoQ = geoKey(o); o.geoMiss = false; return true; } }
+  o.lat = o.lng = undefined; o.geoQ = geoKey(o); o.geoMiss = true; return false;
+}
+async function sortNearest(t){
+  if (!navigator.onLine) return toast('위치를 찾으려면 인터넷 연결이 필요해요', 3500);
+  const todo = S.wishes.filter(w => w.tripId === t.id && w.type === 'place' && !w.done).sort((a, b) => (a.order || 0) - (b.order || 0));
+  if (todo.length < 2) return toast('가볼 곳이 2곳 이상일 때 정렬할 수 있어요');
+  const sb = V.fromBase !== false ? S.bookings.find(b => b.tripId === t.id && b.kind === 'stay' && (b.address || b.title)) : null;
+  const need = [...(sb ? [sb] : []), ...todo].filter(o => !hasGeo(o)).length;
+  let n = 0;
+  try {
+    if (sb){ if (!hasGeo(sb)) toast(`위치 찾는 중 ${++n}/${need}`, 60000); await locate(sb, 'title'); }
+    for (const w of todo){ if (!hasGeo(w)) toast(`위치 찾는 중 ${++n}/${need}`, 60000); await locate(w, 'label'); }
+  } catch(e){ save(); render(); return toast('위치를 찾지 못했어요. 인터넷 연결을 확인하고 다시 눌러 주세요.', 4000); }
+  // drop matches that land far away from the rest (wrong city with the same name)
+  const found = todo.filter(w => typeof w.lat === 'number');
+  const ref = sb && typeof sb.lat === 'number' ? sb : null;
+  if (found.length >= 2 || ref){
+    const pool = ref ? [ref, ...found] : found;
+    const med = k => { const v = pool.map(p => p[k]).sort((a, b) => a - b); return v[Math.floor(v.length / 2)]; };
+    const c = ref || { lat: med('lat'), lng: med('lng') };
+    found.forEach(w => { if (haversine(c, w) > 150){ w.geoFar = true; } else w.geoFar = false; });
+  }
+  const ok = found.filter(w => !w.geoFar), miss = todo.filter(w => typeof w.lat !== 'number' || w.geoFar);
+  const start = ref ? { lat: ref.lat, lng: ref.lng } : null;
+  const sorted = orderByDistance(start, ok);
+  [...sorted, ...miss].forEach((w, i) => { w.order = i; });
+  V.reorder = false; save(); render();
+  const km = pathKm(start, sorted);
+  if (!sorted.length) return toast('어느 곳의 위치도 찾지 못했어요. 주소를 영어나 현지어로 넣어 보세요.', 5000);
+  toast(`가까운 순서로 정렬했어요 · 직선 거리 ${fmtKm(km)}${miss.length ? ` · ${miss.length}곳은 위치를 몰라 맨 뒤에 뒀어요` : ''}`, 5000);
+}
+function askSortNearest(){
+  const t = getTrip(V.tripId);
+  if (S.settings.geoOk) return sortNearest(t);
+  confirmSheet({ title:'가까운 순서로 정렬할까요?', body:'가볼 곳의 이름과 주소를 OpenStreetMap에 보내 위치를 찾아요. 여행 일정, 예약번호, 사진은 보내지 않아요. 찾은 위치는 이 폰에 저장해서 다음부터는 바로 정렬해요.', ok:'정렬하기' }, () => { S.settings.geoOk = true; save(); sortNearest(t); });
 }
 const wishItem = w => w.itemId ? S.items.find(i => i.id === w.itemId) : null;
 function renderChecklists(t){
@@ -1287,19 +1403,23 @@ function renderPlaces(t){
     const r = routeUrl(pts); const over = pts.length > 10;
     h += `<section class="panel" style="display:flex;flex-direction:column;gap:10px">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><p style="margin:0;font-weight:700">동선 · ${todo.length}곳</p>
-        <button type="button" class="btn sm${reorder ? ' primary' : ''}" data-act="reorder">${reorder ? '순서 완료' : '순서 바꾸기'}</button></div>
+        <button type="button" class="btn sm${reorder ? ' primary' : ''}" data-act="reorder">${reorder ? '순서 완료' : '직접 바꾸기'}</button></div>
+      ${todo.length >= 2 && !reorder ? `<button type="button" class="btn soft block" data-act="sort-near">${I.route}가까운 순서로 정렬</button>` : ''}
       ${base ? `<label class="toggle" for="f-frombase" style="min-height:44px"><input type="checkbox" id="f-frombase"${V.fromBase !== false ? ' checked' : ''}><span>숙소에서 출발 · ${esc(base.place)}</span></label>` : ''}
       ${r ? `<a class="btn primary block" href="${r}" target="_blank" rel="noopener">${I.pin}구글맵에서 이 순서로 동선 보기</a>` : `<p class="hint">가볼 곳이 2곳 이상이면 동선을 볼 수 있어요.</p>`}
       ${over ? `<p class="hint">구글맵은 한 번에 10곳까지만 이어져요. 앞의 10곳만 보여줘요.</p>` : ''}
       <p class="hint">구글맵이 이동 시간과 길을 보여줘요. 순서는 위에서부터예요.</p></section>`;
-    h += `<ol class="list places">${todo.map((w, i) => placeRow(w, i, todo.length, reorder)).join('')}</ol>`;
+    const sb = base && V.fromBase !== false ? base.ref : null; let prev = sb && hasGeo(sb) ? sb : null;
+    h += `<ol class="list places">${todo.map((w, i) => { const ok = hasGeo(w) && !w.geoFar; const d = ok && prev ? haversine(prev, w) : null; if (ok) prev = w; else prev = null; return placeRow(w, i, todo.length, reorder, d, i === 0 && sb); }).join('')}</ol>`;
   }
   if (dn.length) h += `<section style="display:flex;flex-direction:column;gap:6px"><h2 class="section-title" style="font-size:13px">다녀온 곳 ${dn.length}</h2><div class="list">${dn.map(w => placeRow(w, -1, 0, false)).join('')}</div></section>`;
   return h + `</div>`;
 }
-function placeRow(w, i, n, reorder){
+function placeRow(w, i, n, reorder, dist, fromBase){
   const it = wishItem(w); const t = getTrip(w.tripId); const dayIdx = it && t ? tripDays(t).indexOf(it.date) : -1;
-  const sub = [w.address && w.address !== w.label ? esc(w.address) : '', dayIdx >= 0 ? `Day ${dayIdx + 1} 일정에 있음` : '', w.memo ? esc(w.memo) : ''].filter(Boolean).join(' · ');
+  const fresh = w.geoQ === geoKey(w);
+  const geoNote = !w.done && fresh && w.geoMiss ? '<span class="geo-warn">위치를 못 찾았어요 · 주소를 고쳐 주세요</span>' : !w.done && fresh && w.geoFar ? '<span class="geo-warn">다른 지역으로 찾아졌어요 · 주소를 확인해 주세요</span>' : '';
+  const sub = [dist != null ? `<span class="dist">${fromBase ? '숙소에서' : '앞 장소에서'} 직선 ${fmtKm(dist)}</span>` : '', geoNote, w.address && w.address !== w.label && !COORD_RE.test(w.address) ? esc(w.address) : '', dayIdx >= 0 ? `Day ${dayIdx + 1} 일정에 있음` : '', w.memo ? esc(w.memo) : ''].filter(Boolean).join(' · ');
   const tag = i >= 0 ? 'li' : 'div';
   const right = reorder
     ? `<span class="ord"><button type="button" class="iconbtn sm" data-act="move-wish" data-id="${w.id}" data-val="-1" aria-label="${esc(w.label)} 위로"${i === 0 ? ' disabled' : ''}>${I.up}</button><button type="button" class="iconbtn sm" data-act="move-wish" data-id="${w.id}" data-val="1" aria-label="${esc(w.label)} 아래로"${i === n - 1 ? ' disabled' : ''}>${I.down}</button></span>`
@@ -1325,7 +1445,7 @@ function openWishSheet(id){
     : `<div class="field"><label class="flabel" for="f-wlabel">장소 이름</label><input class="input" id="f-wlabel" value="${esc(w.label)}"></div>
       <div class="field"><label class="flabel" for="f-waddr">주소 (선택)</label><div class="inline"><input class="input" id="f-waddr" value="${esc(w.address || '')}" placeholder="비워두면 이름으로 찾아요">
         <a class="btn soft" id="f-wmap" href="${mapUrl(w.address || w.label)}" target="_blank" rel="noopener">${I.pin}확인</a></div>
-        <p class="hint">구글맵에서 장소를 찾은 뒤 주소를 복사해 붙여넣으면 동선이 정확해져요.</p></div>
+        <p class="hint">구글맵에서 장소를 찾은 뒤 주소를 복사해 붙여넣으면 동선이 정확해져요. 위치를 못 찾으면 구글맵에서 그 자리를 길게 눌러 나오는 좌표(예: 34.7053, 135.4904)를 넣어도 돼요.</p></div>
       <div class="field"><label class="flabel" for="f-wday">일정에 넣기</label><select class="input" id="f-wday"><option value="">아직 안 정함</option>${days.map((d, i) => `<option value="${d}"${it && it.date === d ? ' selected' : ''}>Day ${i+1} · ${md(d)}</option>`).join('')}</select>
         <p class="hint">날짜를 고르면 그날 일정에 들어가요. 시간은 일정에서 정하면 돼요.</p></div>`;
   openSheet(`${sheetHead(w.type === 'buy' ? '살 것' : '가볼 곳', 'save-wish')}<form class="form" data-form="wish" autocomplete="off">
@@ -1399,7 +1519,10 @@ function renderBooking(){
     const split = pax > 1 ? (b.priceMode === 'each' ? `1인 ${money(b.price, b.currency)} × ${pax}명` : `${pax}명 · 1인 ${money(tot / pax, b.currency)}`) : '';
     h += `<section class="panel row"><div class="minw"><p class="cap">결제 금액${pax > 1 ? ' · 합계' : ''}</p><p class="val">${money(tot, b.currency)}</p>${split ? `<p class="muted small" style="margin:0">${split}</p>` : ''}${k2 != null ? `<p class="muted small" style="margin:0">약 ${money(k2, 'KRW')}</p>` : ''}</div><button type="button" class="btn sm" data-act="tab" data-val="money">비용 보기</button></section>`; }
   if (b.code) h += `<section class="panel row"><div class="minw"><p class="cap">예약번호</p><p class="code-big">${esc(b.code)}</p></div><button type="button" class="btn sm soft" data-act="copy" data-text="${esc(b.code)}">${I.copy}복사</button></section>`;
-  if (b.kind === 'flight' && (b.start || b.end)){
+  if (b.kind === 'transit' && (b.start || b.end)){
+    const { from, to } = flightRoute(b);
+    h += `<section class="panel"><p class="cap">${esc(vehicleLabel(b))}${b.seat ? ` · ${esc(b.seat)}` : ''}</p><div class="leg"><div><p class="val">${b.start ? fmtDT(b.start) : '—'}</p><p class="muted small" style="margin:0">${esc(from || '출발')}</p></div><span class="muted" aria-hidden="true">→</span><div style="text-align:right"><p class="val">${b.end ? fmtDT(b.end) : '—'}</p><p class="muted small" style="margin:0">${esc(to || '도착')}</p></div></div></section>`;
+  } else if (b.kind === 'flight' && (b.start || b.end)){
     const { from, to } = flightRoute(b);
     const leg = (label, st, en, fno, a, z) => `<section class="panel"><p class="cap">${label}${fno ? ` · ${esc(fno)}` : ''}</p><div class="leg"><div><p class="val">${st ? fmtDT(st) : '—'}</p><p class="muted small" style="margin:0">${esc(a || '출발')}</p></div><span class="muted" aria-hidden="true">→</span><div style="text-align:right"><p class="val">${en ? fmtDT(en) : '—'}</p><p class="muted small" style="margin:0">${esc(z || '도착')}</p></div></div></section>`;
     h += leg(b.roundTrip ? '가는 편' : '항공편', b.start, b.end, b.flightNo, from, to);
@@ -1565,20 +1688,23 @@ function openBookingSheet(id){
   const b = id ? S.bookings.find(x => x.id === id) : null; if (id && !b) return;
   const t = getTrip(b ? b.tripId : V.tripId);
   editing = { kind:'booking', pay: normPay(b ? b.pay : t.lastPay), id: b ? b.id : null, bk: b ? b.kind : 'flight', rt: b && b.roundTrip ? 'round' : 'one', pm: b ? (b.priceMode === 'each' ? 'each' : 'total') : 'each' }; startDraft(b ? b.photos : []);
-  const rt = b && b.kind === 'flight' ? flightRoute(b) : { from:'', to:'' };
+  const rt = b && ['flight','transit'].includes(b.kind) ? flightRoute(b) : { from:'', to:'' };
+  editing.mode = b && b.mode ? b.mode : 'ktx';
   openSheet(`${sheetHead(b ? '예약 수정' : '예약 추가', 'save-booking')}<form class="form" data-form="booking" autocomplete="off">
     <details class="paste"><summary>${I.copy}예약 내역 붙여넣어 자동 입력</summary>
       <label class="sr" for="f-paste">예약 내역</label><textarea class="input" id="f-paste" rows="5" placeholder="예약 확인 메일이나 앱의 예약 내역을 복사해서 붙여넣으세요. 예약번호, 날짜, 시간, 금액, 할인을 찾아 채워요."></textarea>
       <button type="button" class="btn primary block" data-act="parse-paste">읽어서 채우기</button>
       <p class="hint" id="paste-result" role="status"></p>
       <p class="hint">붙여넣은 글은 폰 안에서만 읽고 따로 저장하지 않아요.</p></details>
-    <div class="seg" style="--n:4" role="group" aria-label="예약 종류" id="bk-kinds">${bkKindBtns()}</div>
-    <div id="w-route" style="display:flex;flex-direction:column;gap:14px"${editing.bk === 'flight' ? '' : ' hidden'}>
-      <div class="seg" role="group" aria-label="편도 또는 왕복" id="rt-seg">${rtSeg()}</div>
+    <div class="seg" style="--n:5" role="group" aria-label="예약 종류" id="bk-kinds">${bkKindBtns()}</div>
+    <div id="w-route" style="display:flex;flex-direction:column;gap:14px"${['flight','transit'].includes(editing.bk) ? '' : ' hidden'}>
+      <div class="field" id="w-mode"${editing.bk === 'transit' ? '' : ' hidden'}><span class="flabel">교통수단</span><div class="chipsel" id="mode-chips">${modeChips()}</div></div>
+      <div class="seg" role="group" aria-label="편도 또는 왕복" id="rt-seg"${editing.bk === 'flight' ? '' : ' hidden'}>${rtSeg()}</div>
       <div class="grid2"><div class="field"><label class="flabel" for="f-from">출발지</label><input class="input" id="f-from" value="${esc(rt.from)}" placeholder="예: 인천"></div>
         <div class="field"><label class="flabel" for="f-to">도착지</label><input class="input" id="f-to" value="${esc(rt.to)}" placeholder="예: 후쿠오카"></div></div>
       <div class="grid2"><div class="field"><label class="flabel" for="f-fno" id="l-fno">편명 (선택)</label><input class="input" id="f-fno" value="${esc(b ? b.flightNo || '' : '')}" placeholder="예: 7C1401" autocapitalize="characters" style="font-family:var(--mono)"></div>
-        <div class="field" id="w-rfno"${editing.rt === 'round' ? '' : ' hidden'}><label class="flabel" for="f-rfno">오는 편 편명 (선택)</label><input class="input" id="f-rfno" value="${esc(b ? b.retFlightNo || '' : '')}" placeholder="예: 7C1402" autocapitalize="characters" style="font-family:var(--mono)"></div></div>
+        <div class="field" id="w-seat"${editing.bk === 'transit' ? '' : ' hidden'}><label class="flabel" for="f-seat">좌석 (선택)</label><input class="input" id="f-seat" value="${esc(b ? b.seat || '' : '')}" placeholder="예: 5호차 12A"></div>
+        <div class="field" id="w-rfno"${editing.rt === 'round' && editing.bk === 'flight' ? '' : ' hidden'}><label class="flabel" for="f-rfno">오는 편 편명 (선택)</label><input class="input" id="f-rfno" value="${esc(b ? b.retFlightNo || '' : '')}" placeholder="예: 7C1402" autocapitalize="characters" style="font-family:var(--mono)"></div></div>
     </div>
     <div class="field" id="w-title"${editing.bk === 'flight' ? ' hidden' : ''}><label class="flabel" for="f-btitle">이름</label><input class="input" id="f-btitle" value="${esc(b && b.kind !== 'flight' ? b.title : '')}" placeholder="${KIND[editing.bk].ph}"></div>
     <div class="field"><label class="flabel" for="f-code" id="l-code">예약번호</label><input class="input" id="f-code" value="${esc(b ? b.code : '')}" placeholder="예: K7X2QM" autocapitalize="characters" style="font-family:var(--mono)"></div>
@@ -1604,20 +1730,26 @@ function openBookingSheet(id){
   updPmHint(); refreshBookingUI();
 }
 const rtSeg = () => segBtn('rt', 'one', '편도', editing.rt !== 'round') + segBtn('rt', 'round', '왕복', editing.rt === 'round');
+const modeChips = () => MODES.map(([id, nm]) => `<button type="button" class="chipbtn${editing.mode === id ? ' on' : ''}" data-act="bk-mode" data-val="${id}" aria-pressed="${editing.mode === id}">${nm}</button>`).join('');
 function refreshBookingUI(){
-  const k = KIND[editing.bk]; const fl = editing.bk === 'flight'; const round = fl && editing.rt === 'round';
-  $('#bk-kinds').innerHTML = bkKindBtns(); $('#rt-seg').innerHTML = rtSeg();
+  const k = KIND[editing.bk]; const fl = editing.bk === 'flight'; const tr = editing.bk === 'transit'; const round = fl && editing.rt === 'round';
+  $('#bk-kinds').innerHTML = bkKindBtns(); $('#rt-seg').innerHTML = rtSeg(); $('#mode-chips').innerHTML = modeChips();
   $('#l-a').textContent = round ? '가는 편 출발' : k.a; $('#l-b').textContent = round ? '가는 편 도착' : k.b;
-  $('#f-btitle').placeholder = k.ph; $('#w-route').hidden = !fl; $('#w-title').hidden = fl;
-  $('#l-fno').textContent = round ? '가는 편 편명 (선택)' : '편명 (선택)'; $('#w-rfno').hidden = !round; $('#w-ret').hidden = !round;
+  $('#f-btitle').placeholder = k.ph; $('#w-route').hidden = !(fl || tr); $('#w-title').hidden = fl || tr;
+  $('#w-mode').hidden = !tr; $('#rt-seg').hidden = !fl; $('#w-seat').hidden = !tr;
+  $('#f-from').placeholder = tr ? (editing.mode === 'taxi' ? '예: 호텔' : '예: 서울') : '예: 인천'; $('#f-to').placeholder = tr ? (editing.mode === 'taxi' ? '예: 하카타역' : '예: 부산') : '예: 후쿠오카';
+  $('#f-fno').placeholder = tr ? (editing.mode === 'ktx' ? '예: KTX 101' : editing.mode === 'bus' ? '예: 1002번' : '선택') : '예: 7C1401';
+  $('#l-fno').textContent = tr ? (editing.mode === 'taxi' ? '차량·호출 번호 (선택)' : '열차·버스 번호 (선택)') : round ? '가는 편 편명 (선택)' : '편명 (선택)'; $('#w-rfno').hidden = !round; $('#w-ret').hidden = !round;
   $('#l-addr').textContent = k.addr; $('#f-baddr').placeholder = k.addrPh; $('#w-addr2').hidden = editing.bk !== 'car';
 }
 const bkKindBtns = () => Object.entries(KIND).map(([k,v]) => segBtn('bk-kind', k, v.label, editing.bk === k)).join('');
 function applyParsed(r){
   if (r.kind && r.kind !== editing.bk) A['bk-kind']({ dataset:{ val: r.kind } });
+  if (r.mode){ editing.mode = r.mode; refreshBookingUI(); }
   const set = (id, v) => { if (v === undefined || v === null || v === '') return; const el = document.getElementById(id); if (el) el.value = v; };
   if (r.roundTrip){ editing.rt = 'round'; refreshBookingUI(); }
   set('f-rfrom', r.retFrom); set('f-rto', r.retTo);
+  set('f-seat', r.seat);
   set('f-fno', r.flightNo); set('f-rfno', r.retFlightNo); set('f-rstart', r.retStart); set('f-rend', r.retEnd);
   set('f-from', r.from); set('f-to', r.to); set('f-btitle', r.title); set('f-code', r.code); set('f-bstart', r.start); set('f-bend', r.end);
   set('f-baddr', r.address); set('f-baddr2', r.address2); if (r.price) set('f-bprice', String(r.price)); set('f-bcur', r.currency);
@@ -1626,16 +1758,16 @@ function applyParsed(r){
   if (r.memoAdd){ const m = $('#f-bmemo'); if (m && !m.value.includes(r.memoAdd)) m.value = (m.value.trim() ? m.value.trim() + '\n' : '') + r.memoAdd; }
 }
 function saveBooking(){
-  const isFlight = editing.bk === 'flight';
-  const from = isFlight ? val('f-from') : '', to = isFlight ? val('f-to') : '', code = val('f-code');
+  const isFlight = editing.bk === 'flight', isTransit = editing.bk === 'transit';
+  const from = isFlight || isTransit ? val('f-from') : '', to = isFlight || isTransit ? val('f-to') : '', code = val('f-code');
   const roundTrip = isFlight && editing.rt === 'round';
   let retFrom = roundTrip ? val('f-rfrom') : '', retTo = roundTrip ? val('f-rto') : '';
   if (retFrom === to) retFrom = ''; if (retTo === from) retTo = '';
-  const title = isFlight ? (from && to ? (roundTrip ? (retFrom || retTo ? `${from} → ${to} · ${retFrom || to} → ${retTo || from}` : `${from} ⇄ ${to} 왕복`) : `${from} → ${to}`) : (from || to)) : val('f-btitle');
+  const title = isTransit ? (from && to ? `${from} → ${to}` : (from || to || modeName(editing.mode))) : isFlight ? (from && to ? (roundTrip ? (retFrom || retTo ? `${from} → ${to} · ${retFrom || to} → ${retTo || from}` : `${from} ⇄ ${to} 왕복`) : `${from} → ${to}`) : (from || to)) : val('f-btitle');
   if (!title && !code) return showErr(isFlight ? '출발지·도착지나 예약번호 중 하나는 적어 주세요.' : '이름이나 예약번호 중 하나는 적어 주세요.');
   const showInPlan = !!($('#f-bshow') && $('#f-bshow').checked);
   const pr = parseFloat(val('f-bprice').replace(/[,\s원엔₩¥$]/g, '')); const price = pr > 0 ? pr : null; const currency = val('f-bcur') || 'KRW';
-  const data = { kind: editing.bk, title, from, to, roundTrip, retFrom, retTo, flightNo: isFlight ? val('f-fno').toUpperCase() : '', retFlightNo: roundTrip ? val('f-rfno').toUpperCase() : '', retStart: roundTrip ? val('f-rstart') : '', retEnd: roundTrip ? val('f-rend') : '', code, start: val('f-bstart'), end: val('f-bend'), address: val('f-baddr'), address2: editing.bk === 'car' ? val('f-baddr2') : '', memo: val('f-bmemo'), showInPlan, price, currency, pay: normPay(editing.pay), priceMode: editing.pm === 'each' ? 'each' : 'total', pax: Math.min(50, Math.max(1, parseInt(val('f-pax'), 10) || 1)), photos: commitDraft() };
+  const data = { kind: editing.bk, title, from, to, roundTrip, retFrom, retTo, flightNo: isFlight ? val('f-fno').toUpperCase() : isTransit ? val('f-fno') : '', mode: isTransit ? editing.mode : '', seat: isTransit ? val('f-seat') : '', retFlightNo: roundTrip ? val('f-rfno').toUpperCase() : '', retStart: roundTrip ? val('f-rstart') : '', retEnd: roundTrip ? val('f-rend') : '', code, start: val('f-bstart'), end: val('f-bend'), address: val('f-baddr'), address2: editing.bk === 'car' ? val('f-baddr2') : '', memo: val('f-bmemo'), showInPlan, price, currency, pay: normPay(editing.pay), priceMode: editing.pm === 'each' ? 'each' : 'total', pax: Math.min(50, Math.max(1, parseInt(val('f-pax'), 10) || 1)), photos: commitDraft() };
   if (editing.id) Object.assign(S.bookings.find(b => b.id === editing.id), data);
   else S.bookings.push(Object.assign({ id:uid(), tripId:V.tripId }, data));
   const t = getTrip(V.tripId); const days = t ? tripDays(t) : [];
@@ -1939,6 +2071,7 @@ const A = {
   'edit-booking': el => openBookingSheet(el.dataset.id),
   'save-booking': () => saveBooking(),
   'bk-kind': el => { editing.bk = el.dataset.val; refreshBookingUI(); },
+  'bk-mode': el => { editing.mode = el.dataset.val; refreshBookingUI(); },
   'rt': el => { editing.rt = el.dataset.val; refreshBookingUI(); },
   'del-booking': el => { const b = S.bookings.find(x => x.id === el.dataset.id); confirmSheet({ title:'이 예약 정보를 삭제할까요?', body:`${b.title || KIND[b.kind].label}${b.photos.length ? `과 첨부 ${b.photos.length}개가` : '이'} 지워져요.`, ok:'삭제', danger:true }, () => { const idx = S.bookings.indexOf(b); S.bookings.splice(idx, 1); save(); back(); undoToast('예약 정보를 지웠어요', () => { S.bookings.splice(Math.min(idx, S.bookings.length), 0, b); save(); render(); }, () => photoDel(b.photos)); }); },
   'copy': el => copyText(el.dataset.text),
@@ -1948,6 +2081,7 @@ const A = {
   'save-wish': () => saveWish(),
   'del-wish': el => deleteWish(el.dataset.id),
   'reorder': () => { V.reorder = !V.reorder; render(); },
+  'sort-near': () => askSortNearest(),
   'move-wish': el => moveWish(el.dataset.id, Number(el.dataset.val)),
   'toggle-check': el => { const c = S.checks.find(x => x.id === el.dataset.id); c.done = !c.done; save(); render(); },
   'edit-check': el => openCheckSheet(el.dataset.id),
