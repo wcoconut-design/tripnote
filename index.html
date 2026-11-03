@@ -399,6 +399,30 @@ ol.list{list-style:none;margin:0;padding:4px 0}
 .staff-menu{list-style:none;padding:0;margin:0;font-size:24px;font-weight:700;display:flex;flex-direction:column;gap:12px;font-family:"Hiragino Sans","Noto Sans JP",var(--sans)}
 .staff-menu small{display:block;font-size:14px;font-weight:400;color:#666}
 .staff-ask{margin:8px 0 0;font-size:22px;color:#333;font-family:"Hiragino Sans","Noto Sans JP",var(--sans)}
+.tfbox{display:flex;flex-direction:column;gap:12px;padding:12px;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
+.tf-hint{margin:0;font-size:13px;line-height:1.6;color:var(--ink)}
+.tf-hint .ok{color:#2E7D4F}.tf-hint .bad{color:var(--danger)}
+.tfb{display:inline-block;font-size:11px;font-weight:700;padding:1px 6px;border-radius:5px;background:var(--soft);color:var(--accent);vertical-align:1px}
+.tfpanel.urgent{border:1.5px solid var(--accent)}
+.tfrules{background:var(--surface);border-radius:14px;padding:12px 14px}
+.tfrules ul{margin:0;padding-left:18px;font-size:14px;line-height:1.6;display:flex;flex-direction:column;gap:4px}
+.tfr{background:var(--surface);border-radius:16px;padding:12px 14px;border-left:0;box-shadow:inset 0 0 0 1.5px var(--line)}
+.tfr.ready{box-shadow:inset 0 0 0 1.5px #2E7D4F}
+.tfr.done{opacity:.7}
+.tfr-head{display:flex;gap:10px;align-items:flex-start}
+.tfr-head b{display:block;font-size:16px}
+.tfr-head small{display:block;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.tfr-state{flex-shrink:0;font-size:12px;font-weight:700;padding:3px 8px;border-radius:999px;background:var(--bg)}
+.tfr.ready .tfr-state{background:#2E7D4F;color:#fff}
+.tfr-items{display:flex;flex-direction:column;margin-top:8px}
+.tfi{display:flex;align-items:center;gap:10px;min-height:44px;border:0;background:transparent;text-align:left;font-size:15px;color:var(--ink);padding:0}
+.tfi .box{width:22px;height:22px;border-radius:7px;border:2px solid var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tfi .box svg{width:15px;height:15px}
+.tfi.on .box{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.tfi.on{color:var(--muted)}
+.tfr-acts{display:flex;gap:6px;justify-content:flex-end;margin-top:8px}
+.today-tf{margin:0;font-size:14px;font-weight:700;color:var(--accent)}
+.today-tf small{font-weight:400;color:var(--muted)}
 .warn{margin:10px 0 0;font-size:13px;color:var(--danger);font-weight:600}
 .grp-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin:4px 4px 6px}
 .exp-row{display:flex;align-items:center;gap:12px;width:100%;border:0;background:transparent;padding:10px 14px;text-align:left;color:var(--ink)}
@@ -502,7 +526,7 @@ ol.list{list-style:none;margin:0;padding:4px 0}
 document.documentElement.lang = 'ko';
 
 /* ---------- helpers ---------- */
-const APP_VERSION = '2026.11.03-7';
+const APP_VERSION = '2026.11.03-8';
 const EMBED = (()=>{ try { return window.self !== window.top; } catch(e){ return true; } })();
 const DOW = ['일','월','화','수','목','금','토'];
 const $ = (s, r=document) => r.querySelector(s);
@@ -897,7 +921,7 @@ function renderMoney(t){
     return `<li><span class="pay-ic ${id}">${id === 'cash' ? I.cash : I.card}</span><span class="n">${nm}</span><span class="v">${money(bp.krw, 'KRW')}${foreign.length ? `<small>${foreign.map(([c, a]) => money(a, c)).join(' · ')}</small>` : ''}</span></li>`; }).join('')}</ul>`;
   const rateTxt = foreign.map(c => t.rates && t.rates[c] ? `${rateUnit(c)}${curName(c)} = ${money(t.rates[c] * rateUnit(c), 'KRW')}` : `${c} 환율 미입력`).join(' · ');
   h += `<button type="button" class="btn sm block" style="margin-top:12px;justify-content:space-between" data-act="money-settings"><span>${rateTxt || '환율 설정'}</span><span class="muted small">기본 ${people}명</span></button></section>`;
-  h += settleHTML(t, list, sm);
+  h += tfSummaryHTML(t) + settleHTML(t, list, sm);
   h += `<form class="quick" data-form="quick-exp" autocomplete="off" style="margin-top:0"><label class="sr" for="quick-exp">빠른 입력</label>
     <input class="input" id="quick-exp" enterkeyhint="done" placeholder="빠른 입력 · 예: 라멘 1200엔 현금">
     <button class="btn primary" type="submit" aria-label="빠른 입력으로 비용 추가">${I.plus}</button></form>`;
@@ -914,7 +938,7 @@ function renderMoney(t){
       const split = pax > 1 ? (e.mode === 'each' ? `${money(e.amount, e.currency)} × ${pax}명` : `${pax}명 · 1인 ${money(tot / pax, e.currency)}`) : '';
       return `<button type="button" class="exp-row" data-act="${e.bk ? 'open-booking' : 'edit-exp'}" data-id="${e.bk ? e.bkId : e.id}">
         <span class="cat-ic" style="background:${c.color}">${I[c.icon]}</span>
-        <span class="minw"><b>${esc(e.title || c.name)}${e.photos && e.photos.length ? ` <span class="clip" aria-label="영수증 있음">${I.camera}</span>` : ''}</b><small>${c.name}${e.bk ? ' · 예약' : ''} · ${payName(e.pay)}${groupMode(t) ? ` · ${esc(memberName(t, e.payer))} 냄` : ''}</small></span>
+        <span class="minw"><b>${esc(e.title || c.name)}${e.photos && e.photos.length ? ` <span class="clip" aria-label="영수증 있음">${I.camera}</span>` : ''}</b><small>${e.taxfree ? `<span class="tfb">${tfLabel(e.taxfree)}</span> ` : ''}${c.name}${e.bk ? ' · 예약' : ''} · ${payName(e.pay)}${groupMode(t) ? ` · ${esc(memberName(t, e.payer))} 냄` : ''}</small></span>
         <span class="amt"><b>${money(tot, e.currency)}</b>${split ? `<small>${split}</small>` : ''}${e.currency !== 'KRW' && k != null ? `<small>${money(k, 'KRW')}</small>` : ''}</span></button>`; }).join('')}</div></section>`;
   });
   return h + `</div>`;
@@ -1020,14 +1044,87 @@ async function readReceipt(file){
   if (r.amount){ $('#f-amt').value = r.amount; got.push(money(r.amount, r.currency)); }
   if (r.currency && $('#f-cur').value !== r.currency && [...$('#f-cur').options].some(o => o.value === r.currency)){ $('#f-cur').value = r.currency; }
   if (r.date){ const days = tripDays(t); const sel = $('#f-edate'); const v = days.includes(r.date) ? r.date : r.date < t.start ? 'pre' : null; if (v){ sel.value = v; got.push(v === 'pre' ? '여행 전' : md(v)); } }
+  if (/免\s*税|TAX\s*-?\s*FREE|輸出物品|免税販売/i.test(text) && editing){ editing.tf = 'applied'; if (/8\s*%\s*対象/.test(text) && !/10\s*%\s*対象/.test(text)) editing.taxRate = 8; $('#tf-seg').innerHTML = tfSeg(); $('#rate-seg').innerHTML = rateSeg(); $('#w-tf').hidden = false; got.push('면세 영수증'); }
+  if (r.store){ const st = $('#f-store'); if (st && !st.value.trim()) st.value = r.store; }
   if (r.store){ const ti = $('#f-etitle'); if (!ti.value.trim()) ti.value = r.store; got.push(r.store); const c = guessCat(r.store); if (c){ editing.cat = c; $('#cat-chips').innerHTML = catChips(); } }
-  updPmHint();
+  updPmHint(); updTfHint();
   say(r.amount ? `읽은 내용: ${got.join(' · ')}. 맞는지 확인하고 저장하세요.` : `금액을 찾지 못했어요. 직접 적어 주세요.${got.length ? ` (찾은 것: ${got.join(' · ')})` : ''} 사진은 첨부됐어요.`);
+}
+/* ---------- 면세 (택스리펀) ---------- */
+/* 일본 2026.11.1~ 리펀드 방식: 세금 포함가로 사고, 출국 때 세관 확인 후 환급.
+   같은 면세점·같은 날 세금 제외 ¥5,000 이상. 영수증 단위로 처리되며 한 장에 든 물건이 하나라도 없으면 그 영수증 전체가 환급 불가.
+   구매 다음 날부터 90일 안에 반출, 일본에서 쓰거나 먹으면 환급 불가. */
+const TF_MIN_JPY = 5000;
+const tfLabel = s => ({ applied:'면세 신청', refunded:'환급 받음' })[s] || '';
+const tfRate = e => e.taxRate === 8 ? 8 : 10;
+const preTax = e => e.amount / (1 + tfRate(e) / 100);
+const taxPart = e => e.amount - preTax(e);
+const tfKey = e => `${(e.store || e.title || '').trim()}|${e.date}`;
+function tfExps(t){ return S.expenses.filter(e => e.tripId === t.id && (e.taxfree === 'applied' || e.taxfree === 'refunded')); }
+function tfDayTotal(t, store, date, cur, exceptId){
+  return S.expenses.filter(e => e.tripId === t.id && e.id !== exceptId && e.taxfree && e.taxfree !== 'none' && e.currency === cur && e.date === date && (e.store || e.title || '').trim() === store).reduce((s, e) => s + preTax(e), 0);
+}
+const tfSeg = () => segBtn('tf', 'none', '해당 없음', !editing.tf || editing.tf === 'none') + segBtn('tf', 'applied', '면세 신청', editing.tf === 'applied') + segBtn('tf', 'refunded', '환급 받음', editing.tf === 'refunded');
+const rateSeg = () => segBtn('tf-rate', '10', '10% 일반', editing.taxRate !== 8) + segBtn('tf-rate', '8', '8% 음식', editing.taxRate === 8);
+function tfItemRows(){ return editing.tfItems.map((it, i) => `<div class="inline"><label class="sr" for="tfi-${i}">상품 ${i + 1}</label><input class="input" id="tfi-${i}" data-tfi="${i}" value="${esc(it.name)}" placeholder="상품 이름"><button type="button" class="iconbtn sm" data-act="tfi-del" data-val="${i}" aria-label="${esc(it.name || '이 상품')} 빼기">${I.x}</button></div>`).join(''); }
+function readTfItems(){ document.querySelectorAll('[data-tfi]').forEach(inp => { const it = editing.tfItems[+inp.dataset.tfi]; if (it) it.name = inp.value.trim(); }); }
+function tfBoxHTML(e){
+  return `<div class="field"><span class="flabel">면세 (택스리펀)</span><div class="seg" style="--n:3" id="tf-seg">${tfSeg()}</div></div>
+  <div id="w-tf" class="tfbox"${!editing.tf || editing.tf === 'none' ? ' hidden' : ''}>
+    <div class="field"><label class="flabel" for="f-store">면세점 (가게·지점)</label><input class="input" id="f-store" value="${esc(e && e.store || '')}" placeholder="예: 돈키호테 도톤보리점" list="tf-stores"></div>
+    <div class="field"><span class="flabel">소비세율</span><div class="seg" id="rate-seg">${rateSeg()}</div></div>
+    <div class="field"><span class="flabel">이 영수증에 든 상품</span><div id="tf-items" class="member-list">${tfItemRows()}</div><button type="button" class="btn sm" data-act="tfi-add">${I.plus}상품 추가</button>
+      <p class="hint">출국할 때 영수증 단위로 확인해요. 한 장에 든 물건이 하나라도 없으면 그 영수증 전체가 환급되지 않아요.</p></div>
+    <p class="tf-hint" id="tf-hint" aria-live="polite"></p></div>`;
+}
+function updTfHint(){
+  const h = $('#tf-hint'); if (!h || !editing) return;
+  const t = getTrip(V.tripId); const amt = parseFloat((val('f-amt') || '').replace(/[,\s]/g, '')); const cur = val('f-cur') || 'KRW';
+  if (!(amt > 0)){ h.textContent = '금액을 넣으면 면세 기준과 환급 예상액을 계산해요.'; return; }
+  const rate = editing.taxRate === 8 ? 8 : 10; const pre = amt / (1 + rate / 100); const tax = amt - pre;
+  if (cur !== 'JPY'){ h.textContent = `세금 제외 약 ${money(pre, cur)} · 세금 상당액 약 ${money(tax, cur)}`; return; }
+  const store = (val('f-store') || val('f-etitle')).trim(); const date = val('f-edate');
+  const other = store && date && date !== 'pre' ? tfDayTotal(t, store, date, 'JPY', editing.id) : 0; const sum = pre + other;
+  const ok = sum >= TF_MIN_JPY;
+  h.innerHTML = `세금 제외 ${money(pre, 'JPY')}${other ? ` · 같은 가게 같은 날 합계 ${money(sum, 'JPY')}` : ''}<br><b class="${ok ? 'ok' : 'bad'}">${ok ? '면세 기준(세금 제외 ¥5,000) 이상이에요' : `면세 기준까지 ${money(TF_MIN_JPY - sum, 'JPY')} 모자라요`}</b> · 환급 예상 약 ${money(tax, 'JPY')} <span class="muted">(수수료가 빠질 수 있어요)</span>`;
+}
+function tfSummaryHTML(t){
+  const es = tfExps(t); if (!es.length) return '';
+  const ap = es.filter(e => e.taxfree === 'applied'), rf = es.filter(e => e.taxfree === 'refunded');
+  const sumTax = arr => sumByCur(arr, e => ({ amount: taxPart(e), cur: e.currency }));
+  const items = ap.flatMap(e => e.tfItems || []); const packed = items.filter(i => i.packed).length;
+  const under = Object.values(ap.reduce((m, e) => { if (e.currency !== 'JPY') return m; const k = tfKey(e); (m[k] = m[k] || { store: e.store || e.title, date: e.date, pre: 0 }).pre += preTax(e); return m; }, {})).filter(g => g.pre < TF_MIN_JPY);
+  const td = todayISO(); const soon = td >= addDays(t.end, -1) && td <= t.end;
+  return `<section class="panel tfpanel${soon && ap.length ? ' urgent' : ''}"><div class="grp-head" style="margin:0 0 6px"><p class="cap" style="margin:0">택스리펀 · 영수증 ${es.length}장</p>${ap.length ? `<span class="small muted">상품 챙김 ${packed}/${items.length}</span>` : ''}</div>
+    ${ap.length ? `<p style="margin:0;font-size:15px">환급 예정 <b>${ap.length}장 · 약 ${sumTax(ap)}</b></p>` : ''}
+    ${rf.length ? `<p style="margin:2px 0 0;font-size:14px" class="muted">환급 받음 ${rf.length}장 · 약 ${sumTax(rf)}</p>` : ''}
+    ${under.length ? `<p class="warn">${under.map(g => `${esc(g.store)} ${g.date === 'pre' ? '' : md(g.date)}`).join(', ')}: 같은 가게 같은 날 세금 제외 ¥5,000이 안 돼요</p>` : ''}
+    ${ap.length ? `<button type="button" class="btn${soon ? ' primary' : ''} block" style="margin-top:10px" data-act="tf-check">${I.checklist}출국 전 영수증·상품 확인</button>` : ''}</section>`;
+}
+function openTfCheck(){
+  const t = getTrip(V.tripId); const es = tfExps(t).sort((a, b) => (a.taxfree === 'refunded') - (b.taxfree === 'refunded') || String(a.date).localeCompare(String(b.date)));
+  editing = { kind:'tfcheck' };
+  const card = e => { const its = e.tfItems || []; const left = its.filter(i => !i.packed).length; const done = e.taxfree === 'refunded';
+    const dl = e.date && e.date !== 'pre' ? addDays(e.date, 90) : null;
+    return `<section class="tfr${done ? ' done' : left ? '' : ' ready'}"><div class="tfr-head"><div class="minw"><b>${esc(e.store || e.title || '영수증')}</b><small>${e.date === 'pre' ? '여행 전' : md(e.date)} · ${money(e.amount, e.currency)} · 환급 약 ${money(taxPart(e), e.currency)}${dl && !done ? ` · 반출 기한 ${mdDot(dl)}` : ''}</small></div>
+      <span class="tfr-state">${done ? '환급 받음' : !its.length ? '상품 미입력' : left ? `${left}개 남음` : '모두 챙김'}</span></div>
+      ${its.length ? `<div class="tfr-items">${its.map(i => `<button type="button" class="tfi${i.packed ? ' on' : ''}" data-act="tf-pack" data-exp="${e.id}" data-item="${i.id}" aria-pressed="${!!i.packed}"><span class="box">${i.packed ? I.check : ''}</span>${esc(i.name || '상품')}</button>`).join('')}</div>` : `<p class="hint" style="margin:6px 0 0">이 영수증에 든 상품을 비용 수정에서 적어 두면 하나씩 체크할 수 있어요.</p>`}
+      ${!done && left && its.length ? '<p class="warn" style="margin:6px 0 0">하나라도 없으면 이 영수증 전체가 환급되지 않아요.</p>' : ''}
+      <div class="tfr-acts"><button type="button" class="btn sm" data-act="edit-exp" data-id="${e.id}">수정</button><button type="button" class="btn sm${done ? '' : ' soft'}" data-act="tf-done" data-id="${e.id}">${done ? '환급 전으로 되돌리기' : '환급 받음으로 표시'}</button></div></section>`; };
+  openSheet(`${sheetHeadClose('택스리펀 확인')}<div class="form">
+    <div class="tfrules"><p class="cap" style="margin:0 0 4px">출국할 때</p><ul>
+      <li>위탁 수하물을 <b>맡기기 전에</b> 공항 면세 키오스크에서 여권을 찍어요. 빨간 표시가 나오면 세관에 물건을 보여줘야 해요.</li>
+      <li><b>여권 · 영수증 · 산 물건</b>을 꺼내기 쉽게 챙겨 두세요.</li>
+      <li>면세로 산 물건은 일본에서 <b>열거나 쓰면 안 돼요</b>. 먹거나 쓴 건 키오스크 말고 세관 창구에 말해야 해요.</li>
+      <li>영수증마다 따로 확인해요. 한 장에 든 물건이 하나라도 없으면 그 영수증은 환급되지 않아요.</li></ul>
+      <p class="hint" style="margin:6px 0 0">2026년 11월 1일부터 바뀐 일본 리펀드 방식 기준이에요. 환급 방법과 수수료는 가게나 환급 업체마다 달라요.</p></div>
+    ${es.map(card).join('')}</div>`);
 }
 function openExpSheet(id){
   const t = getTrip(V.tripId); const e = id ? S.expenses.find(x => x.id === id) : null; if (id && !e) return;
   editing = { kind:'exp', id: e ? e.id : null, cat: e ? e.cat : (V.lastCat || 'food'), pay: normPay(e ? e.pay : (V.lastPay || t.lastPay)), pm: e && e.mode === 'each' ? 'each' : 'total',
-    payer: effPayer(t, e || { payer: t.lastPayer }), share: e ? effShare(t, e) : tripMembers(t).map(m => m.id) };
+    payer: effPayer(t, e || { payer: t.lastPayer }), share: e ? effShare(t, e) : tripMembers(t).map(m => m.id),
+    tf: e && e.taxfree ? e.taxfree : 'none', taxRate: e && e.taxRate === 8 ? 8 : 10, tfItems: e && e.tfItems ? e.tfItems.map(i => Object.assign({}, i)) : [] };
   const pax = e && e.pax ? e.pax : (t.people || 1);
   const days = tripDays(t); const date = e ? e.date : defaultExpDate(t); const cur = e ? e.currency : (t.lastCurrency || 'KRW');
   startDraft(e && e.photos ? e.photos : []);
@@ -1042,11 +1139,13 @@ function openExpSheet(id){
     <div class="field"><label class="flabel" for="f-edate">날짜</label><select class="input" id="f-edate"><option value="pre"${date === 'pre' ? ' selected' : ''}>여행 전 · 미리 결제</option>${days.map((d, i) => `<option value="${d}"${d === date ? ' selected' : ''}>Day ${i+1} · ${md(d)}</option>`).join('')}</select></div>
 
     <div class="field"><span class="flabel">결제 수단</span><div class="seg" style="--n:3" id="pay-seg" role="group" aria-label="결제 수단">${paySeg()}</div></div>
+    ${tfBoxHTML(e)}
+    <datalist id="tf-stores">${[...new Set([...S.wishes.filter(x => x.tripId === t.id && x.store).map(x => x.store), ...S.expenses.filter(x => x.tripId === t.id && x.store).map(x => x.store)])].map(x => `<option value="${esc(x)}">`).join('')}</datalist>
     ${photoField('영수증·사진')}
     <p class="err" id="sheet-err" hidden></p>
     ${e ? `<button type="button" class="btn danger block" data-act="del-exp" data-id="${e.id}">${I.trash}이 비용 지우기</button>` : ''}
   </form>`, cancelDraft);
-  updPmHint();
+  updPmHint(); updTfHint();
 }
 function saveExp(){
   const t = getTrip(V.tripId); const amount = parseFloat(val('f-amt').replace(/[,\s]/g, ''));
@@ -1055,6 +1154,8 @@ function saveExp(){
   const gm = groupMode(t); if (gm && !editing.share.length) return showErr('같이 쓴 사람을 한 명 이상 골라 주세요.');
   const pax = gm ? editing.share.length : Math.min(50, Math.max(1, parseInt(val('f-pax'), 10) || 1));
   const data = { amount, currency, title, cat: editing.cat, date: val('f-edate') || 'pre', pay: editing.pay, mode: editing.pm === 'each' ? 'each' : 'total', pax, payer: gm ? editing.payer : undefined, share: gm ? [...editing.share] : undefined, photos: commitDraft() };
+  readTfItems(); data.store = val('f-store'); data.taxfree = editing.tf && editing.tf !== 'none' ? editing.tf : undefined; data.taxRate = editing.taxRate === 8 ? 8 : 10;
+  data.tfItems = data.taxfree ? editing.tfItems.filter(i => i.name) : undefined;
   if (editing.id) Object.assign(S.expenses.find(x => x.id === editing.id), data);
   else S.expenses.push(Object.assign({ id: uid(), tripId: V.tripId }, data));
   t.lastCurrency = currency; V.lastCat = editing.cat; V.lastPay = editing.pay; t.lastPay = editing.pay; if (gm) t.lastPayer = editing.payer;
@@ -1171,7 +1272,7 @@ function sampleState(){
       { id:uid(), tripId:tid, date:d(0), cat:'food', title:'도톤보리 타코야키', amount:1200, currency:'JPY', pay:'cash' },
       { id:uid(), tripId:tid, date:d(1), cat:'tour', title:'오사카성 천수각 입장', amount:1200, currency:'JPY', pay:'cash' },
       { id:uid(), tripId:tid, date:d(1), cat:'food', title:'쿠로몬 시장 참치', amount:3500, currency:'JPY', pay:'cash', payer:'m2' },
-      { id:uid(), tripId:tid, date:d(1), cat:'shop', title:'드럭스토어', amount:8640, currency:'JPY', pay:'credit', payer:'m2', share:['m2'] },
+      { id:uid(), tripId:tid, date:d(1), cat:'shop', title:'드럭스토어', store:'마츠모토키요시 난바점', amount:8640, currency:'JPY', pay:'credit', payer:'m2', share:['m2'], taxfree:'applied', taxRate:10, tfItems:[{ id:uid(), name:'동전파스 2박스', packed:false }, { id:uid(), name:'아이봉 세안액', packed:true }, { id:uid(), name:'휴족시간', packed:false }] },
     ],
     checks:[
       ck('서류','여권',true), ck('서류','항공권 e티켓',true), ck('서류','엔화 현금',false), ck('서류','국제운전면허증',false),
@@ -1417,6 +1518,8 @@ function todayCard(){
     } else h += `<p class="today-empty">${ents.length ? '오늘 남은 시간 일정은 없어요.' : '오늘은 정해 둔 일정이 없어요.'}</p>`;
     const rest = [...later, ...(next ? [] : untimed)].slice(0, 3);
     if (rest.length) h += `<ul class="today-list">${rest.map(e => `<li><span>${e.time || '—'}</span>${esc(e.place || '일정')}</li>`).join('')}</ul>`;
+    const tfa = tfExps(t).filter(e => e.taxfree === 'applied');
+    if (td === t.end && tfa.length){ const its = tfa.flatMap(e => e.tfItems || []); h += `<p class="today-tf">오늘 출국 · 택스리펀 영수증 ${tfa.length}장${its.length ? ` · 상품 ${its.filter(i => i.packed).length}/${its.length} 챙김` : ''}<br><small>위탁 수하물 맡기기 전에 면세 키오스크부터 들르세요</small></p><button type="button" class="btn primary block" data-act="tf-check" data-trip="${t.id}">${I.checklist}택스리펀 확인</button>`; }
     h += `<button type="button" class="btn block" data-act="open-trip-day" data-id="${t.id}" data-day="${td}">오늘 일정 전체 보기</button></section>`;
     return h;
   }
@@ -1934,13 +2037,20 @@ function renderBuy(t){
     if (!dn.length) return h + `<div class="empty"><p>아직 산 게 없어요. 살 것에서 체크하면 여기로 옮겨와요.</p></div></div>`;
     const spent = sumByCur(dn, w => w.paid ? { amount: w.paid, cur: w.paidCur || w.currency || 'JPY' } : null);
     if (spent) h += `<p class="muted small" style="margin:0 4px">산 금액 · <b style="color:var(--ink)">${spent}</b></p>`;
-    h += `<div class="list">${dn.sort((a, b) => (b.boughtAt || '').localeCompare(a.boughtAt || '')).map(w => buyCard(w)).join('')}</div>`;
+    const isTf = w => { const ex = w.expId ? S.expenses.find(e => e.id === w.expId) : null; return !!((ex && ex.taxfree) || w.tf); };
+    const srt = arr => arr.sort((a, b) => (b.boughtAt || '').localeCompare(a.boughtAt || ''));
+    const tfd = srt(dn.filter(isTf)), nor = srt(dn.filter(w => !isTf(w)));
+    if (tfd.length) h += `<section class="wgroup"><div class="grp-head" style="margin:0 4px"><h2 class="section-title" style="margin:0;font-size:13px">면세로 산 것 · ${tfd.length}개</h2><button type="button" class="btn sm" data-act="tf-check">영수증 확인</button></div><div class="list">${tfd.map(w => buyCard(w)).join('')}</div></section>`;
+    if (nor.length) h += `<section class="wgroup"><h2 class="section-title" style="margin:0 4px;font-size:13px">${tfd.length ? '일반 구매' : '산 것'} · ${nor.length}개</h2><div class="list">${nor.map(w => buyCard(w)).join('')}</div></section>`;
+    h += `<p class="hint" style="margin:0 4px">상품을 눌러 면세 표시를 켜고 끌 수 있어요.</p>`;
   }
   return h + `</div>`;
 }
 function buyCard(w){
   const price = w.done && w.paid ? `${money(w.paid, w.paidCur || w.currency || 'JPY')} 샀어요` : w.price ? `${money(w.price, w.currency || 'JPY')}${w.unit ? ` / ${esc(w.unit)}` : ''}` : '';
-  const meta = [w.qty ? esc(w.qty) : '', w.who ? `${esc(w.who)} 부탁` : '', w.done && w.boughtAt ? md(w.boughtAt) : ''].filter(Boolean).join(' · ');
+  const ex = w.expId ? S.expenses.find(e => e.id === w.expId) : null;
+  const isTf = (ex && ex.taxfree) || w.tf;
+  const meta = [isTf ? `<span class="tfb">${ex && ex.taxfree === 'refunded' ? '환급 받음' : '면세'}</span>` : '', w.qty ? esc(w.qty) : '', w.who ? `${esc(w.who)} 부탁` : '', w.done && w.boughtAt ? md(w.boughtAt) : ''].filter(Boolean).join(' · ');
   return `<div class="pcard">${wThumb(w)}
     <button type="button" class="pbody" data-act="view-wish" data-id="${w.id}"><b class="${w.done ? 'struck' : ''}">${esc(w.label)}</b>${w.orig ? `<span class="orig">${esc(w.orig)}</span>` : ''}${price ? `<span class="pprice">${price}</span>` : ''}${w.memo ? `<span class="pmemo clamp2">${esc(w.memo)}</span>` : ''}${meta ? `<span class="pmeta">${meta}</span>` : ''}</button>
     ${wCheck(w, '샀음', '안 샀음')}</div>`;
@@ -2025,6 +2135,7 @@ function openWishView(id){
     ${!buy && (w.menu || []).length ? `<section><p class="flabel" style="margin:0 0 6px">${w.kind === 'shop' ? '찾을 것' : '추천 메뉴'}</p><ul class="menu-list">${w.menu.map(m => `<li><span class="minw"><b>${esc(m.name)}</b>${m.orig ? `<small>${esc(m.orig)}</small>` : ''}</span>${m.price ? `<span class="mp">${esc(m.price)}</span>` : ''}</li>`).join('')}</ul></section>` : ''}
     ${buys.length ? `<section><p class="flabel" style="margin:0 0 6px">여기서 살 것</p><ul class="menu-list">${buys.map(b => `<li><span class="minw"><b class="${b.done ? 'struck' : ''}">${esc(b.label)}</b>${b.orig ? `<small>${esc(b.orig)}</small>` : ''}</span>${b.price ? `<span class="mp">${money(b.price, b.currency || 'JPY')}</span>` : ''}</li>`).join('')}</ul></section>` : ''}
     ${!buy && (w.address || w.label) ? `<a class="btn block" href="${mapUrl(w.address || w.label)}" target="_blank" rel="noopener">${I.pin}구글맵에서 보기</a>` : ''}
+    ${buy && w.done ? `<button type="button" class="btn block" data-act="wish-tf" data-id="${w.id}">${w.tf ? '면세 표시 끄기' : '면세로 샀어요 (표시)'}</button>` : ''}
     <button type="button" class="btn primary block" data-act="show-staff" data-id="${w.id}">${I.expand}직원에게 보여주기</button>
     <div class="grid2"><button type="button" class="btn" data-act="edit-wish" data-id="${w.id}">${I.edit}수정</button><button type="button" class="btn" data-act="toggle-wish" data-id="${w.id}">${w.done ? (buy ? '살 것으로 되돌리기' : '가볼 곳으로 되돌리기') : (buy ? `${I.check}샀어요` : `${I.check}다녀왔어요`)}</button></div>
   </div>`);
@@ -2139,18 +2250,23 @@ function toggleWish(id){
 }
 function undoDone(w){
   const exp = w.expId ? S.expenses.find(e => e.id === w.expId) : null;
-  w.done = false; delete w.boughtAt; delete w.visitedAt;
-  if (exp){ S.expenses.splice(S.expenses.indexOf(exp), 1); w.expId = null; }
+  w.done = false; delete w.boughtAt; delete w.visitedAt; delete w.tf;
+  if (exp && (exp.tfItems || []).length > 1){ if (w.paid && (w.paidCur || exp.currency) === exp.currency) exp.amount = Math.max(0, Math.round((exp.amount - w.paid) * 100) / 100); exp.tfItems = exp.tfItems.filter(i => i.wishId !== w.id); w.expId = null; }
+  else if (exp){ S.expenses.splice(S.expenses.indexOf(exp), 1); w.expId = null; }
   save(); closeSheet(false); render(); toast(`${w.type === 'buy' ? '살 것' : '가볼 곳'}으로 되돌렸어요${exp ? '. 비용에서도 뺐어요' : ''}`, 3000);
 }
 function openBoughtSheet(w, t){
   const gm = groupMode(t);
   editing = { kind:'bought', id: w.id, pay: normPay(t.lastPay), payer: effPayer(t, { payer: t.lastPayer }) };
   const est = w.price ? w.price * qtyNum(w.qty) : '';
+  const recs = tfExps(t).filter(e => e.taxfree === 'applied' && e.date === wishToday(t));
   openSheet(`${sheetHead('샀어요', 'save-bought', '완료')}<form class="form" data-form="bought" autocomplete="off">
     <p style="margin:0;font-size:16px;font-weight:700">${esc(w.label)}${w.qty ? ` <span class="muted small">${esc(w.qty)}</span>` : ''}</p>
     <div class="field"><label class="flabel" for="f-paid">실제 산 가격</label><div class="inline"><input class="input" id="f-paid" inputmode="decimal" value="${est}" placeholder="몰라도 비워두면 돼요" style="font-size:18px;font-weight:700;font-variant-numeric:tabular-nums"><label class="sr" for="f-paidcur">통화</label><select class="input" id="f-paidcur" style="flex:0 0 132px">${curOptions(w.currency || t.lastCurrency || 'JPY')}</select></div>${w.price ? `<p class="hint">예상 가격 ${money(w.price, w.currency || 'JPY')}${w.qty ? ` × ${qtyNum(w.qty)}` : ''}으로 미리 넣어뒀어요.</p>` : ''}</div>
     <label class="toggle" for="f-toexp"><input type="checkbox" id="f-toexp" checked><span>비용(쇼핑)에도 넣기</span></label>
+    <label class="toggle" for="f-tfbuy"><input type="checkbox" id="f-tfbuy"><span>면세(택스리펀)로 샀어요</span></label>
+    <div class="field" id="w-tfrec" hidden><label class="flabel" for="f-tfrec">영수증</label><select class="input" id="f-tfrec"><option value="">새 영수증</option>${recs.map(e => `<option value="${e.id}"${w.store && (e.store || '') === w.store ? ' selected' : ''}>${esc(e.store || e.title)} · ${money(e.amount, e.currency)} · 상품 ${(e.tfItems || []).length}개</option>`).join('')}</select>
+      <p class="hint">같은 계산대에서 함께 계산했다면 같은 영수증을 고르세요. 출국할 때 영수증 단위로 확인해요.</p></div>
     <div class="field"><span class="flabel">결제 수단</span><div class="seg" style="--n:3" id="pay-seg">${paySeg()}</div></div>
     ${gm ? `<div class="field"><span class="flabel">낸 사람</span><div class="chipsel" id="payer-chips">${payerChips(t)}</div></div>` : ''}
     <button type="button" class="btn block" data-act="bought-skip">가격 없이 산 것으로 옮기기</button></form>`);
@@ -2161,10 +2277,19 @@ function saveBought(skip){
   const cur = val('f-paidcur') || w.currency || 'JPY';
   w.done = true; w.boughtAt = wishToday(t);
   if (paid > 0){ w.paid = paid; w.paidCur = cur; } else { delete w.paid; }
-  if (!skip && paid > 0 && $('#f-toexp') && $('#f-toexp').checked){
-    const gm = groupMode(t); const e = { id: uid(), tripId: t.id, date: w.boughtAt, cat:'shop', title: w.label, amount: paid, currency: cur, pay: editing.pay, mode:'total', pax: 1, photos: [] };
-    if (gm){ e.payer = editing.payer; e.share = [editing.payer]; t.lastPayer = editing.payer; }
-    S.expenses.push(e); w.expId = e.id; t.lastPay = editing.pay; t.lastCurrency = cur;
+  const tfOn = !skip && $('#f-tfbuy') && $('#f-tfbuy').checked;
+  if (tfOn) w.tf = true; else delete w.tf;
+  if (!skip && paid > 0 && (tfOn || ($('#f-toexp') && $('#f-toexp').checked))){
+    const rec = tfOn && val('f-tfrec') ? S.expenses.find(e => e.id === val('f-tfrec')) : null;
+    if (rec && rec.currency === cur){
+      rec.amount = Math.round((rec.amount + paid) * 100) / 100; rec.tfItems = [...(rec.tfItems || []), { id: uid(), name: w.label, packed: false, wishId: w.id }]; w.expId = rec.id;
+    } else {
+      const gm = groupMode(t); const e = { id: uid(), tripId: t.id, date: w.boughtAt, cat:'shop', title: tfOn && w.store ? w.store : w.label, amount: paid, currency: cur, pay: editing.pay, mode:'total', pax: 1, photos: [], store: w.store || '' };
+      if (tfOn){ e.taxfree = 'applied'; e.taxRate = guessCat(w.label + ' ' + (w.memo || '')) === 'food' ? 8 : 10; e.tfItems = [{ id: uid(), name: w.label, packed: false, wishId: w.id }]; }
+      if (gm){ e.payer = editing.payer; e.share = [editing.payer]; t.lastPayer = editing.payer; }
+      S.expenses.push(e); w.expId = e.id;
+    }
+    t.lastPay = editing.pay; t.lastCurrency = cur;
   }
   save(); closeSheet(false); render();
   undoToast(`'${w.label}' 산 것으로 옮겼어요${w.expId && !skip && paid > 0 ? ' · 비용에도 넣었어요' : ''}`, () => undoDone(w));
@@ -2650,7 +2775,7 @@ function searchResults(q){
   S.trips.forEach(t => { if (has(t.title)) out.push({ tid: t.id, kind:'trip', id: t.id, title: t.title, sub: rangeLabel(t), icon:'cal' }); });
   S.items.forEach(i => { if (has(i.place, i.memo, i.address)) out.push({ tid: i.tripId, kind:'item', id: i.id, title: i.place || '일정', sub: `${md(i.date)}${i.time ? ' ' + i.time : ''}${i.memo ? ' · ' + i.memo.replace(/\n/g, ' ') : ''}`, icon:'list' }); });
   S.bookings.forEach(b => { if (has(b.title, b.code, b.memo, b.address, b.address2, b.from, b.to, b.flightNo)) out.push({ tid: b.tripId, kind:'booking', id: b.id, title: bookingName(b), sub: `${(KIND[b.kind] || KIND.etc).label}${b.code ? ' · ' + b.code : ''}`, icon: (KIND[b.kind] || KIND.etc).icon }); });
-  S.expenses.forEach(e => { if (has(e.title)) out.push({ tid: e.tripId, kind:'exp', id: e.id, title: e.title || catOf(e.cat).name, sub: `${money(expTotal(e), e.currency)} · ${e.date === 'pre' ? '여행 전' : md(e.date)}`, icon:'wallet' }); });
+  S.expenses.forEach(e => { if (has(e.title, e.store, ...(e.tfItems || []).map(i => i.name))) out.push({ tid: e.tripId, kind:'exp', id: e.id, title: e.title || catOf(e.cat).name, sub: `${money(expTotal(e), e.currency)} · ${e.date === 'pre' ? '여행 전' : md(e.date)}`, icon:'wallet' }); });
   S.wishes.forEach(w => { if (has(w.label, w.orig, w.store, w.memo, w.address, w.review, ...(w.menu || []).map(m => m.name + ' ' + (m.orig || '')))) out.push({ tid: w.tripId, kind:'wish', id: w.id, title: w.label, sub: w.type === 'buy' ? `살 것${w.store ? ' · ' + w.store : ''}` : `가볼 곳${w.address ? ' · ' + w.address : ''}`, icon: w.type === 'buy' ? 'bag' : 'pin' }); });
   S.checks.forEach(c => { if (has(c.label)) out.push({ tid: c.tripId, kind:'check', id: c.id, title: c.label, sub: `준비물 · ${c.group}`, icon:'checklist' }); });
   Object.entries(S.notes).forEach(([k, v]) => { if (has(v)) { const [tid, day] = k.split('|'); out.push({ tid, kind:'note', id: k, day, title: v.length > 40 ? v.slice(0, 40) + '…' : v, sub: `한 줄 기록 · ${md(day)}`, icon:'book' }); } });
@@ -2911,6 +3036,17 @@ const A = {
   'wx-reset-day': () => { const t = getTrip(V.tripId); if (t.wx && t.wx.dayLoc){ delete t.wx.dayLoc[V.day]; } t.wx.fetchedAt = 0; save(); closeSheet(false); render(); refreshWeather(t, true); },
   'wx-refresh': () => { const t = getTrip(V.tripId); closeSheet(false); WX.err = false; render(); refreshWeather(t, true); },
   'list': el => { V.list = el.dataset.val; V.reorder = false; render(); },
+  'tf': el => { editing.tf = el.dataset.val; $('#tf-seg').innerHTML = tfSeg(); $('#w-tf').hidden = editing.tf === 'none'; if (editing.tf !== 'none' && !editing.tfItems.length){ editing.tfItems.push({ id: uid(), name: val('f-etitle'), packed: false }); $('#tf-items').innerHTML = tfItemRows(); } if (editing.tf !== 'none' && !val('f-store') && val('f-etitle')) $('#f-store').value = val('f-etitle'); if (editing.cat !== 'shop' && editing.tf !== 'none'){ editing.cat = 'shop'; $('#cat-chips').innerHTML = catChips(); } updTfHint(); },
+  'tf-rate': el => { editing.taxRate = +el.dataset.val; $('#rate-seg').innerHTML = rateSeg(); updTfHint(); },
+  'tfi-add': () => { readTfItems(); editing.tfItems.push({ id: uid(), name: '', packed: false }); $('#tf-items').innerHTML = tfItemRows(); const ins = document.querySelectorAll('[data-tfi]'); ins[ins.length - 1].focus(); },
+  'tfi-del': el => { readTfItems(); editing.tfItems.splice(+el.dataset.val, 1); $('#tf-items').innerHTML = tfItemRows(); },
+  'tf-check': el => { if (el.dataset.trip && (V.name !== 'trip' || V.tripId !== el.dataset.trip)) go({ name:'trip', tripId: el.dataset.trip, tab:'money' }); openTfCheck(); },
+  'tf-pack': el => { const e = S.expenses.find(x => x.id === el.dataset.exp); const it = e && (e.tfItems || []).find(i => i.id === el.dataset.item); if (!it) return; it.packed = !it.packed; save(); const sc = $('.sheet') ? $('.sheet').scrollTop : 0; openTfCheck(); if ($('.sheet')) $('.sheet').scrollTop = sc; render(); },
+  'tf-done': el => { const e = S.expenses.find(x => x.id === el.dataset.id); if (!e) return; e.taxfree = e.taxfree === 'refunded' ? 'applied' : 'refunded'; save(); const sc = $('.sheet') ? $('.sheet').scrollTop : 0; openTfCheck(); if ($('.sheet')) $('.sheet').scrollTop = sc; render(); },
+  'wish-tf': el => { const w = S.wishes.find(x => x.id === el.dataset.id); if (!w) return; w.tf = !w.tf; const ex = w.expId ? S.expenses.find(e => e.id === w.expId) : null;
+    if (ex && w.tf && !ex.taxfree){ ex.taxfree = 'applied'; ex.store = ex.store || w.store || ''; ex.tfItems = [...(ex.tfItems || []), { id: uid(), name: w.label, packed: false, wishId: w.id }]; }
+    if (ex && !w.tf && ex.taxfree && (ex.tfItems || []).length <= 1){ delete ex.taxfree; delete ex.tfItems; }
+    save(); render(); openWishView(w.id); toast(w.tf ? '면세로 산 것으로 표시했어요' : '면세 표시를 껐어요'); },
   'toggle-wish': el => toggleWish(el.dataset.id),
   'view-wish': el => openWishView(el.dataset.id),
   'show-staff': el => showStaff(el.dataset.id),
@@ -2995,6 +3131,7 @@ document.addEventListener('input', e => {
   if (t.dataset && t.dataset.note){ if (t.value.trim()) S.notes[t.dataset.note] = t.value; else delete S.notes[t.dataset.note]; save(); }
   if (t.id === 'search-q'){ V.q = t.value; const box = $('#search-results'); if (box) box.innerHTML = searchListHTML(V.q); }
   if (['f-amt','f-bprice','f-pax','f-cur','f-bcur'].includes(t.id)) updPmHint();
+  if (['f-amt','f-store','f-etitle'].includes(t.id)) updTfHint();
   if (t.id === 'f-waddr' || t.id === 'f-wlabel'){ const a = $('#f-wmap'); if (a) a.href = mapUrl(val('f-waddr') || val('f-wlabel')); }
   if (t.id === 'f-from' || t.id === 'f-to'){ const rf = $('#f-rfrom'), rt2 = $('#f-rto'); if (rf) rf.placeholder = val('f-to') ? `비워두면 ${val('f-to')}` : '예: 오사카'; if (rt2) rt2.placeholder = val('f-from') ? `비워두면 ${val('f-from')}` : '예: 인천'; }
   if (t.id === 'f-place' || t.id === 'f-address'){ const a = $('#f-maplink'); const q = val('f-address') || val('f-place'); if (a){ a.href = q ? mapUrl(q) : '#'; a.style.opacity = q ? '' : '.5'; a.style.pointerEvents = q ? '' : 'none'; a.toggleAttribute('aria-disabled', !q); } }
@@ -3006,6 +3143,9 @@ document.addEventListener('change', e => {
   if (t.id === 'f-cover-input' && t.files[0]){ const f = t.files[0]; t.value = ''; coverUpload(f); }
   if (t.id === 'f-frombase'){ V.fromBase = t.checked; render(); }
   if (t.id === 'f-cur' || t.id === 'f-bcur') updPmHint();
+  if (t.id === 'f-cur' || t.id === 'f-edate') updTfHint();
+  if (t.id === 'f-tfbuy'){ $('#w-tfrec').hidden = !t.checked; if (t.checked){ const x = $('#f-toexp'); x.checked = true; } }
+  if (t.id === 'f-toexp' && !t.checked && $('#f-tfbuy') && $('#f-tfbuy').checked){ t.checked = true; toast('면세로 산 건 영수증 확인을 위해 비용에 함께 넣어요'); }
   if (t.id === 'restore-input' && t.files[0]){ const f = t.files[0]; t.value = ''; importBackup(f); }
 });
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flush(); });

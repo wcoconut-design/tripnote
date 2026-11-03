@@ -1,4 +1,4 @@
-const CACHE = 'tripnote-v17';
+const CACHE = 'tripnote-v18';
 const RES = 'tripnote-res-v1';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './icon-180.png'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL.map(u => new Request(u, { cache:'reload' })))).then(() => self.skipWaiting())); });
