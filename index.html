@@ -172,6 +172,16 @@ svg{flex-shrink:0}
 .daytabs::-webkit-scrollbar{display:none}
 .daytab{flex:0 0 auto;min-width:78px;height:56px;border:0;border-radius:14px;background:var(--surface);color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:0 10px}
 .daytab b{font-size:14px}
+.wx-mini{display:flex;align-items:center;gap:2px;font-size:11px;font-variant-numeric:tabular-nums;color:var(--muted);margin-top:1px}
+.daytab.on .wx-mini{color:var(--on-accent)}
+.wx-mini svg{width:13px;height:13px}
+.daytab:has(.wx-mini){height:70px}
+.wxline{display:flex;align-items:center;gap:10px;width:100%;margin-top:10px;padding:10px 8px 10px 14px;border:0;border-radius:14px;background:var(--surface);color:var(--ink);text-align:left;min-height:56px}
+.wxline > svg{width:28px;height:28px;color:var(--accent)}
+.wxline b{display:block;font-size:15px;font-variant-numeric:tabular-nums}
+.wxline small{display:block;font-size:12px;color:var(--muted)}
+.wx-place{display:flex;align-items:center;gap:2px;font-size:13px;color:var(--muted);flex-shrink:0;max-width:40%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.wx-place svg{width:16px;height:16px}
 .daytab span{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
 .daytab.on{background:var(--accent);color:var(--on-accent)}
 .daytab.on span{color:var(--on-accent)}
@@ -187,7 +197,8 @@ select.input{padding-right:8px}
 .tl-row{display:flex;gap:10px}
 .tl-time{margin:14px 0 0;width:46px;flex-shrink:0;font-size:14px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums}
 .swipe{position:relative;flex:1;min-width:0;border-radius:16px;overflow:hidden;background:var(--line)}
-.swipe-actions{position:absolute;top:0;right:0;bottom:0;display:flex}
+.swipe-actions{position:absolute;top:0;right:0;bottom:0;display:flex;visibility:hidden}
+.swipe.sw .swipe-actions{visibility:visible}
 .swipe-actions button{width:72px;border:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:12px;font-weight:700;background:var(--line);color:var(--ink)}
 .swipe-actions button svg{width:18px;height:18px}
 .swipe-actions button.danger{background:var(--danger);color:var(--on-danger)}
@@ -411,7 +422,7 @@ ol.list{list-style:none;margin:0;padding:4px 0}
 document.documentElement.lang = 'ko';
 
 /* ---------- helpers ---------- */
-const APP_VERSION = '2026.11.03-4';
+const APP_VERSION = '2026.11.03-5';
 const EMBED = (()=>{ try { return window.self !== window.top; } catch(e){ return true; } })();
 const DOW = ['일','월','화','수','목','금','토'];
 const $ = (s, r=document) => r.querySelector(s);
@@ -490,6 +501,14 @@ const I = {
   card: sv('<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h3"/>'),
   cash: sv('<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 9v.01M18 15v.01"/>'),
   route: sv('<circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><path d="M8 18h7a3 3 0 000-6H9a3 3 0 010-6h7"/>'),
+  wx_sun: sv('<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>'),
+  wx_partly: sv('<path d="M8 3v1.5M3.5 5.5l1 1M2 10h1.5M12.5 5.5l-1 1"/><path d="M5.6 11.5A3.5 3.5 0 0111.5 8"/><path d="M8 20h9a4 4 0 00.5-8 5.5 5.5 0 00-10.4 1.5A3.3 3.3 0 008 20z"/>'),
+  wx_cloud: sv('<path d="M7 19h10a4.5 4.5 0 00.6-9A6 6 0 006 11.5 3.8 3.8 0 007 19z"/>'),
+  wx_rain: sv('<path d="M7 15h10a4 4 0 00.5-8 5.5 5.5 0 00-10.4 1.5A3.3 3.3 0 007 15z"/><path d="M8 18l-1 3M12 18l-1 3M16 18l-1 3"/>'),
+  wx_snow: sv('<path d="M7 14h10a4 4 0 00.5-8 5.5 5.5 0 00-10.4 1.5A3.3 3.3 0 007 14z"/><path d="M8 18h.01M12 18h.01M16 18h.01M10 21h.01M14 21h.01"/>', 2.6),
+  wx_storm: sv('<path d="M7 14h10a4 4 0 00.5-8 5.5 5.5 0 00-10.4 1.5A3.3 3.3 0 007 14z"/><path d="M12 14l-2 4h3l-2 4"/>'),
+  wx_fog: sv('<path d="M7 12h10a4 4 0 00.5-8 5.5 5.5 0 00-10.4 1.5A3.3 3.3 0 007 12z"/><path d="M4 16h16M6 20h12"/>'),
+  wx_thermo: sv('<path d="M10 14V5a2 2 0 014 0v9a4 4 0 11-4 0z"/><path d="M12 9v7"/>'),
   up: sv('<path d="M6 15l6-6 6 6"/>'),
   down: sv('<path d="M6 9l6 6 6-6"/>'),
   cal: sv('<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>'),
@@ -917,7 +936,7 @@ function sampleState(){
   const ck = (group, label, done) => ({ id:uid(), tripId:tid, group, label, done });
   return {
     settings:{ theme:null, homeView:'list' }, lastBackup:null,
-    trips:[{ id:tid, title:'오사카 3박 4일', start, end, view:'timeline', sample:true, rates:{ JPY:9 }, people:2, lastCurrency:'JPY' }],
+    trips:[{ id:tid, title:'오사카 3박 4일', start, end, view:'timeline', sample:true, wx:{ loc:{ name:'오사카', lat:34.6937, lng:135.5023 } }, rates:{ JPY:9 }, people:2, lastCurrency:'JPY' }],
     items:[
       it(0,'14:30','호텔 짐 맡기기','체크인 전에도 짐 보관 가능','난바역 오사카'),
       it(0,'19:00','도톤보리','글리코 간판 앞 야경','도톤보리 오사카'),
@@ -1189,7 +1208,9 @@ function renderTrip(){
 }
 function renderPlan(t, days){
   const idx = days.indexOf(V.day);
-  let h = `<nav class="daytabs" aria-label="날짜 선택">${days.map((d,i) => `<button type="button" class="daytab${d===V.day?' on':''}" data-act="day" data-val="${d}" aria-pressed="${d===V.day}"><b>Day ${i+1}</b><span>${md(d)}</span></button>`).join('')}</nav>
+  setTimeout(() => refreshWeather(t), 0);
+  let h = `<nav class="daytabs" aria-label="날짜 선택">${days.map((d,i) => `<button type="button" class="daytab${d===V.day?' on':''}" data-act="day" data-val="${d}" aria-pressed="${d===V.day}"><b>Day ${i+1}</b><span>${md(d)}</span>${wxTab(t, d)}</button>`).join('')}</nav>
+    ${wxLine(t, V.day)}
     <form class="quick" data-form="quick" autocomplete="off"><label class="sr" for="quick">빠른 입력</label>
       <input class="input" id="quick" enterkeyhint="done" placeholder="빠른 입력 · 예: 11시 도톤보리 라멘">
       <button class="btn primary" type="submit" aria-label="빠른 입력으로 추가">${I.plus}</button></form>`;
@@ -1306,6 +1327,126 @@ function orderByDistance(start, pts){
 }
 const pathKm = (start, pts) => { let s = 0, prev = start; pts.forEach(p => { if (prev) s += haversine(prev, p); prev = p; }); return s; };
 const sleep = ms => new Promise(r => setTimeout(r, ms));
+/* ---------- 날씨 (Open-Meteo, 도시 좌표만 보냄) ---------- */
+function wxInfo(code){
+  if (code == null) return { label:'', icon:'thermo' };
+  if (code === 0) return { label:'맑음', icon:'sun' };
+  if (code <= 2) return { label:'구름 조금', icon:'partly' };
+  if (code === 3) return { label:'흐림', icon:'cloud' };
+  if (code === 45 || code === 48) return { label:'안개', icon:'fog' };
+  if (code >= 51 && code <= 57) return { label:'이슬비', icon:'rain' };
+  if ((code >= 61 && code <= 67) || (code >= 80 && code <= 82)) return { label: code >= 65 && code !== 80 ? '많은 비' : '비', icon:'rain' };
+  if ((code >= 71 && code <= 77) || code === 85 || code === 86) return { label:'눈', icon:'snow' };
+  if (code >= 95) return { label:'뇌우', icon:'storm' };
+  return { label:'', icon:'cloud' };
+}
+const tdeg = n => n == null ? '–' : `${Math.round(n)}°`;
+const wxLocFor = (t, day) => (t.wx && t.wx.dayLoc && t.wx.dayLoc[day]) || (t.wx && t.wx.loc) || null;
+const wxDay = (t, day) => t.wx && t.wx.days ? t.wx.days[day] : null;
+function wxTab(t, day){
+  const w = wxDay(t, day); if (!w || w.max == null) return '';
+  return `<span class="wx-mini">${I['wx_' + wxInfo(w.code).icon]}${tdeg(w.max)}/${tdeg(w.min)}</span>`;
+}
+function wxLine(t, day){
+  const loc = wxLocFor(t, day); const w = wxDay(t, day);
+  if (!loc) return `<button type="button" class="wxline" data-act="wx-loc">${I.wx_partly}<span class="minw">날씨를 보려면 여행 지역을 정해 주세요</span>${I.chevR}</button>`;
+  let body;
+  if (w && w.max != null){
+    const inf = wxInfo(w.code);
+    if (w.kind === 'normal') body = `${I.wx_thermo}<span class="minw"><b>평년 기온 ${tdeg(w.max)} / ${tdeg(w.min)}</b><small>최근 3년 같은 날 평균 · 예보는 출발 16일 전부터 나와요</small></span>`;
+    else body = `${I['wx_' + inf.icon]}<span class="minw"><b>${inf.label ? inf.label + ' · ' : ''}${tdeg(w.max)} / ${tdeg(w.min)}</b><small>${w.kind === 'past' ? '실제 날씨' : '예보'}${w.pop != null && w.kind !== 'past' ? ` · 비 올 확률 ${w.pop}%` : ''}${w.rain ? ` · 강수 ${w.rain}mm` : ''}</small></span>`;
+  } else body = `${I.wx_partly}<span class="minw"><b>${WX.busy ? '날씨 불러오는 중…' : WX.err ? '날씨를 불러오지 못했어요' : '날씨 정보 없음'}</b><small>${WX.err ? '인터넷에 연결되면 다시 받아와요' : ''}</small></span>`;
+  return `<button type="button" class="wxline" data-act="wx-loc" aria-label="날씨 지역 바꾸기, 지금 ${esc(loc.name)}">${body}<span class="wx-place">${esc(loc.name)}${I.chevR}</span></button>`;
+}
+const WX = { busy:false, err:false };
+async function wxFetchJSON(url){ const r = await fetch(url); if (!r.ok) throw new Error('http ' + r.status); return r.json(); }
+async function geoCity(q){
+  const j = await wxFetchJSON(`https://geocoding-api.open-meteo.com/v1/search?count=6&language=ko&format=json&name=${enc(q)}`);
+  return (j.results || []).map(x => ({ name: x.name, lat: x.latitude, lng: x.longitude, sub: [x.admin1, x.country].filter(Boolean).join(', ') }));
+}
+function titleCityGuess(title){
+  return String(title || '').split(/[\s,·/()]+/).filter(w => w.length >= 2 && !/\d|박|일$|여행|출장|가족|친구|커플|혼자|투어|trip/i.test(w));
+}
+async function ensureTripLoc(t){
+  t.wx = t.wx || {};
+  if (t.wx.loc || t.wx.locTried === t.title) return;
+  t.wx.locTried = t.title;
+  for (const w of titleCityGuess(t.title).slice(0, 2)){
+    const r = await geoCity(w); if (r[0]){ t.wx.loc = { name: r[0].name, lat: r[0].lat, lng: r[0].lng, auto: true }; return; }
+  }
+}
+async function refreshWeather(t, force){
+  if (WX.busy || !navigator.onLine) return;
+  if (!force && WX.failAt && Date.now() - WX.failAt < 120e3) return;
+  t.wx = t.wx || {}; const fresh = t.wx.fetchedAt && Date.now() - t.wx.fetchedAt < 3 * 3600e3 && t.wx.sig === wxSig(t);
+  if (fresh && !force) return;
+  WX.busy = true; WX.err = false; WX.failAt = 0;
+  try {
+    await ensureTripLoc(t);
+    const days = tripDays(t); const td = todayISO(); const out = Object.assign({}, t.wx.days || {});
+    const groups = {};
+    days.forEach(d => { const l = wxLocFor(t, d); if (!l) return; const k = `${l.lat.toFixed(2)},${l.lng.toFixed(2)}`; (groups[k] = groups[k] || { l, days: [] }).days.push(d); });
+    for (const { l, days: ds } of Object.values(groups)){
+      const base = `latitude=${l.lat}&longitude=${l.lng}&timezone=auto`;
+      const fc = ds.filter(d => diffDays(td, d) <= 15 && diffDays(d, td) <= 60);
+      const old = ds.filter(d => diffDays(d, td) > 60);
+      const far = ds.filter(d => diffDays(td, d) > 15);
+      if (fc.length){
+        const j = await wxFetchJSON(`https://api.open-meteo.com/v1/forecast?${base}&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum&start_date=${fc[0]}&end_date=${fc[fc.length - 1]}`);
+        (j.daily.time || []).forEach((d, i) => { if (!fc.includes(d)) return; out[d] = { code: j.daily.weather_code[i], max: j.daily.temperature_2m_max[i], min: j.daily.temperature_2m_min[i], pop: j.daily.precipitation_probability_max ? j.daily.precipitation_probability_max[i] : null, rain: d < td && j.daily.precipitation_sum ? Math.round(j.daily.precipitation_sum[i] * 10) / 10 : null, kind: d < td ? 'past' : 'fc', at: l.name }; });
+      }
+      if (old.length){
+        const j = await wxFetchJSON(`https://archive-api.open-meteo.com/v1/archive?${base}&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum&start_date=${old[0]}&end_date=${old[old.length - 1]}`);
+        (j.daily.time || []).forEach((d, i) => { if (!old.includes(d)) return; out[d] = { code: j.daily.weather_code[i], max: j.daily.temperature_2m_max[i], min: j.daily.temperature_2m_min[i], pop: null, rain: j.daily.precipitation_sum ? Math.round(j.daily.precipitation_sum[i] * 10) / 10 : null, kind: 'past', at: l.name }; });
+      }
+      if (far.length){
+        const acc = {}; const y0 = parseISO(td).getFullYear();
+        for (let k = 1; k <= 3; k++){
+          const shift = d => { const x = parseISO(d); x.setFullYear(x.getFullYear() - k); return toISO(x); };
+          const s0 = shift(far[0]), e0 = shift(far[far.length - 1]);
+          if (parseISO(e0) > parseISO(addDays(td, -6))) continue;
+          const j = await wxFetchJSON(`https://archive-api.open-meteo.com/v1/archive?${base}&daily=temperature_2m_max,temperature_2m_min&start_date=${s0}&end_date=${e0}`);
+          (j.daily.time || []).forEach((d, i) => { const md5 = d.slice(5); (acc[md5] = acc[md5] || []).push([j.daily.temperature_2m_max[i], j.daily.temperature_2m_min[i]]); });
+        }
+        far.forEach(d => { const a = (acc[d.slice(5)] || []).filter(x => x[0] != null); if (!a.length) return; out[d] = { code: null, max: a.reduce((s, x) => s + x[0], 0) / a.length, min: a.reduce((s, x) => s + x[1], 0) / a.length, kind: 'normal', at: l.name }; });
+        void y0;
+      }
+    }
+    Object.keys(out).forEach(d => { if (!days.includes(d)) delete out[d]; });
+    t.wx.days = out; t.wx.fetchedAt = Date.now(); t.wx.sig = wxSig(t); save();
+  } catch(e){ WX.err = true; WX.failAt = Date.now(); }
+  WX.busy = false;
+  if (V.name === 'trip' && V.tripId === t.id && (V.tab || 'plan') === 'plan' && $('#sheet-root').hidden) render();
+}
+const wxSig = t => JSON.stringify([t.start, t.end, t.wx && t.wx.loc, t.wx && t.wx.dayLoc]);
+function openWxSheet(){
+  const t = getTrip(V.tripId); t.wx = t.wx || {};
+  const cur = wxLocFor(t, V.day); const idx = tripDays(t).indexOf(V.day) + 1;
+  editing = { kind:'wx', scope: t.wx.dayLoc && t.wx.dayLoc[V.day] ? 'day' : 'trip', results: [] };
+  openSheet(`${sheetHeadClose('날씨 지역')}<div class="form">
+    <p style="margin:0;font-size:15px">지금 지역 · <b>${cur ? esc(cur.name) : '정하지 않음'}</b>${cur && cur.auto ? ' <span class="muted small">(여행 이름으로 찾음)</span>' : ''}</p>
+    <div class="field"><span class="flabel">바꿀 범위</span><div class="seg" id="wx-scope">${wxScopeSeg(idx)}</div></div>
+    <form class="inline" data-form="wx-search" autocomplete="off"><label class="sr" for="wx-q">도시 이름</label><input class="input" id="wx-q" placeholder="도시 이름 (예: 후쿠오카, Osaka)" enterkeyhint="search" autofocus><button class="btn primary" type="submit">찾기</button></form>
+    <div class="opts" id="wx-results"></div>
+    ${t.wx.dayLoc && t.wx.dayLoc[V.day] ? `<button type="button" class="btn sm" data-act="wx-reset-day">Day ${idx}을 여행 기본 지역으로 되돌리기</button>` : ''}
+    <button type="button" class="btn sm" data-act="wx-refresh">날씨 새로 받기</button>
+    <p class="hint">도시 위치만 Open-Meteo에 보내서 날씨를 받아와요. 일정이나 예약 내용은 보내지 않아요.</p></div>`);
+}
+const wxScopeSeg = idx => segBtn('wx-scope', 'trip', '여행 전체', editing.scope !== 'day') + segBtn('wx-scope', 'day', `Day ${idx}만`, editing.scope === 'day');
+async function wxSearch(){
+  const q = val('wx-q'); const box = $('#wx-results'); if (!q || !box) return;
+  box.innerHTML = `<p class="hint">찾는 중…</p>`;
+  try { editing.results = await geoCity(q); }
+  catch(e){ box.innerHTML = `<p class="err">도시를 찾지 못했어요. 인터넷 연결을 확인해 주세요.</p>`; return; }
+  box.innerHTML = editing.results.length ? editing.results.map((r, i) => `<button type="button" class="opt" data-act="wx-pick" data-val="${i}"><span class="ico">${I.pin}</span><span class="minw"><b>${esc(r.name)}</b><small>${esc(r.sub)}</small></span></button>`).join('') : `<p class="hint">"${esc(q)}"(으)로 찾은 도시가 없어요. 영어 이름으로도 찾아보세요.</p>`;
+}
+function wxPick(i){
+  const t = getTrip(V.tripId); const r = editing.results[i]; if (!r) return;
+  const loc = { name: r.name, lat: r.lat, lng: r.lng };
+  if (editing.scope === 'day'){ t.wx.dayLoc = Object.assign({}, t.wx.dayLoc, { [V.day]: loc }); }
+  else { t.wx.loc = loc; }
+  t.wx.fetchedAt = 0; save(); closeSheet(false); render(); refreshWeather(t, true);
+}
 let lastGeoAt = 0;
 async function geocodeOne(q){
   const c = q.match(COORD_RE); if (c){ const lat = +c[1], lng = +c[2]; if (Math.abs(lat) <= 90 && Math.abs(lng) <= 180) return { lat, lng }; }
@@ -1910,6 +2051,7 @@ function dayText(t, day){
   const idx = tripDays(t).indexOf(day) + 1; const its = dayEntries(t.id, day);
   const lines = [`${t.title} · Day ${idx} (${md(day)})`, ...its.map(i => `${i.time || '--:--'}  ${i.place || '일정'}${i.memo ? ` — ${i.memo.replace(/\n/g, ' / ')}` : ''}`)];
   if (!its.length) lines.push('자유 일정');
+  const w = wxDay(t, day); if (w && w.max != null) lines.splice(1, 0, `날씨: ${w.kind === 'normal' ? '평년 기온' : wxInfo(w.code).label} ${tdeg(w.max)}/${tdeg(w.min)}`);
   const note = S.notes[noteKey(t.id, day)]; if (note) lines.push('', `오늘의 한 줄: ${note}`);
   return lines.join('\n');
 }
@@ -1994,7 +2136,7 @@ function closeViewer(){ $('#viewer-root').innerHTML = ''; }
 
 /* ---------- swipe to reveal ---------- */
 const ACT_W = 144; let swipeOpen = null; let sw = null; let suppressClick = false;
-function closeSwipe(){ if (!swipeOpen) return; const c = document.querySelector(`.swipe[data-swipe="${swipeOpen}"] .swipe-card`); if (c) c.style.transform = ''; swipeOpen = null; }
+function closeSwipe(){ if (!swipeOpen) return; const c = document.querySelector(`.swipe[data-swipe="${swipeOpen}"] .swipe-card`); if (c){ c.style.transform = ''; const w = c.parentElement; setTimeout(() => w.classList.remove('sw'), 220); } swipeOpen = null; }
 document.addEventListener('pointerdown', e => {
   const card = e.target.closest('.swipe-card');
   if (swipeOpen && !e.target.closest(`.swipe[data-swipe="${swipeOpen}"]`)) closeSwipe();
@@ -2008,12 +2150,12 @@ document.addEventListener('pointermove', e => {
     if (Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy) * 1.2){ sw.active = true; sw.card.style.transition = 'none'; try { sw.card.setPointerCapture(e.pointerId); } catch(_){} }
     else if (Math.abs(dy) > 10){ sw = null; return; } else return;
   }
-  sw.dx = dx; sw.card.style.transform = `translateX(${Math.max(-ACT_W - 24, Math.min(0, sw.base + dx))}px)`;
+  sw.card.parentElement.classList.add('sw'); sw.dx = dx; sw.card.style.transform = `translateX(${Math.max(-ACT_W - 24, Math.min(0, sw.base + dx))}px)`;
 });
 function endSwipe(){
   if (!sw) return; const s = sw; sw = null; if (!s.active) return;
   s.card.style.transition = ''; const x = s.base + s.dx;
-  if (x < -ACT_W / 2){ s.card.style.transform = `translateX(${-ACT_W}px)`; swipeOpen = s.id; } else { s.card.style.transform = ''; if (swipeOpen === s.id) swipeOpen = null; }
+  if (x < -ACT_W / 2){ s.card.style.transform = `translateX(${-ACT_W}px)`; swipeOpen = s.id; } else { s.card.style.transform = ''; if (swipeOpen === s.id) swipeOpen = null; const w = s.card.parentElement; setTimeout(() => { if (swipeOpen !== s.id) w.classList.remove('sw'); }, 220); }
   suppressClick = true; setTimeout(() => { suppressClick = false; }, 80);
 }
 document.addEventListener('pointerup', endSwipe); document.addEventListener('pointercancel', endSwipe);
@@ -2075,6 +2217,11 @@ const A = {
   'rt': el => { editing.rt = el.dataset.val; refreshBookingUI(); },
   'del-booking': el => { const b = S.bookings.find(x => x.id === el.dataset.id); confirmSheet({ title:'이 예약 정보를 삭제할까요?', body:`${b.title || KIND[b.kind].label}${b.photos.length ? `과 첨부 ${b.photos.length}개가` : '이'} 지워져요.`, ok:'삭제', danger:true }, () => { const idx = S.bookings.indexOf(b); S.bookings.splice(idx, 1); save(); back(); undoToast('예약 정보를 지웠어요', () => { S.bookings.splice(Math.min(idx, S.bookings.length), 0, b); save(); render(); }, () => photoDel(b.photos)); }); },
   'copy': el => copyText(el.dataset.text),
+  'wx-loc': () => openWxSheet(),
+  'wx-scope': el => { editing.scope = el.dataset.val; $('#wx-scope').innerHTML = wxScopeSeg(tripDays(getTrip(V.tripId)).indexOf(V.day) + 1); },
+  'wx-pick': el => wxPick(Number(el.dataset.val)),
+  'wx-reset-day': () => { const t = getTrip(V.tripId); if (t.wx && t.wx.dayLoc){ delete t.wx.dayLoc[V.day]; } t.wx.fetchedAt = 0; save(); closeSheet(false); render(); refreshWeather(t, true); },
+  'wx-refresh': () => { const t = getTrip(V.tripId); closeSheet(false); WX.err = false; render(); refreshWeather(t, true); },
   'list': el => { V.list = el.dataset.val; V.reorder = false; render(); },
   'toggle-wish': el => { const w = S.wishes.find(x => x.id === el.dataset.id); w.done = !w.done; save(); render(); if (w.done) toast(w.type === 'buy' ? `'${w.label}' 샀어요` : `'${w.label}' 다녀왔어요`); },
   'edit-wish': el => openWishSheet(el.dataset.id),
@@ -2124,6 +2271,7 @@ document.addEventListener('submit', e => {
     toast(`${p.title || catOf(cat).name} ${money(p.amount, p.currency)} · ${catOf(cat).name} · ${payName(pay)}로 넣었어요`, 3000);
   }
   else if (f === 'exp') saveExp(); else if (f === 'money') saveMoneySettings();
+  else if (f === 'wx-search'){ wxSearch(); }
   else if (f === 'add-wish'){
     const v = val('wish-new'); if (!v) return; const type = e.target.dataset.type;
     if (type === 'buy'){ const p = parseBuyQuick(v); S.wishes.push({ id:uid(), tripId:V.tripId, type, label:p.label || v, store:p.store, qty:p.qty, memo:'', done:false }); }
