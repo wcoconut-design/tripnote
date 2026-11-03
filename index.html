@@ -354,6 +354,51 @@ ol.list{list-style:none;margin:0;padding:4px 0}
 .member-list{display:flex;flex-direction:column;gap:6px}
 .chipbtn svg{width:14px;height:14px}
 .clip svg{width:13px;height:13px;vertical-align:-1px;color:var(--muted)}
+.pcard{display:flex;align-items:flex-start;gap:12px;padding:12px 6px 12px 12px}
+.pcard + .pcard{border-top:1px solid var(--line)}
+.pthumb{width:76px;height:76px;border-radius:12px;overflow:hidden;position:relative;flex-shrink:0;background:var(--bg);display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.pthumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.pthumb svg{width:28px;height:28px}
+.pthumb-wrap{position:relative;flex-shrink:0}
+.pnum-badge{position:absolute;top:-6px;left:-6px;min-width:24px;height:24px;padding:0 6px;border-radius:12px;background:var(--accent);color:var(--on-accent);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums;box-shadow:0 0 0 2px var(--surface)}
+.pbody{flex:1;min-width:0;border:0;background:transparent;padding:0;text-align:left;color:var(--ink);display:flex;flex-direction:column;gap:2px;cursor:pointer}
+.pbody b{font-size:16px;font-weight:700;line-height:1.35;overflow-wrap:anywhere}
+.pbody .orig{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.pprice{font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;margin-top:2px}
+.pmemo{font-size:13px;color:var(--ink);opacity:.85;line-height:1.45;margin-top:2px}
+.pmeta{font-size:12px;color:var(--muted);margin-top:2px}
+.pmeta.dist{color:var(--accent);font-weight:600}
+.struck{text-decoration:line-through;color:var(--muted)}
+.pright{display:flex;flex-direction:column;align-items:center;gap:2px;flex-shrink:0}
+.kchip{font-weight:700}
+.stars{color:#C9961A;font-size:14px;letter-spacing:1px;margin-top:2px}.stars .off{color:var(--line)}
+.kindbar{margin:0}
+.wv-photos{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.wv-ph{flex:0 0 auto;width:min(70%,260px);aspect-ratio:1;max-width:100%;border-radius:14px;overflow:hidden;position:relative;border:0;padding:0;background:var(--bg)}
+.wv-ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.orig-big{margin:4px 0 0;font-size:18px;color:var(--muted);overflow-wrap:anywhere}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:0;font-size:14px}
+.kv dt{color:var(--muted)} .kv dd{margin:0;font-weight:600;overflow-wrap:anywhere}
+.menu-list{list-style:none;margin:0;padding:0;background:var(--surface);border-radius:14px}
+.menu-list li{display:flex;gap:10px;align-items:center;padding:10px 14px}
+.menu-list li + li{border-top:1px solid var(--line)}
+.menu-list small{display:block;font-size:12px;color:var(--muted)}
+.menu-list .mp{font-weight:700;font-variant-numeric:tabular-nums;flex-shrink:0}
+.menu-rows{display:flex;flex-direction:column;gap:10px}
+.menu-edit{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto;grid-template-areas:"n o d" "p p d";gap:6px;align-items:center;padding-bottom:10px;border-bottom:1px dashed var(--line)}
+.menu-edit [data-f="name"]{grid-area:n} .menu-edit [data-f="orig"]{grid-area:o} .menu-edit [data-f="price"]{grid-area:p} .menu-edit .iconbtn{grid-area:d}
+.rating{display:flex;gap:2px}
+.star{width:44px;height:44px;border:0;background:transparent;font-size:30px;line-height:1;color:var(--line);padding:0}
+.star.on{color:#C9961A}
+.staff{position:fixed;inset:0;z-index:40;background:#fff;color:#111;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:calc(64px + env(safe-area-inset-top,0px)) max(24px,env(safe-area-inset-right,0px)) calc(32px + env(safe-area-inset-bottom,0px)) max(24px,env(safe-area-inset-left,0px));overflow-y:auto;text-align:center;color-scheme:light}
+.staff .close{position:absolute;top:calc(8px + env(safe-area-inset-top,0px));right:calc(8px + env(safe-area-inset-right,0px));color:#111}
+.staff-ph{width:min(70vw,320px);aspect-ratio:1;max-width:100%;position:relative;border-radius:16px;overflow:hidden;flex-shrink:0;background:#f2f2f2}
+.staff-ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.staff-name{margin:0;font-size:clamp(28px,8vw,44px);font-weight:700;line-height:1.3;font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",var(--sans);overflow-wrap:anywhere}
+.staff-sub{margin:0;font-size:17px;color:#555}
+.staff-menu{list-style:none;padding:0;margin:0;font-size:24px;font-weight:700;display:flex;flex-direction:column;gap:12px;font-family:"Hiragino Sans","Noto Sans JP",var(--sans)}
+.staff-menu small{display:block;font-size:14px;font-weight:400;color:#666}
+.staff-ask{margin:8px 0 0;font-size:22px;color:#333;font-family:"Hiragino Sans","Noto Sans JP",var(--sans)}
 .warn{margin:10px 0 0;font-size:13px;color:var(--danger);font-weight:600}
 .grp-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin:4px 4px 6px}
 .exp-row{display:flex;align-items:center;gap:12px;width:100%;border:0;background:transparent;padding:10px 14px;text-align:left;color:var(--ink)}
@@ -457,7 +502,7 @@ ol.list{list-style:none;margin:0;padding:4px 0}
 document.documentElement.lang = 'ko';
 
 /* ---------- helpers ---------- */
-const APP_VERSION = '2026.11.03-6';
+const APP_VERSION = '2026.11.03-7';
 const EMBED = (()=>{ try { return window.self !== window.top; } catch(e){ return true; } })();
 const DOW = ['일','월','화','수','목','금','토'];
 const $ = (s, r=document) => r.querySelector(s);
@@ -545,6 +590,9 @@ const I = {
   wx_fog: sv('<path d="M7 12h10a4 4 0 00.5-8 5.5 5.5 0 00-10.4 1.5A3.3 3.3 0 007 12z"/><path d="M4 16h16M6 20h12"/>'),
   wx_thermo: sv('<path d="M10 14V5a2 2 0 014 0v9a4 4 0 11-4 0z"/><path d="M12 9v7"/>'),
   search: sv('<circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/>'),
+  cup: sv('<path d="M5 8h11v5a5 5 0 01-5 5h-1a5 5 0 01-5-5z"/><path d="M16 9h1.5a2.5 2.5 0 010 5H16M8 3v2M11 3v2"/>'),
+  spa: sv('<path d="M4 16c2-1 4-1 6 0s4 1 6 0 3-1 4 0M4 20c2-1 4-1 6 0s4 1 6 0 3-1 4 0M8 12c0-2 2-2 2-4s-2-2-2-4M13 12c0-2 2-2 2-4s-2-2-2-4"/>'),
+  expand: sv('<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>'),
   up: sv('<path d="M6 15l6-6 6 6"/>'),
   down: sv('<path d="M6 9l6 6 6-6"/>'),
   cal: sv('<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>'),
@@ -1096,7 +1144,7 @@ function normalize(s){
     items: Array.isArray(s.items) ? s.items.map(i => Object.assign({ address:'', memo:'', time:'', photos:[] }, i)) : [],
     notes: s.notes && typeof s.notes === 'object' ? s.notes : {},
     checks: Array.isArray(s.checks) ? s.checks : [],
-    wishes: Array.isArray(s.wishes) ? s.wishes : [],
+    wishes: Array.isArray(s.wishes) ? s.wishes.map(w => Object.assign({ photos: [] }, w, w.type === 'place' && !w.kind ? { kind: guessKind(w.label) || 'etc' } : {})) : [],
     expenses: Array.isArray(s.expenses) ? s.expenses.map(e => Object.assign({}, e, { pay: normPay(e.pay) })) : [],
     bookings: Array.isArray(s.bookings) ? s.bookings.map(b => Object.assign({ kind:'etc', code:'', start:'', end:'', address:'', memo:'', photos:[] }, b)) : [],
   };
@@ -1131,13 +1179,15 @@ function sampleState(){
       ck('의류','얇은 패딩',false), ck('의류','편한 운동화',true),
     ],
     wishes:[
-      { id:uid(), tripId:tid, type:'buy', label:'곤약젤리', store:'돈키호테', qty:'5개', memo:'복숭아맛', done:false },
+      { id:uid(), tripId:tid, type:'buy', label:'마츠키요 LAB 약초탕 입욕제', orig:'matsukiyo LAB 生薬浴用剤 薬草湯', price:1078, currency:'JPY', unit:'10포', store:'마츠모토키요시', qty:'1개', memo:'생약 성분이 들어간 의약부외품 입욕제. 몸을 따뜻하게 하는 용도', photos:[], done:false },
+      { id:uid(), tripId:tid, type:'buy', label:'곤약젤리', orig:'蒟蒻畑 ピーチ味', price:298, currency:'JPY', unit:'1봉지', store:'돈키호테', qty:'5개', memo:'복숭아맛', photos:[], done:false },
       { id:uid(), tripId:tid, type:'buy', label:'동전파스', store:'드럭스토어', qty:'2박스', memo:'엄마 부탁', done:false },
       { id:uid(), tripId:tid, type:'buy', label:'로이스 초콜릿', store:'간사이공항 면세점', qty:'', memo:'', done:false },
       { id:uid(), tripId:tid, type:'buy', label:'우산', store:'', qty:'', memo:'', done:true },
-      { id:uid(), tripId:tid, type:'place', label:'우메다 공중정원', address:'우메다 스카이빌딩 오사카', memo:'해 질 무렵', done:false, order:0 },
-      { id:uid(), tripId:tid, type:'place', label:'나카자키초 카페거리', address:'나카자키초 오사카', memo:'', done:false, order:1 },
-      { id:uid(), tripId:tid, type:'place', label:'호젠지 요코초', address:'호젠지 요코초 오사카', memo:'저녁에 분위기 좋음', done:false, order:2 },
+      { id:uid(), tripId:tid, type:'place', kind:'sight', label:'우메다 공중정원', orig:'梅田スカイビル 空中庭園展望台', address:'우메다 스카이빌딩 오사카', fee:'성인 ¥2,000', tip:'해 질 무렵이 예뻐요', memo:'', menu:[], photos:[], done:false, order:0 },
+      { id:uid(), tripId:tid, type:'place', kind:'food', label:'이치란 도톤보리점', orig:'一蘭 道頓堀店', address:'이치란 도톤보리 오사카', hours:'24시간', menu:[{ name:'돈코츠 라멘', orig:'天然とんこつラーメン', price:'¥980' }, { name:'가에다마', orig:'替玉', price:'¥210' }], tip:'자판기에서 식권 먼저', memo:'', photos:[], done:false, order:3 },
+      { id:uid(), tripId:tid, type:'place', kind:'cafe', label:'나카자키초 카페거리', address:'나카자키초 오사카', memo:'', menu:[], photos:[], done:false, order:1 },
+      { id:uid(), tripId:tid, type:'place', kind:'sight', label:'호젠지 요코초', address:'호젠지 요코초 오사카', memo:'저녁에 분위기 좋음', menu:[], photos:[], done:false, order:2 },
     ],
     bookings:[
       { id:uid(), tripId:tid, kind:'flight', title:'인천 ⇄ 간사이 왕복', from:'인천', to:'간사이', roundTrip:true, flightNo:'KE723', retFlightNo:'KE724', retStart:`${d(3)}T18:40`, retEnd:`${d(3)}T20:35`, code:'K7X2QM', price:156000, currency:'KRW', priceMode:'each', pax:2, start:`${d(0)}T09:05`, end:`${d(0)}T10:55`, address:'인천국제공항 제1여객터미널', memo:'위탁 수하물 15kg 포함\n온라인 체크인은 출발 24시간 전부터\n탑승구는 출발 2시간 전에 확인', photos:[] },
@@ -1727,8 +1777,9 @@ async function locate(o, labelField){
 }
 async function sortNearest(t){
   if (!navigator.onLine) return toast('위치를 찾으려면 인터넷 연결이 필요해요', 3500);
-  const todo = S.wishes.filter(w => w.tripId === t.id && w.type === 'place' && !w.done).sort((a, b) => (a.order || 0) - (b.order || 0));
+  const todo = placeList(t, false);
   if (todo.length < 2) return toast('가볼 곳이 2곳 이상일 때 정렬할 수 있어요');
+  const others = S.wishes.filter(w => w.tripId === t.id && w.type === 'place' && !w.done && !todo.includes(w)).sort((a, b) => (a.order || 0) - (b.order || 0));
   const sb = V.fromBase !== false ? S.bookings.find(b => b.tripId === t.id && b.kind === 'stay' && (b.address || b.title)) : null;
   const need = [...(sb ? [sb] : []), ...todo].filter(o => !hasGeo(o)).length;
   let n = 0;
@@ -1748,7 +1799,7 @@ async function sortNearest(t){
   const ok = found.filter(w => !w.geoFar), miss = todo.filter(w => typeof w.lat !== 'number' || w.geoFar);
   const start = ref ? { lat: ref.lat, lng: ref.lng } : null;
   const sorted = orderByDistance(start, ok);
-  [...sorted, ...miss].forEach((w, i) => { w.order = i; });
+  [...sorted, ...miss, ...others].forEach((w, i) => { w.order = i; });
   V.reorder = false; save(); render();
   const km = pathKm(start, sorted);
   if (!sorted.length) return toast('어느 곳의 위치도 찾지 못했어요. 주소를 영어나 현지어로 넣어 보세요.', 5000);
@@ -1760,6 +1811,94 @@ function askSortNearest(){
   confirmSheet({ title:'가까운 순서로 정렬할까요?', body:'가볼 곳의 이름과 주소를 OpenStreetMap에 보내 위치를 찾아요. 여행 일정, 예약번호, 사진은 보내지 않아요. 찾은 위치는 이 폰에 저장해서 다음부터는 바로 정렬해요.', ok:'정렬하기' }, () => { S.settings.geoOk = true; save(); sortNearest(t); });
 }
 const wishItem = w => w.itemId ? S.items.find(i => i.id === w.itemId) : null;
+const PKINDS = [
+  { id:'food', name:'식당', icon:'food', color:'#B9813F' },
+  { id:'cafe', name:'카페', icon:'cup', color:'#8C6A4F' },
+  { id:'shop', name:'쇼핑', icon:'bag', color:'#8573AA' },
+  { id:'sight', name:'관광', icon:'pin', color:'#3F928F' },
+  { id:'spa', name:'온천·체험', icon:'spa', color:'#5B7FA6' },
+  { id:'etc', name:'기타', icon:'more', color:'#8C857D' },
+];
+const pkOf = id => PKINDS.find(k => k.id === id) || PKINDS[PKINDS.length - 1];
+function guessKind(s){
+  s = String(s || '');
+  if (/카페|커피|디저트|베이커리|빵집|찻집|파르페|팬케이크|스타벅스|블루보틀|도토루|코메다|cafe|coffee|starbucks|喫茶|珈琲|カフェ|スイーツ|スターバックス|コメダ/i.test(s)) return 'cafe';
+  if (/라멘|라면|스시|초밥|우동|소바|야키|돈카츠|규카츠|이자카야|식당|맛집|고기|정식|덮밥|카레|버거|피자|스테이크|레스토랑|모츠나베|교자|텐동|오코노미|타코야키|포장마차|야타이|ramen|sushi|restaurant|食堂|ラーメン|寿司|居酒屋|屋台|定食/i.test(s)) return 'food';
+  if (/온천|스파|목욕|체험|테마파크|유니버설|디즈니|수족관|동물원|onsen|spa|温泉|水族館/i.test(s)) return 'spa';
+  if (/몰|백화점|쇼핑|아울렛|돈키|상점가|드럭|면세|mall|outlet|百貨店|商店街|ドン・?キホーテ|パルコ|PARCO/i.test(s)) return 'shop';
+  if (/공원|신사|절|성$|성\s|타워|전망대|박물관|미술관|거리|정원|해변|폭포|산$|요코초|park|castle|temple|shrine|tower|museum|公園|神社|寺|城|タワー|美術館|博物館/i.test(s)) return 'sight';
+  return null;
+}
+const isOrig = s => /[぀-ヿ一-鿿]/.test(s) && !/[가-힣]/.test(s);
+const STORE_MAP = [[/마츠키요|마츠모토키요시|matsukiyo|マツキヨ|マツモトキヨシ|ココカラ/i, '마츠모토키요시'], [/돈키|돈키호테|ドン・?キホーテ|ドンキ/i, '돈키호테'], [/다이소|ダイソー|daiso/i, '다이소'], [/무인양품|무지|無印|muji/i, '무인양품'], [/유니클로|ユニクロ|uniqlo/i, '유니클로'], [/로프트|ロフト|loft/i, '로프트'], [/핸즈|ハンズ|hands/i, '핸즈'], [/빅카메라|ビックカメラ/i, '빅카메라'], [/요도바시|ヨドバシ/i, '요도바시카메라'], [/세븐일레븐|セブン/i, '세븐일레븐'], [/로손|ローソン|lawson/i, '로손'], [/패밀리마트|ファミマ|ファミリーマート/i, '패밀리마트'], [/스기약국|スギ薬局/i, '스기약국'], [/쓰루하|ツルハ/i, '쓰루하'], [/산드러그|サンドラッグ/i, '산드러그'], [/면세점|duty\s*free|免税/i, '면세점'], [/올리브영/i, '올리브영']];
+const storeFrom = s => { for (const [re, n] of STORE_MAP) if (re.test(s)) return n; return ''; };
+const qtyNum = q => { const m = String(q || '').match(/\d+/); return m ? Math.max(1, +m[0]) : 1; };
+
+/* ----- 목록 붙여넣기 ----- */
+function parseRecList(raw, type){
+  const text = String(raw || '').replace(/\r/g, '').replace(/[ 　]/g, ' ');
+  const MARK = /^\s*(?:[①-⑳]|\(?\d{1,2}[.)]|[-•·▪︎◦*]\s|#+\s|\d{1,2}\s*[.．]\s)/;
+  let blocks = [];
+  const lines = text.split('\n').map(l => l.trim());
+  if (lines.some(l => MARK.test(l))){
+    let cur = null; lines.forEach(l => { if (!l) return; if (MARK.test(l) && !(cur && /^[-•·]\s/.test(l) && cur.length && type === 'place')){ cur = [l.replace(/^\s*(?:[①-⑳]|\(?\d{1,2}[.)]|[-•·▪︎◦*]|#+|\d{1,2}\s*[.．])\s*/, '')]; blocks.push(cur); } else if (cur) cur.push(l); });
+  } else blocks = text.split(/\n\s*\n/).map(b => b.split('\n').map(l => l.trim()).filter(Boolean));
+  const out = [];
+  blocks.forEach(b => {
+    if (!b.length || !b[0]) return;
+    const r = { label: b[0].replace(/\*\*/g, '').replace(/\s*[-–:]\s*$/, '').trim(), orig:'', memo:[], menu:[] };
+    const pm = r.label.match(/^(.*?)\s*\((.+)\)\s*$/); if (pm && isOrig(pm[2])){ r.label = pm[1]; r.orig = pm[2]; }
+    b.slice(1).forEach(l0 => {
+      const l = l0.replace(/\*\*/g, '').trim(); if (!l) return;
+      const kv = l.match(/^(가게|매장|판매처|취급|구매처|어디서|주소|영업\s*시간|영업|휴무|정기\s*휴일|쉬는\s*날|추천\s*메뉴|메뉴|대표\s*메뉴|입장료|요금|가격|팁|원어|현지\s*이름)\s*[:：]\s*(.+)$/);
+      if (kv){ const k = kv[1].replace(/\s/g, ''), v = kv[2].trim();
+        if (/가게|매장|판매처|취급|구매처|어디서/.test(k)) r.store = v; else if (k === '주소') r.address = v; else if (/영업/.test(k)) r.hours = v; else if (/휴무|휴일|쉬는날/.test(k)) r.closed = v;
+        else if (/메뉴/.test(k)) v.split(/\s*[,，、·\/]\s*/).filter(Boolean).forEach(n => r.menu.push({ name: n, orig:'', price:'' }));
+        else if (/입장료|요금/.test(k)) r.fee = v; else if (k === '팁') r.tip = v; else if (/원어|현지/.test(k)) r.orig = v;
+        else if (k === '가격'){ const a = findAmounts(v)[0]; if (a){ r.price = a.amount; r.currency = a.currency; } }
+        return; }
+      const pr = l.match(/^([¥￥$€₩]\s?[\d,.]+|[\d,.]+\s?(?:엔|円|원|달러))\s*(?:\/\s*(.+))?$/);
+      if (pr && !r.price){ const a = findAmounts(pr[1])[0]; if (a){ r.price = a.amount; r.currency = a.currency || 'JPY'; if (pr[2]) r.unit = pr[2].trim(); return; } }
+      if (type === 'place' && /^[-•·]\s*/.test(l0) && l.length <= 60){ const t1 = l.replace(/^[-•·]\s*/, ''); const a = findAmounts(t1); const m = t1.match(/^(.*?)\s*(?:\((.+?)\))?\s*([¥￥$€₩]\s?[\d,.]+|[\d,.]+\s?(?:엔|円|원))?\s*$/);
+        if (m && m[1]){ r.menu.push({ name: m[1].trim(), orig: m[2] && isOrig(m[2]) ? m[2] : '', price: a[0] ? money(a[0].amount, a[0].currency || 'JPY') : '' }); return; } }
+      if (!r.orig && isOrig(l) && l.length <= 60){ r.orig = l; return; }
+      const st = storeFrom(l); if (st && l.length <= 24 && !r.store){ r.store = st; return; }
+      r.memo.push(l);
+    });
+    if (type === 'buy' && !r.store){ r.store = storeFrom(r.label + ' ' + r.orig); }
+    r.memo = r.memo.join(' ').replace(/\s+/g, ' ').trim();
+    if (type === 'place') r.kind = guessKind(`${r.label} ${r.orig} ${r.memo} ${r.menu.map(m => m.name).join(' ')}`) || 'etc';
+    out.push(r);
+  });
+  return out.filter(r => r.label && r.label.length <= 80);
+}
+function openPasteList(type){
+  editing = { kind:'paste', type, found: [] };
+  openSheet(`${sheetHead(type === 'buy' ? '살 것 붙여넣기' : '가볼 곳 붙여넣기', 'paste-add', '추가')}<div class="form">
+    <p class="hint" style="font-size:14px">${type === 'buy' ? 'ChatGPT나 블로그에서 정리한 쇼핑 목록을 복사해 붙여넣으세요. 번호(①, 1.)마다 한 상품으로 나눠 이름, 원어 이름, 가격, 단위, 설명, 가게를 찾아요.' : '맛집·여행지 추천 글을 복사해 붙여넣으세요. 번호마다 한 곳으로 나눠 이름, 원어 이름, 추천 메뉴, 영업시간, 주소를 찾아요.'}</p>
+    <label class="sr" for="f-plist">붙여넣을 글</label><textarea class="input" id="f-plist" rows="8" placeholder="${type === 'buy' ? '① 마츠키요 LAB 약초탕 입욕제\nmatsukiyo LAB 生薬浴用剤 薬草湯\n¥1,078 / 10포\n생약 성분이 들어간 입욕제…' : '1. 이치란 본점\n一蘭 本社総本店\n- 돈코츠 라멘 ¥980\n영업시간: 24시간'}"></textarea>
+    <button type="button" class="btn soft block" data-act="paste-read">읽어 보기</button>
+    <div id="paste-out"></div></div>`);
+}
+function pastePreview(){
+  const box = $('#paste-out'); const rs = editing.found;
+  if (!rs.length){ box.innerHTML = '<p class="hint">나눌 수 있는 항목을 찾지 못했어요. 번호(①, 1.)를 붙이거나 항목 사이를 한 줄 띄워 주세요.</p>'; return; }
+  box.innerHTML = `<p class="flabel" style="margin:4px 0 6px">${rs.length}개를 찾았어요 · 빼고 싶은 건 체크를 풀어 주세요</p><div class="list">${rs.map((r, i) => `<label class="check-row" for="pl-${i}" style="padding:6px 12px;gap:10px"><input type="checkbox" id="pl-${i}" checked style="width:20px;height:20px;accent-color:var(--accent)"><span class="minw"><b style="display:block;font-size:15px">${esc(r.label)}</b><small class="wsub">${esc([r.orig, r.price ? money(r.price, r.currency || 'JPY') + (r.unit ? ' / ' + r.unit : '') : '', editing.type === 'buy' ? r.store : pkOf(r.kind).name, editing.type === 'place' && r.menu.length ? '메뉴 ' + r.menu.length : ''].filter(Boolean).join(' · '))}</small></span></label>`).join('')}</div>`;
+}
+function pasteAdd(){
+  const rs = editing.found.filter((r, i) => { const c = document.getElementById('pl-' + i); return c && c.checked; });
+  if (!rs.length) return toast('추가할 항목을 골라 주세요');
+  const tid = V.tripId; const type = editing.type;
+  let max = Math.max(-1, ...S.wishes.filter(w => w.tripId === tid && w.type === 'place').map(w => w.order || 0));
+  rs.forEach(r => {
+    const base = { id: uid(), tripId: tid, type, label: r.label, orig: r.orig || '', memo: r.memo || '', photos: [], done: false };
+    if (type === 'buy') S.wishes.push(Object.assign(base, { store: r.store || '', price: r.price || null, currency: r.currency || (r.price ? 'JPY' : ''), unit: r.unit || '', qty: '' }));
+    else S.wishes.push(Object.assign(base, { kind: r.kind || 'etc', address: r.address || '', hours: r.hours || '', closed: r.closed || '', fee: r.fee || '', tip: r.tip || '', menu: r.menu || [], order: ++max }));
+  });
+  save(); closeSheet(false); render(); toast(`${rs.length}개를 넣었어요. 사진은 각 항목에서 붙일 수 있어요`, 3500);
+}
+
+/* ----- 화면 ----- */
 function renderChecklists(t){
   const sub = V.list || 'pack';
   const nBuy = S.wishes.filter(w => w.tripId === t.id && w.type === 'buy' && !w.done).length;
@@ -1771,66 +1910,90 @@ function renderChecklists(t){
   return h + renderChecks(t);
 }
 const wCheck = (w, doneLabel, todoLabel) => `<button type="button" class="checkbox${w.done?' on':''}" data-act="toggle-wish" data-id="${w.id}" aria-pressed="${w.done}" aria-label="${esc(w.label)} ${w.done ? doneLabel : todoLabel}"><span class="box">${w.done ? I.check : ''}</span></button>`;
+const doneSeg = (key, a, b, na, nb) => `<div class="seg" role="group">${segBtn(key, 'todo', `${a} ${na}`, V[key] !== 'done')}${segBtn(key, 'done', `${b} ${nb}`, V[key] === 'done')}</div>`;
+const wThumb = (w, ph) => w.photos && w.photos[0] ? `<span class="pthumb">${photoImg(w.photos[0])}</span>` : `<span class="pthumb ph-empty" style="${ph ? `background:${ph.color}22;color:${ph.color}` : ''}">${ph ? I[ph.icon] : I.bag}</span>`;
+function sumByCur(ws, f){ const o = {}; ws.forEach(w => { const v = f(w); if (v && v.amount > 0){ o[v.cur] = (o[v.cur] || 0) + v.amount; } }); return Object.entries(o).map(([c, a]) => money(a, c)).join(' + '); }
 function renderBuy(t){
   const ws = S.wishes.filter(w => w.tripId === t.id && w.type === 'buy');
-  const done = ws.filter(w => w.done).length;
-  let h = `<div class="stack">`;
-  if (ws.length) h += `<p style="margin:0;font-size:15px;font-weight:700">${done} / ${ws.length} 샀어요</p>`;
-  h += `<form class="quick" data-form="add-wish" data-type="buy" autocomplete="off" style="margin:0"><label class="sr" for="wish-new">살 것</label>
-    <input class="input" id="wish-new" placeholder="살 것 추가 (예: 곤약젤리 @돈키호테)" enterkeyhint="done"><button class="btn primary" type="submit" aria-label="추가">${I.plus}</button></form>`;
-  if (!ws.length) return h + `<div class="empty"><h3>사고 싶은 걸 적어두세요</h3><p>"곤약젤리 @돈키호테"처럼 @ 뒤에 가게를 적으면 가게별로 묶여요. 산 건 체크하면 아래로 내려가요.</p></div></div>`;
-  const stores = [...new Set(ws.filter(w => !w.done).map(w => w.store || ''))].sort((a, b) => (a === '') - (b === '') || a.localeCompare(b, 'ko'));
-  stores.forEach(st => {
-    const g = ws.filter(w => !w.done && (w.store || '') === st);
-    h += `<section style="display:flex;flex-direction:column;gap:6px"><div class="grp-head" style="margin:0 4px"><h2 class="section-title" style="margin:0;font-size:13px">${st ? esc(st) : '어디서든'}</h2>${st ? `<a class="small" href="${mapUrl(g[0].storeAddress || st)}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:2px;min-height:32px">${I.pin}지도</a>` : ''}</div>
-      <div class="list">${g.map(w => buyRow(w)).join('')}</div></section>`;
-  });
-  const dn = ws.filter(w => w.done);
-  if (dn.length) h += `<section style="display:flex;flex-direction:column;gap:6px"><h2 class="section-title" style="font-size:13px">산 것 ${dn.length}</h2><div class="list">${dn.map(w => buyRow(w)).join('')}</div></section>`;
+  const todo = ws.filter(w => !w.done), dn = ws.filter(w => w.done); const tab = V.buyTab === 'done' ? 'done' : 'todo';
+  let h = `<div class="stack">${doneSeg('buyTab', '살 것', '산 것', todo.length, dn.length).replace(/data-act="buyTab"/g, 'data-act="wtab" data-key="buyTab"')}`;
+  if (tab === 'todo'){
+    h += `<form class="quick" data-form="add-wish" data-type="buy" autocomplete="off" style="margin:0"><label class="sr" for="wish-new">살 것</label>
+      <input class="input" id="wish-new" placeholder="살 것 추가 (예: 곤약젤리 @돈키호테)" enterkeyhint="done"><button class="btn primary" type="submit" aria-label="추가">${I.plus}</button></form>
+      <button type="button" class="btn sm block" data-act="paste-list" data-val="buy">${I.copy}추천 목록 붙여넣기</button>`;
+    if (!todo.length) return h + `<div class="empty"><h3>${dn.length ? '다 샀어요' : '사고 싶은 걸 적어두세요'}</h3><p>"곤약젤리 @돈키호테"처럼 적거나, 추천 목록 글을 통째로 붙여넣으면 한 번에 정리돼요.</p></div></div>`;
+    const est = sumByCur(todo, w => w.price ? { amount: w.price * qtyNum(w.qty), cur: w.currency || 'JPY' } : null);
+    if (est) h += `<p class="muted small" style="margin:0 4px">예상 합계 · <b style="color:var(--ink)">${est}</b></p>`;
+    const stores = [...new Set(todo.map(w => w.store || ''))].sort((a, b) => (a === '') - (b === '') || a.localeCompare(b, 'ko'));
+    stores.forEach(st => {
+      const g = todo.filter(w => (w.store || '') === st); const sub = sumByCur(g, w => w.price ? { amount: w.price * qtyNum(w.qty), cur: w.currency || 'JPY' } : null);
+      h += `<section class="wgroup"><div class="grp-head" style="margin:0 4px"><h2 class="section-title" style="margin:0;font-size:13px">${st ? esc(st) : '어디서든'} · ${g.length}개${sub ? ` · 약 ${sub}` : ''}</h2>${st ? `<a class="small" href="${mapUrl(g[0].storeAddress || st)}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:2px;min-height:36px">${I.pin}지도</a>` : ''}</div>
+        <div class="list">${g.map(w => buyCard(w)).join('')}</div></section>`;
+    });
+  } else {
+    if (!dn.length) return h + `<div class="empty"><p>아직 산 게 없어요. 살 것에서 체크하면 여기로 옮겨와요.</p></div></div>`;
+    const spent = sumByCur(dn, w => w.paid ? { amount: w.paid, cur: w.paidCur || w.currency || 'JPY' } : null);
+    if (spent) h += `<p class="muted small" style="margin:0 4px">산 금액 · <b style="color:var(--ink)">${spent}</b></p>`;
+    h += `<div class="list">${dn.sort((a, b) => (b.boughtAt || '').localeCompare(a.boughtAt || '')).map(w => buyCard(w)).join('')}</div>`;
+  }
   return h + `</div>`;
 }
-function buyRow(w){
-  const sub = [w.qty ? `${esc(w.qty)}` : '', w.memo ? esc(w.memo) : ''].filter(Boolean).join(' · ');
-  return `<div class="check-row">${wCheck(w, '샀음', '안 샀음')}
-    <button type="button" class="check-label${w.done?' done':''}" data-act="edit-wish" data-id="${w.id}">${esc(w.label)}${sub ? `<small class="wsub">${sub}</small>` : ''}</button>
-    <button type="button" class="iconbtn sm" data-act="del-wish" data-id="${w.id}" aria-label="${esc(w.label)} 지우기">${I.x}</button></div>`;
+function buyCard(w){
+  const price = w.done && w.paid ? `${money(w.paid, w.paidCur || w.currency || 'JPY')} 샀어요` : w.price ? `${money(w.price, w.currency || 'JPY')}${w.unit ? ` / ${esc(w.unit)}` : ''}` : '';
+  const meta = [w.qty ? esc(w.qty) : '', w.who ? `${esc(w.who)} 부탁` : '', w.done && w.boughtAt ? md(w.boughtAt) : ''].filter(Boolean).join(' · ');
+  return `<div class="pcard">${wThumb(w)}
+    <button type="button" class="pbody" data-act="view-wish" data-id="${w.id}"><b class="${w.done ? 'struck' : ''}">${esc(w.label)}</b>${w.orig ? `<span class="orig">${esc(w.orig)}</span>` : ''}${price ? `<span class="pprice">${price}</span>` : ''}${w.memo ? `<span class="pmemo clamp2">${esc(w.memo)}</span>` : ''}${meta ? `<span class="pmeta">${meta}</span>` : ''}</button>
+    ${wCheck(w, '샀음', '안 샀음')}</div>`;
+}
+function placeList(t, done){
+  const k = V.pkind || 'all';
+  return S.wishes.filter(w => w.tripId === t.id && w.type === 'place' && !!w.done === done && (k === 'all' || (w.kind || 'etc') === k)).sort((a, b) => done ? (b.visitedAt || '').localeCompare(a.visitedAt || '') : (a.order || 0) - (b.order || 0));
 }
 function renderPlaces(t){
-  const ws = S.wishes.filter(w => w.tripId === t.id && w.type === 'place').sort((a, b) => (a.order || 0) - (b.order || 0));
-  const todo = ws.filter(w => !w.done), dn = ws.filter(w => w.done);
+  const all = S.wishes.filter(w => w.tripId === t.id && w.type === 'place');
+  const nTodo = all.filter(w => !w.done).length, nDone = all.length - nTodo; const tab = V.placeTab === 'done' ? 'done' : 'todo';
   const base = stayBase(t); const reorder = !!V.reorder;
-  let h = `<div class="stack">`;
-  h += `<form class="quick" data-form="add-wish" data-type="place" autocomplete="off" style="margin:0"><label class="sr" for="wish-new">가볼 곳</label>
-    <input class="input" id="wish-new" placeholder="가볼 곳 추가 (예: 오호리 공원)" enterkeyhint="done"><button class="btn primary" type="submit" aria-label="추가">${I.plus}</button></form>`;
-  if (!ws.length) return h + `<div class="empty"><h3>가보고 싶은 곳을 모아두세요</h3><p>이름만 적어도 구글맵에서 찾을 수 있어요. 주소를 넣고 순서를 정하면 구글맵에서 동선을 한 번에 볼 수 있어요.</p></div></div>`;
-  if (todo.length){
-    const pts = [...(base && V.fromBase !== false ? [base] : []), ...todo.map(w => ({ place: w.label, address: w.address }))];
-    const r = routeUrl(pts); const over = pts.length > 10;
-    h += `<section class="panel" style="display:flex;flex-direction:column;gap:10px">
-      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><p style="margin:0;font-weight:700">동선 · ${todo.length}곳</p>
-        <button type="button" class="btn sm${reorder ? ' primary' : ''}" data-act="reorder">${reorder ? '순서 완료' : '직접 바꾸기'}</button></div>
-      ${todo.length >= 2 && !reorder ? `<button type="button" class="btn soft block" data-act="sort-near">${I.route}가까운 순서로 정렬</button>` : ''}
-      ${base ? `<label class="toggle" for="f-frombase" style="min-height:44px"><input type="checkbox" id="f-frombase"${V.fromBase !== false ? ' checked' : ''}><span>숙소에서 출발 · ${esc(base.place)}</span></label>` : ''}
-      ${r ? `<a class="btn primary block" href="${r}" target="_blank" rel="noopener">${I.pin}구글맵에서 이 순서로 동선 보기</a>` : `<p class="hint">가볼 곳이 2곳 이상이면 동선을 볼 수 있어요.</p>`}
-      ${over ? `<p class="hint">구글맵은 한 번에 10곳까지만 이어져요. 앞의 10곳만 보여줘요.</p>` : ''}
-      <p class="hint">구글맵이 이동 시간과 길을 보여줘요. 순서는 위에서부터예요.</p></section>`;
-    const sb = base && V.fromBase !== false ? base.ref : null; let prev = sb && hasGeo(sb) ? sb : null;
-    h += `<ol class="list places">${todo.map((w, i) => { const ok = hasGeo(w) && !w.geoFar; const d = ok && prev ? haversine(prev, w) : null; if (ok) prev = w; else prev = null; return placeRow(w, i, todo.length, reorder, d, i === 0 && sb); }).join('')}</ol>`;
+  let h = `<div class="stack">${doneSeg('placeTab', '가볼 곳', '가본 곳', nTodo, nDone).replace(/data-act="placeTab"/g, 'data-act="wtab" data-key="placeTab"')}`;
+  const kinds = PKINDS.filter(k => all.some(w => !!w.done === (tab === 'done') && (w.kind || 'etc') === k.id));
+  if (kinds.length > 1) h += `<div class="chipsel kindbar">${[{ id:'all', name:'전체' }, ...kinds].map(k => `<button type="button" class="chipbtn${(V.pkind || 'all') === k.id ? ' on' : ''}" data-act="pkind" data-val="${k.id}" aria-pressed="${(V.pkind || 'all') === k.id}">${k.color ? `<span class="dot" style="background:${k.color}"></span>` : ''}${k.name}</button>`).join('')}</div>`;
+  if (tab === 'done'){
+    const dn = placeList(t, true);
+    if (!dn.length) return h + `<div class="empty"><p>아직 다녀온 곳이 없어요. 가볼 곳에서 체크하면 여기로 옮겨와요.</p></div></div>`;
+    return h + `<div class="list">${dn.map(w => placeCard(w, -1)).join('')}</div></div>`;
   }
-  if (dn.length) h += `<section style="display:flex;flex-direction:column;gap:6px"><h2 class="section-title" style="font-size:13px">다녀온 곳 ${dn.length}</h2><div class="list">${dn.map(w => placeRow(w, -1, 0, false)).join('')}</div></section>`;
+  h += `<form class="quick" data-form="add-wish" data-type="place" autocomplete="off" style="margin:0"><label class="sr" for="wish-new">가볼 곳</label>
+    <input class="input" id="wish-new" placeholder="가볼 곳 추가 (예: 이치란 본점)" enterkeyhint="done"><button class="btn primary" type="submit" aria-label="추가">${I.plus}</button></form>
+    <button type="button" class="btn sm block" data-act="paste-list" data-val="place">${I.copy}맛집·추천 글 붙여넣기</button>`;
+  const todo = placeList(t, false);
+  if (!todo.length) return h + `<div class="empty"><h3>${nTodo ? '이 종류는 없어요' : '가보고 싶은 곳을 모아두세요'}</h3><p>이름만 적어도 구글맵에서 찾을 수 있어요. 식당은 추천 메뉴, 쇼핑은 살 것과 함께 정리돼요.</p></div></div>`;
+  const pts = [...(base && V.fromBase !== false ? [base] : []), ...todo.map(w => ({ place: w.label, address: w.address }))];
+  const r = routeUrl(pts); const over = pts.length > 10;
+  h += `<section class="panel" style="display:flex;flex-direction:column;gap:10px">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><p style="margin:0;font-weight:700">동선 · ${todo.length}곳${(V.pkind || 'all') !== 'all' ? ` · ${pkOf(V.pkind).name}만` : ''}</p>
+      <button type="button" class="btn sm${reorder ? ' primary' : ''}" data-act="reorder">${reorder ? '순서 완료' : '직접 바꾸기'}</button></div>
+    ${todo.length >= 2 && !reorder ? `<button type="button" class="btn soft block" data-act="sort-near">${I.route}가까운 순서로 정렬</button>` : ''}
+    ${base ? `<label class="toggle" for="f-frombase" style="min-height:44px"><input type="checkbox" id="f-frombase"${V.fromBase !== false ? ' checked' : ''}><span>숙소에서 출발 · ${esc(base.place)}</span></label>` : ''}
+    ${r ? `<a class="btn primary block" href="${r}" target="_blank" rel="noopener">${I.pin}구글맵에서 이 순서로 동선 보기</a>` : `<p class="hint">2곳 이상이면 동선을 볼 수 있어요.</p>`}
+    ${over ? `<p class="hint">구글맵은 한 번에 10곳까지만 이어져요. 앞의 10곳만 보여줘요.</p>` : ''}</section>`;
+  const sb = base && V.fromBase !== false ? base.ref : null; let prev = sb && hasGeo(sb) ? sb : null;
+  h += `<div class="list">${todo.map((w, i) => { const ok = hasGeo(w) && !w.geoFar; const d = ok && prev ? haversine(prev, w) : null; if (ok) prev = w; else prev = null; return placeCard(w, i, todo.length, reorder, d, i === 0 && sb); }).join('')}</div>`;
   return h + `</div>`;
 }
-function placeRow(w, i, n, reorder, dist, fromBase){
-  const it = wishItem(w); const t = getTrip(w.tripId); const dayIdx = it && t ? tripDays(t).indexOf(it.date) : -1;
+function placeCard(w, i, n, reorder, dist, fromBase){
+  const k = pkOf(w.kind); const it = wishItem(w); const t = getTrip(w.tripId); const dayIdx = it && t ? tripDays(t).indexOf(it.date) : -1;
   const fresh = w.geoQ === geoKey(w);
-  const geoNote = !w.done && fresh && w.geoMiss ? '<span class="geo-warn">위치를 못 찾았어요 · 주소를 고쳐 주세요</span>' : !w.done && fresh && w.geoFar ? '<span class="geo-warn">다른 지역으로 찾아졌어요 · 주소를 확인해 주세요</span>' : '';
-  const sub = [dist != null ? `<span class="dist">${fromBase ? '숙소에서' : '앞 장소에서'} 직선 ${fmtKm(dist)}</span>` : '', geoNote, w.address && w.address !== w.label && !COORD_RE.test(w.address) ? esc(w.address) : '', dayIdx >= 0 ? `Day ${dayIdx + 1} 일정에 있음` : '', w.memo ? esc(w.memo) : ''].filter(Boolean).join(' · ');
-  const tag = i >= 0 ? 'li' : 'div';
+  const warn = !w.done && fresh && w.geoMiss ? '<span class="geo-warn">위치를 못 찾았어요 · 주소를 고쳐 주세요</span>' : !w.done && fresh && w.geoFar ? '<span class="geo-warn">다른 지역으로 찾아졌어요 · 주소를 확인해 주세요</span>' : '';
+  const menu = (w.menu || []).slice(0, 3).map(m => m.name).filter(Boolean);
+  const buys = w.kind === 'shop' ? S.wishes.filter(b => b.tripId === w.tripId && b.type === 'buy' && !b.done && b.store && b.store === w.label).length : 0;
+  const line2 = [`<span class="kchip" style="color:${k.color}">${k.name}</span>`, w.hours ? esc(w.hours) : '', dayIdx >= 0 ? `Day ${dayIdx + 1} 일정` : ''].filter(Boolean).join(' · ');
   const right = reorder
     ? `<span class="ord"><button type="button" class="iconbtn sm" data-act="move-wish" data-id="${w.id}" data-val="-1" aria-label="${esc(w.label)} 위로"${i === 0 ? ' disabled' : ''}>${I.up}</button><button type="button" class="iconbtn sm" data-act="move-wish" data-id="${w.id}" data-val="1" aria-label="${esc(w.label)} 아래로"${i === n - 1 ? ' disabled' : ''}>${I.down}</button></span>`
-    : (w.done ? '' : mapBtn({ place: w.label, address: w.address }));
-  return `<${tag} class="check-row">${i >= 0 ? `<span class="pnum" aria-hidden="true">${i + 1}</span>` : wCheck(w, '다녀옴', '안 가봄')}
-    <button type="button" class="check-label${w.done?' done':''}" data-act="edit-wish" data-id="${w.id}">${esc(w.label)}${sub ? `<small class="wsub">${sub}</small>` : ''}</button>${right}${i >= 0 && !reorder ? wCheck(w, '다녀옴', '안 가봄') : ''}</${tag}>`;
+    : wCheck(w, '다녀옴', '안 가봄');
+  return `<div class="pcard">${i >= 0 ? `<span class="pthumb-wrap">${wThumb(w, k)}<span class="pnum-badge">${i + 1}</span></span>` : wThumb(w, k)}
+    <button type="button" class="pbody" data-act="view-wish" data-id="${w.id}"><b>${esc(w.label)}</b>${w.orig ? `<span class="orig">${esc(w.orig)}</span>` : ''}<span class="pmeta">${line2}</span>
+      ${w.done ? `${w.rating ? `<span class="stars" aria-label="별점 ${w.rating}점">${'★'.repeat(w.rating)}<span class="off">${'★'.repeat(5 - w.rating)}</span></span>` : ''}${w.review ? `<span class="pmemo clamp2">${esc(w.review)}</span>` : ''}${w.visitedAt ? `<span class="pmeta">${md(w.visitedAt)} 다녀옴</span>` : ''}`
+        : `${menu.length ? `<span class="pmemo">${w.kind === 'shop' ? '찾을 것' : '추천'} · ${menu.map(esc).join(', ')}</span>` : ''}${buys ? `<span class="pmemo">여기서 살 것 ${buys}개</span>` : ''}${dist != null ? `<span class="pmeta dist">${fromBase ? '숙소에서' : '앞 장소에서'} 직선 ${fmtKm(dist)}</span>` : ''}${warn}`}</button>
+    <span class="pright">${right}${!reorder && !w.done ? mapBtn({ place: w.label, address: w.address }) : ''}</span></div>`;
 }
 function parseBuyQuick(s){
   let label = String(s).trim(), store = '';
@@ -1838,54 +2001,191 @@ function parseBuyQuick(s){
   let qty = ''; const q = label.match(/^(.*?)\s+(\d+\s*(?:개|박스|팩|봉지|병|캔|장|세트|ea)?)$/i); if (q){ label = q[1].trim(); qty = q[2].replace(/\s+/g, ''); }
   return { label, store, qty };
 }
+
+/* ----- 상세 보기 · 직원에게 보여주기 ----- */
+function openWishView(id){
+  const w = S.wishes.find(x => x.id === id); if (!w) return; const buy = w.type === 'buy'; const k = pkOf(w.kind);
+  const photos = (w.photos || []);
+  const rows = [];
+  if (buy){
+    if (w.price) rows.push(['예상 가격', `${money(w.price, w.currency || 'JPY')}${w.unit ? ` / ${esc(w.unit)}` : ''}`]);
+    if (w.qty) rows.push(['수량', esc(w.qty)]); if (w.store) rows.push(['가게', esc(w.store)]); if (w.who) rows.push(['부탁한 사람', esc(w.who)]);
+    if (w.done && w.paid) rows.push(['산 가격', `${money(w.paid, w.paidCur || w.currency || 'JPY')}${w.boughtAt ? ` · ${md(w.boughtAt)}` : ''}`]);
+  } else {
+    rows.push(['종류', k.name]); if (w.hours) rows.push(['영업시간', esc(w.hours)]); if (w.closed) rows.push(['쉬는 날', esc(w.closed)]); if (w.fee) rows.push(['입장료', esc(w.fee)]); if (w.tip) rows.push(['팁', esc(w.tip)]);
+    if (w.done){ if (w.visitedAt) rows.push(['다녀온 날', md(w.visitedAt)]); if (w.rating) rows.push(['별점', '★'.repeat(w.rating)]); }
+  }
+  const buys = !buy && w.kind === 'shop' ? S.wishes.filter(b => b.tripId === w.tripId && b.type === 'buy' && b.store && b.store === w.label) : [];
+  openSheet(`${sheetHeadClose(buy ? '살 것' : k.name)}<div class="form">
+    ${photos.length ? `<div class="wv-photos">${photos.map(p => `<button type="button" class="wv-ph" data-act="view-photo" data-id="${esc(p)}" aria-label="사진 크게 보기">${photoImg(p)}</button>`).join('')}</div>` : ''}
+    <div><h2 class="detail-title" style="margin:0">${esc(w.label)}</h2>${w.orig ? `<p class="orig-big">${esc(w.orig)}</p>` : ''}</div>
+    ${rows.length ? `<dl class="kv">${rows.map(([a, b]) => `<dt>${a}</dt><dd>${b}</dd>`).join('')}</dl>` : ''}
+    ${w.memo ? `<p style="margin:0;font-size:15px;line-height:1.6;white-space:pre-line">${esc(w.memo)}</p>` : ''}
+    ${w.done && w.review ? `<p style="margin:0;font-size:15px;line-height:1.6">“${esc(w.review)}”</p>` : ''}
+    ${!buy && (w.menu || []).length ? `<section><p class="flabel" style="margin:0 0 6px">${w.kind === 'shop' ? '찾을 것' : '추천 메뉴'}</p><ul class="menu-list">${w.menu.map(m => `<li><span class="minw"><b>${esc(m.name)}</b>${m.orig ? `<small>${esc(m.orig)}</small>` : ''}</span>${m.price ? `<span class="mp">${esc(m.price)}</span>` : ''}</li>`).join('')}</ul></section>` : ''}
+    ${buys.length ? `<section><p class="flabel" style="margin:0 0 6px">여기서 살 것</p><ul class="menu-list">${buys.map(b => `<li><span class="minw"><b class="${b.done ? 'struck' : ''}">${esc(b.label)}</b>${b.orig ? `<small>${esc(b.orig)}</small>` : ''}</span>${b.price ? `<span class="mp">${money(b.price, b.currency || 'JPY')}</span>` : ''}</li>`).join('')}</ul></section>` : ''}
+    ${!buy && (w.address || w.label) ? `<a class="btn block" href="${mapUrl(w.address || w.label)}" target="_blank" rel="noopener">${I.pin}구글맵에서 보기</a>` : ''}
+    <button type="button" class="btn primary block" data-act="show-staff" data-id="${w.id}">${I.expand}직원에게 보여주기</button>
+    <div class="grid2"><button type="button" class="btn" data-act="edit-wish" data-id="${w.id}">${I.edit}수정</button><button type="button" class="btn" data-act="toggle-wish" data-id="${w.id}">${w.done ? (buy ? '살 것으로 되돌리기' : '가볼 곳으로 되돌리기') : (buy ? `${I.check}샀어요` : `${I.check}다녀왔어요`)}</button></div>
+  </div>`);
+}
+function showStaff(id){
+  const w = S.wishes.find(x => x.id === id); if (!w) return; closeSheet(false);
+  const ph = (w.photos || [])[0]; const menu = w.type === 'place' ? (w.menu || []).filter(m => m.name) : [];
+  const ask = w.type === 'buy' ? 'これはどこにありますか？' : (w.kind === 'food' || w.kind === 'cafe') ? 'これをお願いします。' : '';
+  $('#viewer-root').innerHTML = `<div class="staff" role="dialog" aria-modal="true" aria-label="직원에게 보여주기"><button type="button" class="iconbtn close" data-act="close-viewer" aria-label="닫기">${I.x}</button>
+    ${ph ? `<div class="staff-ph">${photoImg(ph)}</div>` : ''}
+    <p class="staff-name">${esc(w.orig || w.label)}</p>${w.orig ? `<p class="staff-sub">${esc(w.label)}</p>` : ''}
+    ${w.type === 'buy' && w.price ? `<p class="staff-sub">${money(w.price, w.currency || 'JPY')}${w.unit ? ` / ${esc(w.unit)}` : ''}${w.qty ? ` · ${esc(w.qty)}` : ''}</p>` : ''}
+    ${menu.length ? `<ul class="staff-menu">${menu.map(m => `<li>${esc(m.orig || m.name)}${m.orig ? `<small>${esc(m.name)}</small>` : ''}</li>`).join('')}</ul>` : ''}
+    ${ask && /[぀-ヿ一-鿿]/.test((w.orig || '') + menu.map(m => m.orig).join('')) ? `<p class="staff-ask">${ask}</p>` : ''}</div>`;
+  hydrate($('#viewer-root'));
+}
+
+/* ----- 편집 ----- */
+function menuRowsHTML(){ return editing.menu.map((m, i) => `<div class="menu-edit"><label class="sr" for="mn-${i}">이름</label><input class="input" id="mn-${i}" data-menu="${i}" data-f="name" value="${esc(m.name)}" placeholder="이름">
+  <label class="sr" for="mo-${i}">원어</label><input class="input" id="mo-${i}" data-menu="${i}" data-f="orig" value="${esc(m.orig || '')}" placeholder="원어 (선택)">
+  <label class="sr" for="mp-${i}">가격</label><input class="input" id="mp-${i}" data-menu="${i}" data-f="price" value="${esc(m.price || '')}" placeholder="가격">
+  <button type="button" class="iconbtn sm" data-act="menu-del" data-val="${i}" aria-label="${esc(m.name || '이 줄')} 빼기">${I.x}</button></div>`).join(''); }
+function readMenu(){ document.querySelectorAll('[data-menu]').forEach(inp => { const m = editing.menu[+inp.dataset.menu]; if (m) m[inp.dataset.f] = inp.value.trim(); }); }
+const pkindChips = () => PKINDS.map(k => `<button type="button" class="chipbtn${editing.pkind === k.id ? ' on' : ''}" data-act="pick-pkind" data-val="${k.id}" aria-pressed="${editing.pkind === k.id}"><span class="dot" style="background:${k.color}"></span>${k.name}</button>`).join('');
+function refreshPlaceForm(){
+  const k = editing.pkind; $('#pkind-chips').innerHTML = pkindChips();
+  $('#w-fee').hidden = !(k === 'sight' || k === 'spa'); $('#l-menu').textContent = k === 'shop' ? '찾을 상품' : k === 'food' || k === 'cafe' ? '추천 메뉴' : '추천·메모 목록';
+  $('#f-wtip').placeholder = k === 'food' || k === 'cafe' ? '예: 오픈 30분 전 줄 서기, 현금만' : k === 'sight' ? '예: 해 질 무렵이 예뻐요' : k === 'shop' ? '예: 면세는 2층 카운터' : '';
+  $('#w-shopbuys').hidden = k !== 'shop';
+}
 function openWishSheet(id){
   const w = S.wishes.find(x => x.id === id); if (!w) return; const t = getTrip(w.tripId);
-  editing = { kind:'wish', id };
+  editing = { kind:'wish', id, pkind: w.kind || guessKind(w.label) || 'etc', menu: (w.menu || []).map(m => Object.assign({}, m)) };
+  startDraft(w.photos || []);
   const it = wishItem(w); const days = tripDays(t);
+  const common = `<div class="field"><label class="flabel" for="f-wlabel">${w.type === 'buy' ? '이름' : '장소 이름'}</label><input class="input" id="f-wlabel" value="${esc(w.label)}"></div>
+    <div class="field"><label class="flabel" for="f-worig">원어 이름 (현지어)</label><input class="input" id="f-worig" value="${esc(w.orig || '')}" placeholder="${w.type === 'buy' ? '예: 生薬浴用剤 薬草湯' : '예: 一蘭 本社総本店'}" lang="ja"><p class="hint">매장에서 직원에게 보여줄 때 크게 나와요.</p></div>`;
   const body = w.type === 'buy'
-    ? `<div class="field"><label class="flabel" for="f-wlabel">이름</label><input class="input" id="f-wlabel" value="${esc(w.label)}"></div>
-      <div class="grid2"><div class="field"><label class="flabel" for="f-wstore">어디서</label><input class="input" id="f-wstore" value="${esc(w.store || '')}" placeholder="예: 돈키호테"></div>
-        <div class="field"><label class="flabel" for="f-wqty">수량</label><input class="input" id="f-wqty" value="${esc(w.qty || '')}" placeholder="예: 3개"></div></div>
-      <div class="field"><label class="flabel" for="f-waddr">가게 주소 (선택)</label><input class="input" id="f-waddr" value="${esc(w.storeAddress || '')}" placeholder="특정 지점이 있을 때만"></div>`
-    : `<div class="field"><label class="flabel" for="f-wlabel">장소 이름</label><input class="input" id="f-wlabel" value="${esc(w.label)}"></div>
+    ? `${common}
+      <div class="field"><label class="flabel" for="f-wprice">예상 가격</label><div class="inline"><input class="input" id="f-wprice" inputmode="decimal" value="${w.price || ''}" placeholder="0" style="font-variant-numeric:tabular-nums"><label class="sr" for="f-wcur">통화</label><select class="input" id="f-wcur" style="flex:0 0 132px">${curOptions(w.currency || t.lastCurrency || 'JPY')}</select></div></div>
+      <div class="grid2"><div class="field"><label class="flabel" for="f-wunit">단위</label><input class="input" id="f-wunit" value="${esc(w.unit || '')}" placeholder="예: 10포"></div>
+        <div class="field"><label class="flabel" for="f-wqty">살 수량</label><input class="input" id="f-wqty" value="${esc(w.qty || '')}" placeholder="예: 2개"></div></div>
+      <div class="grid2"><div class="field"><label class="flabel" for="f-wstore">취급 가게</label><input class="input" id="f-wstore" value="${esc(w.store || '')}" placeholder="예: 마츠모토키요시" list="store-list"></div>
+        <div class="field"><label class="flabel" for="f-wwho">부탁한 사람</label><input class="input" id="f-wwho" value="${esc(w.who || '')}" placeholder="예: 엄마"></div></div>
+      <datalist id="store-list">${[...new Set(S.wishes.filter(x => x.tripId === t.id && x.store).map(x => x.store).concat(S.wishes.filter(x => x.tripId === t.id && x.type === 'place' && x.kind === 'shop').map(x => x.label)))].map(s => `<option value="${esc(s)}">`).join('')}</datalist>
+      <div class="field"><label class="flabel" for="f-waddr">가게 주소 (선택)</label><input class="input" id="f-waddr" value="${esc(w.storeAddress || '')}" placeholder="특정 지점이 있을 때만"></div>
+      <div class="field"><label class="flabel" for="f-wmemo">설명·메모</label><textarea class="input" id="f-wmemo" rows="3" placeholder="효과, 맛, 사이즈, 후기…">${esc(w.memo || '')}</textarea></div>`
+    : `${common}
+      <div class="field"><span class="flabel">종류</span><div class="chipsel" id="pkind-chips">${pkindChips()}</div></div>
       <div class="field"><label class="flabel" for="f-waddr">주소 (선택)</label><div class="inline"><input class="input" id="f-waddr" value="${esc(w.address || '')}" placeholder="비워두면 이름으로 찾아요">
         <a class="btn soft" id="f-wmap" href="${mapUrl(w.address || w.label)}" target="_blank" rel="noopener">${I.pin}확인</a></div>
-        <p class="hint">구글맵에서 장소를 찾은 뒤 주소를 복사해 붙여넣으면 동선이 정확해져요. 위치를 못 찾으면 구글맵에서 그 자리를 길게 눌러 나오는 좌표(예: 34.7053, 135.4904)를 넣어도 돼요.</p></div>
+        <p class="hint">위치를 못 찾으면 구글맵에서 그 자리를 길게 눌러 나오는 좌표(예: 34.7053, 135.4904)를 넣어도 돼요.</p></div>
+      <div class="grid2"><div class="field"><label class="flabel" for="f-whours">영업시간</label><input class="input" id="f-whours" value="${esc(w.hours || '')}" placeholder="예: 11:00–22:00"></div>
+        <div class="field"><label class="flabel" for="f-wclosed">쉬는 날</label><input class="input" id="f-wclosed" value="${esc(w.closed || '')}" placeholder="예: 화요일"></div></div>
+      <div class="field" id="w-fee"><label class="flabel" for="f-wfee">입장료</label><input class="input" id="f-wfee" value="${esc(w.fee || '')}" placeholder="예: 성인 ¥600"></div>
+      <div class="field"><span class="flabel" id="l-menu">추천 메뉴</span><div id="menu-rows" class="menu-rows">${menuRowsHTML()}</div><button type="button" class="btn sm" data-act="menu-add">${I.plus}한 줄 추가</button></div>
+      <div class="field" id="w-shopbuys"><button type="button" class="btn sm block" data-act="shop-buys" data-id="${w.id}">이 가게의 살 것 보기·추가</button></div>
+      <div class="field"><label class="flabel" for="f-wtip">팁</label><input class="input" id="f-wtip" value="${esc(w.tip || '')}"></div>
       <div class="field"><label class="flabel" for="f-wday">일정에 넣기</label><select class="input" id="f-wday"><option value="">아직 안 정함</option>${days.map((d, i) => `<option value="${d}"${it && it.date === d ? ' selected' : ''}>Day ${i+1} · ${md(d)}</option>`).join('')}</select>
-        <p class="hint">날짜를 고르면 그날 일정에 들어가요. 시간은 일정에서 정하면 돼요.</p></div>`;
-  openSheet(`${sheetHead(w.type === 'buy' ? '살 것' : '가볼 곳', 'save-wish')}<form class="form" data-form="wish" autocomplete="off">
+        <p class="hint">날짜를 고르면 그날 일정에 들어가요. 추천 메뉴도 일정 메모에 같이 적혀요.</p></div>
+      <div class="field"><label class="flabel" for="f-wmemo">메모</label><textarea class="input" id="f-wmemo" rows="2">${esc(w.memo || '')}</textarea></div>`;
+  openSheet(`${sheetHead(w.type === 'buy' ? '살 것 수정' : '가볼 곳 수정', 'save-wish')}<form class="form" data-form="wish" autocomplete="off">
     ${body}
-    <div class="field"><label class="flabel" for="f-wmemo">메모</label><textarea class="input" id="f-wmemo" rows="2" placeholder="${w.type === 'buy' ? '맛, 사이즈, 부탁받은 사람…' : '영업시간, 추천 메뉴…'}">${esc(w.memo || '')}</textarea></div>
+    ${photoField('사진')}
     <p class="err" id="sheet-err" hidden></p>
-    <button type="button" class="btn danger block" data-act="del-wish" data-id="${w.id}">${I.trash}지우기</button></form>`);
+    <button type="button" class="btn danger block" data-act="del-wish" data-id="${w.id}">${I.trash}지우기</button></form>`, cancelDraft);
+  if (w.type === 'place') refreshPlaceForm();
 }
 function saveWish(){
   const w = S.wishes.find(x => x.id === editing.id); const label = val('f-wlabel'); if (!label) return showErr('이름을 적어 주세요.');
-  w.label = label; w.memo = val('f-wmemo');
-  if (w.type === 'buy'){ w.store = val('f-wstore'); w.qty = val('f-wqty'); w.storeAddress = val('f-waddr'); }
-  else {
-    w.address = val('f-waddr'); const day = val('f-wday'); const it = wishItem(w);
+  const oldLabel = w.label;
+  w.label = label; w.orig = val('f-worig'); w.memo = val('f-wmemo'); w.photos = commitDraft();
+  if (w.type === 'buy'){
+    const pr = parseFloat(val('f-wprice').replace(/[,\s원엔₩¥$]/g, '')); w.price = pr > 0 ? pr : null; w.currency = val('f-wcur') || 'JPY';
+    w.unit = val('f-wunit'); w.qty = val('f-wqty'); w.store = val('f-wstore'); w.who = val('f-wwho'); w.storeAddress = val('f-waddr');
+  } else {
+    readMenu(); w.kind = editing.pkind; w.menu = editing.menu.filter(m => m.name);
+    w.address = val('f-waddr'); w.hours = val('f-whours'); w.closed = val('f-wclosed'); w.fee = val('f-wfee'); w.tip = val('f-wtip');
+    if (w.kind === 'shop' && oldLabel !== label) S.wishes.forEach(b => { if (b.type === 'buy' && b.tripId === w.tripId && b.store === oldLabel) b.store = label; });
+    const day = val('f-wday'); const it = wishItem(w);
+    const memo = [w.menu.length ? `${w.kind === 'shop' ? '찾을 것' : '추천'}: ${w.menu.map(m => m.name).join(', ')}` : '', w.memo].filter(Boolean).join('\n');
     if (day){
       if (it) Object.assign(it, { date: day, place: label, address: w.address });
-      else { const n = { id: uid(), tripId: w.tripId, date: day, time:'', place: label, address: w.address, memo: w.memo, photos:[] }; S.items.push(n); w.itemId = n.id; }
-    } else if (it){
-      if (!it.photos.length && !it.time) S.items.splice(S.items.indexOf(it), 1);
-      w.itemId = null;
-    }
+      else { const n = { id: uid(), tripId: w.tripId, date: day, time:'', place: label, address: w.address, memo, photos:[] }; S.items.push(n); w.itemId = n.id; }
+    } else if (it){ if (!it.photos.length && !it.time) S.items.splice(S.items.indexOf(it), 1); w.itemId = null; }
   }
   save(); closeSheet(false); render(); toast('저장했어요');
 }
 function deleteWish(id){
   const w = S.wishes.find(x => x.id === id); if (!w) return; const idx = S.wishes.indexOf(w);
+  if (draft) cancelDraft();
   S.wishes.splice(idx, 1); save(); closeSheet(false); render();
-  undoToast(`'${w.label}'을(를) 지웠어요`, () => { S.wishes.splice(Math.min(idx, S.wishes.length), 0, w); save(); render(); });
+  undoToast(`'${w.label}'을(를) 지웠어요`, () => { S.wishes.splice(Math.min(idx, S.wishes.length), 0, w); save(); render(); }, () => photoDel(w.photos || []));
 }
 function moveWish(id, dir){
-  const w = S.wishes.find(x => x.id === id); const list = S.wishes.filter(x => x.tripId === w.tripId && x.type === 'place' && !x.done).sort((a, b) => (a.order || 0) - (b.order || 0));
+  const w = S.wishes.find(x => x.id === id); const list = placeList(getTrip(w.tripId), false);
   const i = list.indexOf(w), j = i + dir; if (j < 0 || j >= list.length) return;
-  [list[i], list[j]] = [list[j], list[i]]; list.forEach((x, k) => { x.order = k; });
+  const orders = list.map(x => x.order || 0); [list[i], list[j]] = [list[j], list[i]];
+  const sorted = [...orders].sort((a, b) => a - b); list.forEach((x, k) => { x.order = sorted[k] + k * 1e-6; });
+  S.wishes.filter(x => x.tripId === w.tripId && x.type === 'place').sort((a, b) => (a.order || 0) - (b.order || 0)).forEach((x, k) => { x.order = k; });
   save(); focusAfter = null; render();
   const btn = document.querySelector(`[data-act="move-wish"][data-id="${id}"][data-val="${dir}"]`) || document.querySelector(`[data-act="move-wish"][data-id="${id}"]:not([disabled])`); if (btn) btn.focus();
+}
+
+/* ----- 체크하면 산 것 · 가본 곳으로 ----- */
+function wishToday(t){ const td = todayISO(); return tripDays(t).includes(td) ? td : td < t.start ? t.start : td > t.end ? t.end : td; }
+function toggleWish(id){
+  const w = S.wishes.find(x => x.id === id); if (!w) return; const t = getTrip(w.tripId);
+  if (w.done) return undoDone(w);
+  if (w.type === 'buy') return openBoughtSheet(w, t);
+  return openVisitedSheet(w, t);
+}
+function undoDone(w){
+  const exp = w.expId ? S.expenses.find(e => e.id === w.expId) : null;
+  w.done = false; delete w.boughtAt; delete w.visitedAt;
+  if (exp){ S.expenses.splice(S.expenses.indexOf(exp), 1); w.expId = null; }
+  save(); closeSheet(false); render(); toast(`${w.type === 'buy' ? '살 것' : '가볼 곳'}으로 되돌렸어요${exp ? '. 비용에서도 뺐어요' : ''}`, 3000);
+}
+function openBoughtSheet(w, t){
+  const gm = groupMode(t);
+  editing = { kind:'bought', id: w.id, pay: normPay(t.lastPay), payer: effPayer(t, { payer: t.lastPayer }) };
+  const est = w.price ? w.price * qtyNum(w.qty) : '';
+  openSheet(`${sheetHead('샀어요', 'save-bought', '완료')}<form class="form" data-form="bought" autocomplete="off">
+    <p style="margin:0;font-size:16px;font-weight:700">${esc(w.label)}${w.qty ? ` <span class="muted small">${esc(w.qty)}</span>` : ''}</p>
+    <div class="field"><label class="flabel" for="f-paid">실제 산 가격</label><div class="inline"><input class="input" id="f-paid" inputmode="decimal" value="${est}" placeholder="몰라도 비워두면 돼요" style="font-size:18px;font-weight:700;font-variant-numeric:tabular-nums"><label class="sr" for="f-paidcur">통화</label><select class="input" id="f-paidcur" style="flex:0 0 132px">${curOptions(w.currency || t.lastCurrency || 'JPY')}</select></div>${w.price ? `<p class="hint">예상 가격 ${money(w.price, w.currency || 'JPY')}${w.qty ? ` × ${qtyNum(w.qty)}` : ''}으로 미리 넣어뒀어요.</p>` : ''}</div>
+    <label class="toggle" for="f-toexp"><input type="checkbox" id="f-toexp" checked><span>비용(쇼핑)에도 넣기</span></label>
+    <div class="field"><span class="flabel">결제 수단</span><div class="seg" style="--n:3" id="pay-seg">${paySeg()}</div></div>
+    ${gm ? `<div class="field"><span class="flabel">낸 사람</span><div class="chipsel" id="payer-chips">${payerChips(t)}</div></div>` : ''}
+    <button type="button" class="btn block" data-act="bought-skip">가격 없이 산 것으로 옮기기</button></form>`);
+}
+function saveBought(skip){
+  const w = S.wishes.find(x => x.id === editing.id); const t = getTrip(w.tripId);
+  const paid = skip ? 0 : parseFloat(val('f-paid').replace(/[,\s원엔₩¥$]/g, ''));
+  const cur = val('f-paidcur') || w.currency || 'JPY';
+  w.done = true; w.boughtAt = wishToday(t);
+  if (paid > 0){ w.paid = paid; w.paidCur = cur; } else { delete w.paid; }
+  if (!skip && paid > 0 && $('#f-toexp') && $('#f-toexp').checked){
+    const gm = groupMode(t); const e = { id: uid(), tripId: t.id, date: w.boughtAt, cat:'shop', title: w.label, amount: paid, currency: cur, pay: editing.pay, mode:'total', pax: 1, photos: [] };
+    if (gm){ e.payer = editing.payer; e.share = [editing.payer]; t.lastPayer = editing.payer; }
+    S.expenses.push(e); w.expId = e.id; t.lastPay = editing.pay; t.lastCurrency = cur;
+  }
+  save(); closeSheet(false); render();
+  undoToast(`'${w.label}' 산 것으로 옮겼어요${w.expId && !skip && paid > 0 ? ' · 비용에도 넣었어요' : ''}`, () => undoDone(w));
+}
+function openVisitedSheet(w, t){
+  editing = { kind:'visited', id: w.id, rating: 0 };
+  const days = tripDays(t); const d0 = wishItem(w) ? wishItem(w).date : wishToday(t);
+  openSheet(`${sheetHead('다녀왔어요', 'save-visited', '완료')}<form class="form" data-form="visited" autocomplete="off">
+    <p style="margin:0;font-size:16px;font-weight:700">${esc(w.label)}</p>
+    <div class="field"><label class="flabel" for="f-vday">다녀온 날</label><select class="input" id="f-vday">${days.map((d, i) => `<option value="${d}"${d === d0 ? ' selected' : ''}>Day ${i+1} · ${md(d)}</option>`).join('')}</select></div>
+    <div class="field"><span class="flabel">별점 (선택)</span><div class="rating" id="rating">${ratingBtns()}</div></div>
+    <div class="field"><label class="flabel" for="f-review">한 줄 후기 (선택)</label><input class="input" id="f-review" value="${esc(w.review || '')}" placeholder="예: 줄 30분, 국물 진함. 또 오고 싶다"></div>
+    <button type="button" class="btn block" data-act="visited-skip">그냥 가본 곳으로 옮기기</button></form>`);
+}
+const ratingBtns = () => [1,2,3,4,5].map(n => `<button type="button" class="star${editing.rating >= n ? ' on' : ''}" data-act="rate" data-val="${n}" aria-label="${n}점" aria-pressed="${editing.rating === n}">★</button>`).join('');
+function saveVisited(skip){
+  const w = S.wishes.find(x => x.id === editing.id);
+  w.done = true; w.visitedAt = val('f-vday') || wishToday(getTrip(w.tripId));
+  if (!skip){ if (editing.rating) w.rating = editing.rating; const rv = val('f-review'); if (rv) w.review = rv; }
+  save(); closeSheet(false); render();
+  undoToast(`'${w.label}' 가본 곳으로 옮겼어요`, () => undoDone(w));
 }
 function renderChecks(t){
   const cs = S.checks.filter(c => c.tripId === t.id);
@@ -2084,7 +2384,7 @@ function saveTrip(){
 }
 function deleteTripData(tid){
   const tt = getTrip(tid);
-  const photos = [...S.items.filter(i => i.tripId === tid).flatMap(i => i.photos), ...S.bookings.filter(b => b.tripId === tid).flatMap(b => b.photos), ...S.expenses.filter(e => e.tripId === tid).flatMap(e => e.photos || []), ...(tt && tt.coverOwn && tt.cover ? [tt.cover] : [])];
+  const photos = [...S.items.filter(i => i.tripId === tid).flatMap(i => i.photos), ...S.bookings.filter(b => b.tripId === tid).flatMap(b => b.photos), ...S.expenses.filter(e => e.tripId === tid).flatMap(e => e.photos || []), ...S.wishes.filter(w => w.tripId === tid).flatMap(w => w.photos || []), ...(tt && tt.coverOwn && tt.cover ? [tt.cover] : [])];
   S.trips = S.trips.filter(t => t.id !== tid); S.items = S.items.filter(i => i.tripId !== tid);
   S.checks = S.checks.filter(c => c.tripId !== tid); S.bookings = S.bookings.filter(b => b.tripId !== tid); S.expenses = S.expenses.filter(e => e.tripId !== tid); S.wishes = S.wishes.filter(w => w.tripId !== tid);
   Object.keys(S.notes).forEach(k => { if (k.startsWith(tid + '|')) delete S.notes[k]; });
@@ -2335,8 +2635,9 @@ function saveCopy(){
   if (on('c-people')){ if (t.members) nt.members = t.members.map(m => Object.assign({}, m)); if (t.rates) nt.rates = Object.assign({}, t.rates); nt.people = t.people; nt.lastCurrency = t.lastCurrency; if (t.wx && t.wx.loc && !t.wx.loc.auto) nt.wx = { loc: Object.assign({}, t.wx.loc) }; }
   S.trips.push(nt);
   if (on('c-checks')) S.checks.filter(c => c.tripId === t.id).forEach(c => S.checks.push({ id: uid(), tripId: nt.id, group: c.group, label: c.label, done: false }));
-  if (on('c-buy')) S.wishes.filter(w => w.tripId === t.id && w.type === 'buy').forEach(w => S.wishes.push(Object.assign({}, w, { id: uid(), tripId: nt.id, done: false })));
-  if (on('c-place')) S.wishes.filter(w => w.tripId === t.id && w.type === 'place').forEach(w => S.wishes.push(Object.assign({}, w, { id: uid(), tripId: nt.id, done: false, itemId: null })));
+  const fresh = w => { const c = Object.assign({}, w, { id: uid(), tripId: nt.id, done: false, itemId: null, photos: [], expId: null, menu: (w.menu || []).map(m => Object.assign({}, m)) }); ['paid','paidCur','boughtAt','visitedAt','rating','review'].forEach(k => delete c[k]); return c; };
+  if (on('c-buy')) S.wishes.filter(w => w.tripId === t.id && w.type === 'buy').forEach(w => S.wishes.push(fresh(w)));
+  if (on('c-place')) S.wishes.filter(w => w.tripId === t.id && w.type === 'place').forEach(w => S.wishes.push(fresh(w)));
   if (on('c-items')) S.items.filter(i => i.tripId === t.id).forEach(i => { const d = addDays(i.date, off); S.items.push({ id: uid(), tripId: nt.id, date: d < start ? start : d > end ? end : d, time: i.time, place: i.place, address: i.address, memo: i.memo, photos: [] }); });
   save(); closeSheet(false); stack = [{ name:'home' }]; V = { name:'trip', tripId: nt.id, tab:'plan' }; render(); window.scrollTo(0, 0); toast('여행을 복사했어요');
 }
@@ -2350,7 +2651,7 @@ function searchResults(q){
   S.items.forEach(i => { if (has(i.place, i.memo, i.address)) out.push({ tid: i.tripId, kind:'item', id: i.id, title: i.place || '일정', sub: `${md(i.date)}${i.time ? ' ' + i.time : ''}${i.memo ? ' · ' + i.memo.replace(/\n/g, ' ') : ''}`, icon:'list' }); });
   S.bookings.forEach(b => { if (has(b.title, b.code, b.memo, b.address, b.address2, b.from, b.to, b.flightNo)) out.push({ tid: b.tripId, kind:'booking', id: b.id, title: bookingName(b), sub: `${(KIND[b.kind] || KIND.etc).label}${b.code ? ' · ' + b.code : ''}`, icon: (KIND[b.kind] || KIND.etc).icon }); });
   S.expenses.forEach(e => { if (has(e.title)) out.push({ tid: e.tripId, kind:'exp', id: e.id, title: e.title || catOf(e.cat).name, sub: `${money(expTotal(e), e.currency)} · ${e.date === 'pre' ? '여행 전' : md(e.date)}`, icon:'wallet' }); });
-  S.wishes.forEach(w => { if (has(w.label, w.store, w.memo, w.address)) out.push({ tid: w.tripId, kind:'wish', id: w.id, title: w.label, sub: w.type === 'buy' ? `살 것${w.store ? ' · ' + w.store : ''}` : `가볼 곳${w.address ? ' · ' + w.address : ''}`, icon: w.type === 'buy' ? 'bag' : 'pin' }); });
+  S.wishes.forEach(w => { if (has(w.label, w.orig, w.store, w.memo, w.address, w.review, ...(w.menu || []).map(m => m.name + ' ' + (m.orig || '')))) out.push({ tid: w.tripId, kind:'wish', id: w.id, title: w.label, sub: w.type === 'buy' ? `살 것${w.store ? ' · ' + w.store : ''}` : `가볼 곳${w.address ? ' · ' + w.address : ''}`, icon: w.type === 'buy' ? 'bag' : 'pin' }); });
   S.checks.forEach(c => { if (has(c.label)) out.push({ tid: c.tripId, kind:'check', id: c.id, title: c.label, sub: `준비물 · ${c.group}`, icon:'checklist' }); });
   Object.entries(S.notes).forEach(([k, v]) => { if (has(v)) { const [tid, day] = k.split('|'); out.push({ tid, kind:'note', id: k, day, title: v.length > 40 ? v.slice(0, 40) + '…' : v, sub: `한 줄 기록 · ${md(day)}`, icon:'book' }); } });
   return out.filter(r => getTrip(r.tid)).slice(0, 80);
@@ -2466,7 +2767,7 @@ const blobToDataURL = b => new Promise((res, rej) => { const r = new FileReader(
 function dataURLToBlob(u){ const [h, d] = u.split(','); const mime = (h.match(/data:([^;]+)/) || [])[1] || 'image/jpeg'; const bin = atob(d); const arr = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i); return new Blob([arr], { type: mime }); }
 async function exportBackup(){
   toast('백업 파일을 만드는 중…');
-  const ids = [...new Set([...S.items.flatMap(i => i.photos), ...S.bookings.flatMap(b => b.photos), ...S.expenses.flatMap(e => e.photos || []), ...S.trips.map(t => t.cover).filter(c => c && c !== 'gen')])]; const photos = {};
+  const ids = [...new Set([...S.items.flatMap(i => i.photos), ...S.bookings.flatMap(b => b.photos), ...S.expenses.flatMap(e => e.photos || []), ...S.wishes.flatMap(w => w.photos || []), ...S.trips.map(t => t.cover).filter(c => c && c !== 'gen')])]; const photos = {};
   for (const id of ids){ const b = await photoGet(id); if (b) photos[id] = await blobToDataURL(b); }
   const blob = new Blob([JSON.stringify({ app:'tripnote', version:1, exportedAt: new Date().toISOString(), state:S, photos })], { type:'application/json' });
   const name = `tripnote-backup-${todayISO()}.json`;
@@ -2610,7 +2911,23 @@ const A = {
   'wx-reset-day': () => { const t = getTrip(V.tripId); if (t.wx && t.wx.dayLoc){ delete t.wx.dayLoc[V.day]; } t.wx.fetchedAt = 0; save(); closeSheet(false); render(); refreshWeather(t, true); },
   'wx-refresh': () => { const t = getTrip(V.tripId); closeSheet(false); WX.err = false; render(); refreshWeather(t, true); },
   'list': el => { V.list = el.dataset.val; V.reorder = false; render(); },
-  'toggle-wish': el => { const w = S.wishes.find(x => x.id === el.dataset.id); w.done = !w.done; save(); render(); if (w.done) toast(w.type === 'buy' ? `'${w.label}' 샀어요` : `'${w.label}' 다녀왔어요`); },
+  'toggle-wish': el => toggleWish(el.dataset.id),
+  'view-wish': el => openWishView(el.dataset.id),
+  'show-staff': el => showStaff(el.dataset.id),
+  'wtab': el => { V[el.dataset.key] = el.dataset.val; V.reorder = false; V.pkind = 'all'; render(); },
+  'pkind': el => { V.pkind = el.dataset.val; V.reorder = false; render(); },
+  'paste-list': el => openPasteList(el.dataset.val),
+  'paste-read': () => { editing.found = parseRecList(val('f-plist'), editing.type); pastePreview(); },
+  'paste-add': () => pasteAdd(),
+  'menu-add': () => { readMenu(); editing.menu.push({ name:'', orig:'', price:'' }); $('#menu-rows').innerHTML = menuRowsHTML(); const ins = document.querySelectorAll('[data-f="name"]'); ins[ins.length - 1].focus(); },
+  'menu-del': el => { readMenu(); editing.menu.splice(+el.dataset.val, 1); $('#menu-rows').innerHTML = menuRowsHTML(); },
+  'pick-pkind': el => { editing.pkind = el.dataset.val; refreshPlaceForm(); },
+  'shop-buys': el => { const w = S.wishes.find(x => x.id === el.dataset.id); const name = val('f-wlabel') || w.label; closeSheet(true); V.list = 'buy'; V.buyTab = 'todo'; render(); const q = $('#wish-new'); if (q){ q.value = ` @${name}`; q.focus(); q.setSelectionRange(0, 0); } toast(`'@${name}' 앞에 상품 이름을 적으면 이 가게로 모여요`, 3500); },
+  'save-bought': () => saveBought(false),
+  'bought-skip': () => saveBought(true),
+  'save-visited': () => saveVisited(false),
+  'visited-skip': () => saveVisited(true),
+  'rate': el => { const n = +el.dataset.val; editing.rating = editing.rating === n ? 0 : n; $('#rating').innerHTML = ratingBtns(); },
   'edit-wish': el => openWishSheet(el.dataset.id),
   'save-wish': () => saveWish(),
   'del-wish': el => deleteWish(el.dataset.id),
@@ -2663,11 +2980,13 @@ document.addEventListener('submit', e => {
   else if (f === 'search'){ const q = $('#search-q'); if (q) q.blur(); }
   else if (f === 'add-wish'){
     const v = val('wish-new'); if (!v) return; const type = e.target.dataset.type;
-    if (type === 'buy'){ const p = parseBuyQuick(v); S.wishes.push({ id:uid(), tripId:V.tripId, type, label:p.label || v, store:p.store, qty:p.qty, memo:'', done:false }); }
-    else { const max = Math.max(-1, ...S.wishes.filter(w => w.tripId === V.tripId && w.type === 'place').map(w => w.order || 0)); S.wishes.push({ id:uid(), tripId:V.tripId, type, label:v, address:'', memo:'', done:false, order:max + 1 }); }
+    if (type === 'buy'){ const p = parseBuyQuick(v); S.wishes.push({ id:uid(), tripId:V.tripId, type, label:p.label || v, store:p.store, qty:p.qty, memo:'', photos:[], done:false }); }
+    else { const max = Math.max(-1, ...S.wishes.filter(w => w.tripId === V.tripId && w.type === 'place').map(w => w.order || 0)); const kind = guessKind(v) || 'etc'; S.wishes.push({ id:uid(), tripId:V.tripId, type, label:v, kind, address:'', memo:'', menu:[], photos:[], done:false, order:max + 1 });
+      if ((V.pkind || 'all') !== 'all' && V.pkind !== kind) V.pkind = 'all'; }
     save(); focusAfter = 'wish-new'; render();
   }
   else if (f === 'wish') saveWish();
+  else if (f === 'bought') saveBought(false); else if (f === 'visited') saveVisited(false);
   else if (f === 'add-check'){ const label = val('check-new'); if (!label) return; const group = val('check-group'); V.lastGroup = group; S.checks.push({ id:uid(), tripId:V.tripId, group, label, done:false }); save(); focusAfter = 'check-new'; render(); }
   else if (f === 'item') saveItem(); else if (f === 'trip') saveTrip(); else if (f === 'booking') saveBooking(); else if (f === 'check') saveCheck();
 });
