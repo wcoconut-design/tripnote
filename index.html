@@ -358,6 +358,11 @@ ol.list{list-style:none;margin:0;padding:4px 0}
 .pcard + .pcard{border-top:1px solid var(--line)}
 .pthumb{width:76px;height:76px;border-radius:12px;overflow:hidden;position:relative;flex-shrink:0;background:var(--bg);display:flex;align-items:center;justify-content:center;color:var(--muted)}
 .pthumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+button.pthumb{border:0;padding:0;cursor:pointer}
+.ph-add{flex-direction:column;gap:2px;border:1.5px dashed currentColor!important}
+.ph-add small{font-size:11px;font-weight:700}
+.ph-add svg{width:22px!important;height:22px!important}
+.phn{position:absolute;right:4px;bottom:4px;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:rgba(0,0,0,.6);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
 .pthumb svg{width:28px;height:28px}
 .pthumb-wrap{position:relative;flex-shrink:0}
 .pnum-badge{position:absolute;top:-6px;left:-6px;min-width:24px;height:24px;padding:0 6px;border-radius:12px;background:var(--accent);color:var(--on-accent);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums;box-shadow:0 0 0 2px var(--surface)}
@@ -526,7 +531,7 @@ ol.list{list-style:none;margin:0;padding:4px 0}
 document.documentElement.lang = 'ko';
 
 /* ---------- helpers ---------- */
-const APP_VERSION = '2026.11.03-8';
+const APP_VERSION = '2026.11.03-9';
 const EMBED = (()=>{ try { return window.self !== window.top; } catch(e){ return true; } })();
 const DOW = ['일','월','화','수','목','금','토'];
 const $ = (s, r=document) => r.querySelector(s);
@@ -1245,7 +1250,7 @@ function normalize(s){
     items: Array.isArray(s.items) ? s.items.map(i => Object.assign({ address:'', memo:'', time:'', photos:[] }, i)) : [],
     notes: s.notes && typeof s.notes === 'object' ? s.notes : {},
     checks: Array.isArray(s.checks) ? s.checks : [],
-    wishes: Array.isArray(s.wishes) ? s.wishes.map(w => Object.assign({ photos: [] }, w, w.type === 'place' && !w.kind ? { kind: guessKind(w.label) || 'etc' } : {})) : [],
+    wishes: Array.isArray(s.wishes) ? s.wishes.filter(w => !w._new && w.label).map(w => Object.assign({ photos: [] }, w, w.type === 'place' && !w.kind ? { kind: guessKind(w.label) || 'etc' } : {})) : [],
     expenses: Array.isArray(s.expenses) ? s.expenses.map(e => Object.assign({}, e, { pay: normPay(e.pay) })) : [],
     bookings: Array.isArray(s.bookings) ? s.bookings.map(b => Object.assign({ kind:'etc', code:'', start:'', end:'', address:'', memo:'', photos:[] }, b)) : [],
   };
@@ -1620,6 +1625,7 @@ function renderTrip(){
   html += `</div>`;
   if (tab === 'plan') html += `<button type="button" class="fab round above" data-act="add-item" aria-label="일정 추가">${I.plus}</button>`;
   if (tab === 'money') html += `<button type="button" class="fab round above" data-act="add-exp" aria-label="비용 추가">${I.plus}</button>`;
+  if (tab === 'checks' && (V.list === 'buy' || V.list === 'place') && (V[V.list === 'buy' ? 'buyTab' : 'placeTab'] !== 'done')) html += `<button type="button" class="fab above" data-act="wish-new" data-val="${V.list}">${I.plus}<span>${V.list === 'buy' ? '상품 등록' : '장소 등록'}</span></button>`;
   html += tabbar(tab);
   return html;
 }
@@ -2014,7 +2020,7 @@ function renderChecklists(t){
 }
 const wCheck = (w, doneLabel, todoLabel) => `<button type="button" class="checkbox${w.done?' on':''}" data-act="toggle-wish" data-id="${w.id}" aria-pressed="${w.done}" aria-label="${esc(w.label)} ${w.done ? doneLabel : todoLabel}"><span class="box">${w.done ? I.check : ''}</span></button>`;
 const doneSeg = (key, a, b, na, nb) => `<div class="seg" role="group">${segBtn(key, 'todo', `${a} ${na}`, V[key] !== 'done')}${segBtn(key, 'done', `${b} ${nb}`, V[key] === 'done')}</div>`;
-const wThumb = (w, ph) => w.photos && w.photos[0] ? `<span class="pthumb">${photoImg(w.photos[0])}</span>` : `<span class="pthumb ph-empty" style="${ph ? `background:${ph.color}22;color:${ph.color}` : ''}">${ph ? I[ph.icon] : I.bag}</span>`;
+const wThumb = (w, ph) => w.photos && w.photos[0] ? `<button type="button" class="pthumb" data-act="view-photo" data-id="${esc(w.photos[0])}" aria-label="${esc(w.label)} 사진 크게 보기">${photoImg(w.photos[0])}${w.photos.length > 1 ? `<span class="phn">${w.photos.length}</span>` : ''}</button>` : `<button type="button" class="pthumb ph-empty ph-add" data-act="thumb-photo" data-id="${w.id}" aria-label="${esc(w.label)} 사진 넣기" style="${ph ? `background:${ph.color}1f;color:${ph.color}` : ''}">${I.camera}<small>사진</small></button>`;
 function sumByCur(ws, f){ const o = {}; ws.forEach(w => { const v = f(w); if (v && v.amount > 0){ o[v.cur] = (o[v.cur] || 0) + v.amount; } }); return Object.entries(o).map(([c, a]) => money(a, c)).join(' + '); }
 function renderBuy(t){
   const ws = S.wishes.filter(w => w.tripId === t.id && w.type === 'buy');
@@ -2022,7 +2028,7 @@ function renderBuy(t){
   let h = `<div class="stack">${doneSeg('buyTab', '살 것', '산 것', todo.length, dn.length).replace(/data-act="buyTab"/g, 'data-act="wtab" data-key="buyTab"')}`;
   if (tab === 'todo'){
     h += `<form class="quick" data-form="add-wish" data-type="buy" autocomplete="off" style="margin:0"><label class="sr" for="wish-new">살 것</label>
-      <input class="input" id="wish-new" placeholder="살 것 추가 (예: 곤약젤리 @돈키호테)" enterkeyhint="done"><button class="btn primary" type="submit" aria-label="추가">${I.plus}</button></form>
+      <input class="input" id="wish-new" placeholder="빠른 추가 (예: 곤약젤리 @돈키호테)" enterkeyhint="done"><button class="btn primary" type="submit" aria-label="추가">${I.plus}</button></form>
       <button type="button" class="btn sm block" data-act="paste-list" data-val="buy">${I.copy}추천 목록 붙여넣기</button>`;
     if (!todo.length) return h + `<div class="empty"><h3>${dn.length ? '다 샀어요' : '사고 싶은 걸 적어두세요'}</h3><p>"곤약젤리 @돈키호테"처럼 적거나, 추천 목록 글을 통째로 붙여넣으면 한 번에 정리돼요.</p></div></div>`;
     const est = sumByCur(todo, w => w.price ? { amount: w.price * qtyNum(w.qty), cur: w.currency || 'JPY' } : null);
@@ -2072,7 +2078,7 @@ function renderPlaces(t){
     return h + `<div class="list">${dn.map(w => placeCard(w, -1)).join('')}</div></div>`;
   }
   h += `<form class="quick" data-form="add-wish" data-type="place" autocomplete="off" style="margin:0"><label class="sr" for="wish-new">가볼 곳</label>
-    <input class="input" id="wish-new" placeholder="가볼 곳 추가 (예: 이치란 본점)" enterkeyhint="done"><button class="btn primary" type="submit" aria-label="추가">${I.plus}</button></form>
+    <input class="input" id="wish-new" placeholder="빠른 추가 (예: 이치란 본점)" enterkeyhint="done"><button class="btn primary" type="submit" aria-label="추가">${I.plus}</button></form>
     <button type="button" class="btn sm block" data-act="paste-list" data-val="place">${I.copy}맛집·추천 글 붙여넣기</button>`;
   const todo = placeList(t, false);
   if (!todo.length) return h + `<div class="empty"><h3>${nTodo ? '이 종류는 없어요' : '가보고 싶은 곳을 모아두세요'}</h3><p>이름만 적어도 구글맵에서 찾을 수 있어요. 식당은 추천 메뉴, 쇼핑은 살 것과 함께 정리돼요.</p></div></div>`;
@@ -2166,6 +2172,13 @@ function refreshPlaceForm(){
   $('#f-wtip').placeholder = k === 'food' || k === 'cafe' ? '예: 오픈 30분 전 줄 서기, 현금만' : k === 'sight' ? '예: 해 질 무렵이 예뻐요' : k === 'shop' ? '예: 면세는 2층 카운터' : '';
   $('#w-shopbuys').hidden = k !== 'shop';
 }
+function openWishNew(type){
+  const t = getTrip(V.tripId); const max = Math.max(-1, ...S.wishes.filter(w => w.tripId === t.id && w.type === 'place').map(w => w.order || 0));
+  const w = type === 'buy' ? { id: uid(), tripId: t.id, type, label:'', orig:'', store:'', qty:'', memo:'', photos:[], done:false, _new:true }
+    : { id: uid(), tripId: t.id, type, label:'', orig:'', kind: (V.pkind && V.pkind !== 'all') ? V.pkind : 'food', address:'', memo:'', menu:[], photos:[], done:false, order: max + 1, _new:true };
+  S.wishes.push(w); openWishSheet(w.id);
+}
+function dropNewWish(){ const i = S.wishes.findIndex(x => x._new); if (i >= 0) S.wishes.splice(i, 1); }
 function openWishSheet(id){
   const w = S.wishes.find(x => x.id === id); if (!w) return; const t = getTrip(w.tripId);
   editing = { kind:'wish', id, pkind: w.kind || guessKind(w.label) || 'etc', menu: (w.menu || []).map(m => Object.assign({}, m)) };
@@ -2198,14 +2211,16 @@ function openWishSheet(id){
         <p class="hint">날짜를 고르면 그날 일정에 들어가요. 추천 메뉴도 일정 메모에 같이 적혀요.</p></div>
       <div class="field"><label class="flabel" for="f-wmemo">메모</label><textarea class="input" id="f-wmemo" rows="2">${esc(w.memo || '')}</textarea></div>`;
   openSheet(`${sheetHead(w.type === 'buy' ? '살 것 수정' : '가볼 곳 수정', 'save-wish')}<form class="form" data-form="wish" autocomplete="off">
+    ${photoField(w.type === 'buy' ? '상품 사진' : '사진')}
     ${body}
-    ${photoField('사진')}
     <p class="err" id="sheet-err" hidden></p>
-    <button type="button" class="btn danger block" data-act="del-wish" data-id="${w.id}">${I.trash}지우기</button></form>`, cancelDraft);
+    ${w._new ? '' : `<button type="button" class="btn danger block" data-act="del-wish" data-id="${w.id}">${I.trash}지우기</button>`}</form>`, () => { cancelDraft(); dropNewWish(); });
+  if (w._new){ const ttl = $('#sheet-title'); if (ttl) ttl.textContent = w.type === 'buy' ? '살 것 추가' : '가볼 곳 추가'; setTimeout(() => { const f = $('#f-wlabel'); if (f) f.focus(); }, 80); }
   if (w.type === 'place') refreshPlaceForm();
 }
 function saveWish(){
   const w = S.wishes.find(x => x.id === editing.id); const label = val('f-wlabel'); if (!label) return showErr('이름을 적어 주세요.');
+  const wasNew = !!w._new; delete w._new;
   const oldLabel = w.label;
   w.label = label; w.orig = val('f-worig'); w.memo = val('f-wmemo'); w.photos = commitDraft();
   if (w.type === 'buy'){
@@ -2222,7 +2237,7 @@ function saveWish(){
       else { const n = { id: uid(), tripId: w.tripId, date: day, time:'', place: label, address: w.address, memo, photos:[] }; S.items.push(n); w.itemId = n.id; }
     } else if (it){ if (!it.photos.length && !it.time) S.items.splice(S.items.indexOf(it), 1); w.itemId = null; }
   }
-  save(); closeSheet(false); render(); toast('저장했어요');
+  save(); closeSheet(false); render(); toast(wasNew ? `'${label}'을(를) 추가했어요` : '저장했어요');
 }
 function deleteWish(id){
   const w = S.wishes.find(x => x.id === id); if (!w) return; const idx = S.wishes.indexOf(w);
@@ -2922,6 +2937,11 @@ async function importBackup(file){
 let toastTimer = null; let pendingCommit = null;
 function hideToast(){ clearTimeout(toastTimer); $('#toast-root').innerHTML = ''; if (pendingCommit){ const c = pendingCommit; pendingCommit = null; c(); } }
 function toast(msg, ms=2400){ hideToast(); $('#toast-root').innerHTML = `<div class="toast" role="status"><span>${esc(msg)}</span></div>`; toastTimer = setTimeout(hideToast, ms); }
+function actionToast(msg, label, fn){
+  hideToast(); window.__undo = fn;
+  $('#toast-root').innerHTML = `<div class="toast" role="status"><span>${esc(msg)}</span><button type="button" data-act="undo">${esc(label)}</button></div>`;
+  toastTimer = setTimeout(hideToast, 5000);
+}
 function undoToast(msg, undo, commit){
   hideToast(); pendingCommit = commit || null; window.__undo = undo;
   $('#toast-root').innerHTML = `<div class="toast" role="status"><span>${esc(msg)}</span><button type="button" data-act="undo">되돌리기</button></div>`;
@@ -3043,6 +3063,8 @@ const A = {
   'tf-check': el => { if (el.dataset.trip && (V.name !== 'trip' || V.tripId !== el.dataset.trip)) go({ name:'trip', tripId: el.dataset.trip, tab:'money' }); openTfCheck(); },
   'tf-pack': el => { const e = S.expenses.find(x => x.id === el.dataset.exp); const it = e && (e.tfItems || []).find(i => i.id === el.dataset.item); if (!it) return; it.packed = !it.packed; save(); const sc = $('.sheet') ? $('.sheet').scrollTop : 0; openTfCheck(); if ($('.sheet')) $('.sheet').scrollTop = sc; render(); },
   'tf-done': el => { const e = S.expenses.find(x => x.id === el.dataset.id); if (!e) return; e.taxfree = e.taxfree === 'refunded' ? 'applied' : 'refunded'; save(); const sc = $('.sheet') ? $('.sheet').scrollTop : 0; openTfCheck(); if ($('.sheet')) $('.sheet').scrollTop = sc; render(); },
+  'wish-new': el => openWishNew(el.dataset.val),
+  'thumb-photo': el => { let inp = $('#thumb-input'); if (!inp){ inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*'; inp.id = 'thumb-input'; inp.hidden = true; document.body.appendChild(inp); } inp.dataset.wish = el.dataset.id; inp.value = ''; inp.click(); },
   'wish-tf': el => { const w = S.wishes.find(x => x.id === el.dataset.id); if (!w) return; w.tf = !w.tf; const ex = w.expId ? S.expenses.find(e => e.id === w.expId) : null;
     if (ex && w.tf && !ex.taxfree){ ex.taxfree = 'applied'; ex.store = ex.store || w.store || ''; ex.tfItems = [...(ex.tfItems || []), { id: uid(), name: w.label, packed: false, wishId: w.id }]; }
     if (ex && !w.tf && ex.taxfree && (ex.tfItems || []).length <= 1){ delete ex.taxfree; delete ex.tfItems; }
@@ -3120,6 +3142,7 @@ document.addEventListener('submit', e => {
     else { const max = Math.max(-1, ...S.wishes.filter(w => w.tripId === V.tripId && w.type === 'place').map(w => w.order || 0)); const kind = guessKind(v) || 'etc'; S.wishes.push({ id:uid(), tripId:V.tripId, type, label:v, kind, address:'', memo:'', menu:[], photos:[], done:false, order:max + 1 });
       if ((V.pkind || 'all') !== 'all' && V.pkind !== kind) V.pkind = 'all'; }
     save(); focusAfter = 'wish-new'; render();
+    const nw = S.wishes[S.wishes.length - 1]; actionToast(`'${nw.label}' 추가했어요`, '사진·자세히', () => openWishSheet(nw.id));
   }
   else if (f === 'wish') saveWish();
   else if (f === 'bought') saveBought(false); else if (f === 'visited') saveVisited(false);
@@ -3139,6 +3162,8 @@ document.addEventListener('input', e => {
 document.addEventListener('change', e => {
   const t = e.target;
   if (t.id === 'f-photo-input'){ addPhotos(t.files); t.value = ''; }
+  if (t.id === 'thumb-input' && t.files[0]){ const w = S.wishes.find(x => x.id === t.dataset.wish); const f = t.files[0]; t.value = '';
+    if (w) resizeImage(f).then(async blob => { const id = uid(); await photoPut(id, blob); w.photos = [...(w.photos || []), id]; save(); render(); toast('사진을 넣었어요'); }).catch(() => toast('이 사진은 열 수 없어요. 다른 사진을 골라 주세요.')); }
   if (t.id === 'f-receipt' && t.files[0]){ const f = t.files[0]; t.value = ''; readReceipt(f); }
   if (t.id === 'f-cover-input' && t.files[0]){ const f = t.files[0]; t.value = ''; coverUpload(f); }
   if (t.id === 'f-frombase'){ V.fromBase = t.checked; render(); }
